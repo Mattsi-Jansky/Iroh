@@ -27,3 +27,14 @@ fn first_pawn_move_recorded_in_pgn(san: &str) {
 
     assert_eq!(format!("1. {} *", san), result);
 }
+
+#[test]
+fn second_pawn_move_recorded_in_pgn() {
+    let mut game = ChessGame::new();
+
+    game = game.make_move("e4").unwrap();
+    game = game.make_move("e5").unwrap();
+    let result = game.get_pgn();
+
+    assert_eq!(format!("1. e4 {} *", "e5"), result);
+}

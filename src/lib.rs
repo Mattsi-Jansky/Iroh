@@ -14,10 +14,21 @@ impl ChessGame {
 
     pub fn get_pgn(&self) -> String {
         if self.sans.is_empty() {
-            String::new()
+            return String::new()
         }
         else {
-            format!("1. {} *", self.sans[0])
+            let mut result = String::new();
+            let mut i = 1;
+            for pair in self.sans.chunks(2) {
+                let turn = format!("{}. {}", i, pair[0]);
+                if pair.len() > 1 {
+                    result = format!("{}{} {} *", result, turn, pair[1])
+                } else {
+                    result = format!("{}{} *", result, turn)
+                }
+                i = i + 1;
+            }
+            return result
         }
     }
 
