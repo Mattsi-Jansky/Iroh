@@ -11,8 +11,14 @@ fn new_game_has_blank_pgn() {
     assert_eq!(result,"");
 }
 
+#[test_case("a4")]
+#[test_case("b4")]
+#[test_case("c4")]
 #[test_case("d4")]
 #[test_case("e4")]
+#[test_case("f4")]
+#[test_case("g4")]
+#[test_case("h4")]
 fn first_pawn_move_recorded_in_pgn(san: &str) {
     let mut game = ChessGame::new();
 
