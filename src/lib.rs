@@ -17,7 +17,12 @@ impl ChessGame {
     }
 
     pub fn get_available_moves(&self) -> Vec<Move> {
-        todo!()
+        let mut available_moves = vec![];
+
+        available_moves.push(Move::RegularMove { 0: (3,2), 1: (3,3) });
+        available_moves.push(Move::RegularMove { 0: (3,2), 1: (3,4) });
+
+        available_moves
     }
 
     pub fn get_pgn(&self) -> String {
