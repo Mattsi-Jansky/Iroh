@@ -9,3 +9,4 @@ edition = "2021"
 
 [dev-dependencies]
 test-case = "1.2.1"
+galvanic-assert = "0.8.7"

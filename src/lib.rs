@@ -18,9 +18,11 @@ impl ChessGame {
 
     pub fn get_available_moves(&self, tile: &str) -> Vec<Move> {
         let mut available_moves = vec![];
+        let column = (tile.chars().nth(0).unwrap() as u32) as u8 - 97;
+        let row = tile.chars().nth(1).unwrap().to_digit(10).unwrap() as u8;
 
-        available_moves.push(Move::RegularMove { 0: (3,2), 1: (3,3) });
-        available_moves.push(Move::RegularMove { 0: (3,2), 1: (3,4) });
+        available_moves.push(Move::RegularMove { 0: (column,row), 1: (column,3) });
+        available_moves.push(Move::RegularMove { 0: (column,row), 1: (column,4) });
 
         available_moves
     }
@@ -35,8 +37,6 @@ impl ChessGame {
     }
 
     pub fn make_move(self, san: &str) -> Result<ChessGame,ChessGameError> {
-        // let column = &(san.chars().nth(0).unwrap() as u32) - 97;
-        // let row = &san.chars().nth(1).unwrap().to_digit(10).unwrap();
         let mut new = self.sans.clone();
         new.push(String::from(san));
 
@@ -51,6 +51,7 @@ impl Default for ChessGame {
 }
 
 #[derive(PartialEq)]
+#[derive(Debug)]
 pub enum Move {
     RegularMove((u8, u8), (u8, u8))
 }
