@@ -45,6 +45,7 @@ impl Default for ChessGame {
     }
 }
 
+#[derive(PartialEq)]
 pub enum Move {
     RegularMove((u8, u8), (u8, u8))
 }
