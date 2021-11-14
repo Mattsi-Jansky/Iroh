@@ -54,6 +54,7 @@ fn second_pawn_move_recorded_in_pgn(san: &str) {
     assert_eq!(format!("1. e4 {} *", san), result);
 }
 
+#[test]
 fn second_turn_recorded_in_pgn() {
     let mut game = ChessGame::new();
 
@@ -66,6 +67,7 @@ fn second_turn_recorded_in_pgn() {
     assert_eq!("1. e4 e5 2. d4 d5 *", result);
 }
 
+#[test]
 fn partially_complete_second_turn_recorded_in_pgn() {
     let mut game = ChessGame::new();
 

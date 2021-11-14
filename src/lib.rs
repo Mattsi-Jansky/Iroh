@@ -7,9 +7,14 @@ pub struct ChessGameError {
 
 }
 
+
 impl ChessGame {
     pub fn new() -> ChessGame {
         ChessGame { sans: vec![] }
+    }
+
+    pub fn get_available_moves(&self) -> Vec<Move> {
+        todo!()
     }
 
     pub fn get_pgn(&self) -> String {
@@ -22,7 +27,7 @@ impl ChessGame {
             for pair in self.sans.chunks(2) {
                 let turn = format!("{}. {}", i, pair[0]);
                 if pair.len() > 1 {
-                    result = format!("{}{} {} *", result, turn, pair[1])
+                    result = format!("{}{} {} {}", result, turn, pair[1], if i != (self.sans.len() as f32 / 2 as f32).ceil() as u8 {""} else {"*"})
                 } else {
                     result = format!("{}{} *", result, turn)
                 }
@@ -49,11 +54,6 @@ impl Default for ChessGame {
     }
 }
 
-#[cfg(test)]
-mod tests {
-    #[test]
-    fn it_works() {
-        let result = 2 + 2;
-        assert_eq!(result, 4);
-    }
+pub enum Move {
+    RegularMove((u8, u8), (u8, u8))
 }
