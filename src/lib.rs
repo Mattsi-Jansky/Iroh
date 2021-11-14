@@ -1,5 +1,5 @@
 pub struct ChessGame {
-    pgn: String
+    sans: Vec<String>,
 }
 
 #[derive(Debug)]
@@ -9,15 +9,26 @@ pub struct ChessGameError {
 
 impl ChessGame {
     pub fn new() -> ChessGame {
-        ChessGame { pgn: String::new() }
+        ChessGame { sans: vec![] }
     }
 
     pub fn get_pgn(&self) -> String {
-        String::from(&self.pgn[..])
+        if self.sans.len() == 0 {
+            String::new()
+        }
+        else {
+            String::from(format!("1. {} *", self.sans[0]))
+        }
     }
 
     pub fn make_move(self, san: &str) -> Result<ChessGame,ChessGameError> {
-        Ok(ChessGame { pgn: String::from("1. d4 *") })
+
+        // let column = &(san.chars().nth(0).unwrap() as u32) - 97;
+        // let row = &san.chars().nth(1).unwrap().to_digit(10).unwrap();
+        let mut new = self.sans.clone();
+        new.push(String::from(san));
+
+        Ok(ChessGame { sans: new })
     }
 }
 

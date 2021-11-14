@@ -13,7 +13,7 @@ fn new_game_has_blank_pgn() {
 
 #[test_case("d4")]
 #[test_case("e4")]
-fn pawn_move_recorded_in_pgn(san: &str) {
+fn first_pawn_move_recorded_in_pgn(san: &str) {
     let mut game = ChessGame::new();
 
     game = game.make_move(san).unwrap();
