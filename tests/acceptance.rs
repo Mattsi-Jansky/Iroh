@@ -53,3 +53,26 @@ fn second_pawn_move_recorded_in_pgn(san: &str) {
 
     assert_eq!(format!("1. e4 {} *", san), result);
 }
+
+fn second_turn_recorded_in_pgn() {
+    let mut game = ChessGame::new();
+
+    game = game.make_move("e4").unwrap();
+    game = game.make_move("e5").unwrap();
+    game = game.make_move("d4").unwrap();
+    game = game.make_move("d5").unwrap();
+    let result = game.get_pgn();
+
+    assert_eq!("1. e4 e5 2. d4 d5 *", result);
+}
+
+fn partially_complete_second_turn_recorded_in_pgn() {
+    let mut game = ChessGame::new();
+
+    game = game.make_move("e4").unwrap();
+    game = game.make_move("e5").unwrap();
+    game = game.make_move("d4").unwrap();
+    let result = game.get_pgn();
+
+    assert_eq!("1. e4 e5 2. d4 *", result);
+}
