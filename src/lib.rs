@@ -16,7 +16,7 @@ impl ChessGame {
         ChessGame { sans: vec![] }
     }
 
-    pub fn get_available_moves(&self) -> Vec<Move> {
+    pub fn get_available_moves(&self, tile: &str) -> Vec<Move> {
         let mut available_moves = vec![];
 
         available_moves.push(Move::RegularMove { 0: (3,2), 1: (3,3) });

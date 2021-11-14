@@ -1,11 +1,14 @@
+use test_case::test_case;
+
 use chess::*;
 
-#[test]
-fn generate_e4_pawn_moves() {
+#[test_case("a2", 0)]
+#[test_case("e2", 3)]
+fn generate_first_turn_pawn_moves(tile: &str, rank: u8) {
     let game = ChessGame::new();
 
-    let available_moves = game.get_available_moves();
+    let available_moves = game.get_available_moves(tile);
 
-    assert!(available_moves.contains(&Move::RegularMove { 0: (3,2), 1: (3,3) }));
-    assert!(available_moves.contains(&Move::RegularMove { 0: (3,2), 1: (3,4) }));
+    assert!(available_moves.contains(&Move::RegularMove { 0: (rank,2), 1: (rank,3) }));
+    assert!(available_moves.contains(&Move::RegularMove { 0: (rank,2), 1: (rank,4) }));
 }
