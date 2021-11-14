@@ -21,6 +21,12 @@ impl ChessGame {
     }
 }
 
+impl Default for ChessGame {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 #[cfg(test)]
 mod tests {
     #[test]
