@@ -13,11 +13,11 @@ impl ChessGame {
     }
 
     pub fn get_pgn(&self) -> String {
-        if self.sans.len() == 0 {
+        if self.sans.is_empty() {
             String::new()
         }
         else {
-            String::from(format!("1. {} *", self.sans[0]))
+            format!("1. {} *", self.sans[0])
         }
     }
 
