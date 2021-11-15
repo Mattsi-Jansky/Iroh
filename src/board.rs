@@ -63,4 +63,16 @@ mod tests {
         let result = result.unwrap();
         assert_that!(&result.piece_type, eq(ChessPieceType::King));
     }
+
+    #[test]
+    fn index_outermost_corner_of_board() {
+        let mut board = Board::blank();
+
+        board[(7,7)] = Some(ChessPiece::new(true, ChessPieceType::King));
+        let result = board[(7,7)];
+
+        assert!(!result.is_none());
+        let result = result.unwrap();
+        assert_that!(&result.piece_type, eq(ChessPieceType::King));
+    }
 }
