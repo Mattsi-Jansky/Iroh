@@ -1,3 +1,5 @@
+use crate::Move;
+
 pub fn generate_pgn(sans: &Vec<String>) -> String {
     let number_of_pairs = (sans.len() as f32 / 2 as f32).ceil() as u8;
     let mut result = String::new();
@@ -22,4 +24,23 @@ fn generate_pgn_chunk(number_of_pairs: u8, mut result: String, index: u8, pair: 
         result = format!("{}{} *", result, turn)
     }
     result
+}
+
+pub fn parse_san(san: &str) -> Move {
+    let column = (san.chars().nth(0).unwrap() as u32) as u8 - 97;
+    let row = san.chars().nth(1).unwrap().to_digit(10).unwrap() as u8;
+
+    Move::PawnMove { 0: column, 1: (column,row) }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn parse_pawn_move() {
+        let result = parse_san("e4");
+
+        assert_eq!(Move::PawnMove(4, (4,4)), result);
+    }
 }
