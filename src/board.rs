@@ -1,5 +1,6 @@
 use std::ops::{Index, IndexMut};
-use crate::piece::{ChessPiece, ChessPieceType};
+use crate::fen::parse_fen;
+use crate::piece::{ChessPiece};
 
 pub struct Board {
     state: [Option<ChessPiece>; 8*8]
@@ -33,35 +34,9 @@ impl Board {
             None,None,None,None,None,None,None,None,
         ];
 
-        let mut row = 0;
-        let mut column = 0;
-        for char in fen[..fen.len() - 13].chars() {
-            if char.eq(&'/') {
-                row += 1;
-                column = 0;
-                continue;
-            }
-            if char.is_digit(10) {
-                column += char as usize - 0x30;
-                continue;
-            }
-
-            let piece_type = match char {
-                'r' | 'R' => Some(ChessPieceType::Rook),
-                'n' | 'N' => Some(ChessPieceType::Knight),
-                'b' | 'B' => Some(ChessPieceType::Bishop),
-                'q' | 'Q' => Some(ChessPieceType::Queen),
-                'k' | 'K' => Some(ChessPieceType::King),
-                'p' | 'P' => Some(ChessPieceType::Pawn),
-                _ => None
-            };
-            let is_owned_by_first_player = !char.is_uppercase();
-            state[column + (row * 8)] = if piece_type.is_none() { None } else {
-                Some(ChessPiece::new(is_owned_by_first_player,piece_type.unwrap()))
-            };
-
-            column += 1;
-        }
+        parse_fen(fen, &mut |(column,row),piece| {
+            state[column + (row * 8)] = piece;
+        });
 
         Board { state }
     }
