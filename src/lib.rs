@@ -1,6 +1,6 @@
 mod pgn;
 
-use pgn::generate_pgn;
+use pgn::{generate_pgn, parse_san};
 
 pub struct ChessGame {
     sans: Vec<String>,
@@ -16,13 +16,13 @@ impl ChessGame {
         ChessGame { sans: vec![] }
     }
 
-    pub fn get_available_moves(&self, tile: &str) -> Vec<Move> {
+    pub fn get_available_moves(&self) -> Vec<Move> {
         let mut available_moves = vec![];
-        let column = (tile.chars().nth(0).unwrap() as u32) as u8 - 97;
-        let row = tile.chars().nth(1).unwrap().to_digit(10).unwrap() as u8;
 
-        available_moves.push(Move::RegularMove { 0: (column,row), 1: (column,3) });
-        available_moves.push(Move::RegularMove { 0: (column,row), 1: (column,4) });
+        for column in 0..=7 {
+            available_moves.push(Move::PawnMove { 0: column, 1: (column, 3) });
+            available_moves.push(Move::PawnMove { 0: column, 1: (column, 4) });
+        }
 
         available_moves
     }
@@ -40,7 +40,15 @@ impl ChessGame {
         let mut new = self.sans.clone();
         new.push(String::from(san));
 
-        Ok(ChessGame { sans: new })
+        let requested_move = parse_san(san);
+        let possible_moves = self.get_available_moves();
+
+        if !possible_moves.contains(&requested_move) {
+            Err(ChessGameError {})
+        }
+        else {
+            Ok(ChessGame { sans: new })
+        }
     }
 }
 
@@ -53,5 +61,6 @@ impl Default for ChessGame {
 #[derive(PartialEq)]
 #[derive(Debug)]
 pub enum Move {
-    RegularMove((u8, u8), (u8, u8))
+    RegularMove((u8, u8), (u8, u8)),
+    PawnMove(u8,(u8,u8))
 }

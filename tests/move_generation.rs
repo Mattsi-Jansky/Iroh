@@ -6,21 +6,21 @@ use test_case::test_case;
 
 use chess::*;
 
-#[test_case("a2", 0)]
-#[test_case("b2", 1)]
-#[test_case("c2", 2)]
-#[test_case("d2", 3)]
-#[test_case("e2", 4)]
-#[test_case("f2", 5)]
-#[test_case("g2", 6)]
-#[test_case("h2", 7)]
-fn generate_first_turn_pawn_moves(tile: &str, rank: u8) {
+#[test_case(0)]
+#[test_case(1)]
+#[test_case(2)]
+#[test_case(3)]
+#[test_case(4)]
+#[test_case(5)]
+#[test_case(6)]
+#[test_case(7)]
+fn generate_first_turn_pawn_moves(rank: u8) {
     let game = ChessGame::new();
 
-    let available_moves = game.get_available_moves(tile);
+    let available_moves = game.get_available_moves();
 
     assert_that!(&available_moves, contains_subset(vec![
-        Move::RegularMove { 0: (rank,2), 1: (rank,3) },
-        Move::RegularMove { 0: (rank,2), 1: (rank,4) },
+        Move::PawnMove { 0: rank, 1: (rank,3) },
+        Move::PawnMove { 0: rank, 1: (rank,4) },
     ]));
 }
