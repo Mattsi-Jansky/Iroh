@@ -23,22 +23,13 @@ impl Board {
     }
 
     fn from_fen(fen: &str) -> Board {
-        let mut state = [
-            None,None,None,None,None,None,None,None,
-            None,None,None,None,None,None,None,None,
-            None,None,None,None,None,None,None,None,
-            None,None,None,None,None,None,None,None,
-            None,None,None,None,None,None,None,None,
-            None,None,None,None,None,None,None,None,
-            None,None,None,None,None,None,None,None,
-            None,None,None,None,None,None,None,None,
-        ];
+        let mut board = Board::blank();
 
         parse_fen(fen, &mut |(column,row),piece| {
-            state[column + (row * 8)] = piece;
+            board.state[column + (row * 8)] = piece;
         });
 
-        Board { state }
+        board
     }
 }
 
