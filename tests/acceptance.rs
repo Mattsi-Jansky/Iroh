@@ -20,7 +20,7 @@ fn new_game_has_blank_pgn() {
 #[test_case("f3")]
 #[test_case("g3")]
 #[test_case("h3")]
-fn first_pawn_move_recorded_in_pgn(san: &str) {
+fn first_pawn_move(san: &str) {
     let mut game = Game::new();
 
     game = game.make_move(san).unwrap();
@@ -45,7 +45,7 @@ fn first_pawn_move_recorded_in_pgn(san: &str) {
 #[test_case("f6")]
 #[test_case("g6")]
 #[test_case("h6")]
-fn second_pawn_move_recorded_in_pgn(san: &str) {
+fn second_pawn_move(san: &str) {
     let mut game = Game::new();
 
     game = game.make_move("e4").unwrap();
@@ -56,7 +56,7 @@ fn second_pawn_move_recorded_in_pgn(san: &str) {
 }
 
 #[test]
-fn second_turn_recorded_in_pgn() {
+fn second_turn() {
     let mut game = Game::new();
 
     game = game.make_move("e4").unwrap();
@@ -69,7 +69,7 @@ fn second_turn_recorded_in_pgn() {
 }
 
 #[test]
-fn partially_complete_second_turn_recorded_in_pgn() {
+fn partially_complete_second() {
     let mut game = Game::new();
 
     game = game.make_move("e4").unwrap();
