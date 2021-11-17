@@ -1,5 +1,5 @@
 use std::ops::{Index, IndexMut};
-use crate::fen::parse_fen;
+use crate::serialisers::fen::parse_fen;
 use crate::piece::{Piece, PieceType};
 
 const STARTING_POSITION_FEN: &str = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";

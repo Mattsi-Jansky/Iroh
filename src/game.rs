@@ -1,4 +1,5 @@
-use crate::pgn::{generate_pgn, parse_san};
+use crate::serialisers::pgn::generate_pgn;
+use crate::serialisers::san::parse_san;
 use crate::board::Board;
 use crate::error::IllegalMoveError;
 use crate::move_generation::generate_moves;
