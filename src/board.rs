@@ -36,13 +36,13 @@ impl Board {
 impl Index<(usize,usize)> for Board {
     type Output = Option<ChessPiece>;
     fn index(&self, s: (usize,usize)) -> &Option<ChessPiece> {
-        return &self.state[s.0 + (s.1 * 8)];
+        &self.state[s.0 + (s.1 * 8)]
     }
 }
 
 impl IndexMut<(usize,usize)> for Board {
     fn index_mut(&mut self, s: (usize,usize)) -> &mut Option<ChessPiece> {
-        return &mut self.state[s.0 + (s.1 * 8)];
+        &mut self.state[s.0 + (s.1 * 8)]
     }
 }
 
