@@ -8,7 +8,7 @@ pub enum ChessPieceType {
     Queen
 }
 
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Copy, Clone, PartialEq)]
 pub struct ChessPiece {
     pub is_owned_by_first_player: bool,
     pub piece_type: ChessPieceType,
