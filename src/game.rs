@@ -2,8 +2,9 @@ use crate::pgn::{generate_pgn, parse_san};
 use crate::board::Board;
 use crate::error::ChessGameError;
 use crate::move_generation::generate_moves;
-use crate::moves::{Move, transform_chess_board};
+use crate::moves::{Move};
 use crate::piece::ChessPieceType;
+use crate::resolve_move::resolve_move;
 
 pub struct ChessGame {
     sans: Vec<String>,
@@ -41,7 +42,7 @@ impl ChessGame {
             Err(ChessGameError {})
         }
         else {
-            let board = transform_chess_board(requested_move, self.board);
+            let board = resolve_move(requested_move, self.board);
             Ok(ChessGame { sans: new, board, is_first_player_turn: !self.is_first_player_turn })
         }
     }
