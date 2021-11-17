@@ -1,6 +1,6 @@
-use crate::piece::{ChessPiece, ChessPieceType};
+use crate::piece::{Piece, PieceType};
 
-pub fn parse_fen(fen: &str, callback: &mut dyn FnMut((usize, usize), Option<ChessPiece>)) {
+pub fn parse_fen(fen: &str, callback: &mut dyn FnMut((usize, usize), Option<Piece>)) {
     let mut row = 0;
     let mut column = 0;
 
@@ -16,18 +16,18 @@ pub fn parse_fen(fen: &str, callback: &mut dyn FnMut((usize, usize), Option<Ches
         }
 
         let piece_type = match char {
-            'r' | 'R' => Some(ChessPieceType::Rook),
-            'n' | 'N' => Some(ChessPieceType::Knight),
-            'b' | 'B' => Some(ChessPieceType::Bishop),
-            'q' | 'Q' => Some(ChessPieceType::Queen),
-            'k' | 'K' => Some(ChessPieceType::King),
-            'p' | 'P' => Some(ChessPieceType::Pawn),
+            'r' | 'R' => Some(PieceType::Rook),
+            'n' | 'N' => Some(PieceType::Knight),
+            'b' | 'B' => Some(PieceType::Bishop),
+            'q' | 'Q' => Some(PieceType::Queen),
+            'k' | 'K' => Some(PieceType::King),
+            'p' | 'P' => Some(PieceType::Pawn),
             _ => None
         };
         let is_owned_by_first_player = !char.is_uppercase();
         callback((column, row),
                  piece_type.map(
-                     |piece_type| ChessPiece::new(is_owned_by_first_player,piece_type)
+                     |piece_type| Piece::new(is_owned_by_first_player, piece_type)
                  ));
 
         column += 1;

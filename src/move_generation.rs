@@ -1,11 +1,11 @@
 use crate::board::Board;
 use crate::moves::Move;
-use crate::piece::ChessPieceType;
+use crate::piece::PieceType;
 
 pub fn generate_moves(is_first_player_turn: bool, board: &Board) -> Vec<Move> {
     let mut available_moves = vec![];
 
-    let pawns = board.get_all(ChessPieceType::Pawn, is_first_player_turn);
+    let pawns = board.get_all(PieceType::Pawn, is_first_player_turn);
     for pawn in pawns {
         let move_once_row = if is_first_player_turn {pawn.2 + 1} else {pawn.2 - 1};
         let move_twice_row = if is_first_player_turn {pawn.2 + 2} else {pawn.2 - 2};

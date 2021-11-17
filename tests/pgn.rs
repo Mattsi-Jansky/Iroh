@@ -1,11 +1,11 @@
 use test_case::test_case;
 
 use chess::*;
-use chess::game::ChessGame;
+use chess::game::Game;
 
 #[test]
 fn new_game_has_blank_pgn() {
-    let game = ChessGame::new();
+    let game = Game::new();
 
     let result = game.get_pgn();
 
@@ -21,7 +21,7 @@ fn new_game_has_blank_pgn() {
 #[test_case("g3")]
 #[test_case("h3")]
 fn first_pawn_move_recorded_in_pgn(san: &str) {
-    let mut game = ChessGame::new();
+    let mut game = Game::new();
 
     game = game.make_move(san).unwrap();
     let result = game.get_pgn();
@@ -46,7 +46,7 @@ fn first_pawn_move_recorded_in_pgn(san: &str) {
 #[test_case("g6")]
 #[test_case("h6")]
 fn second_pawn_move_recorded_in_pgn(san: &str) {
-    let mut game = ChessGame::new();
+    let mut game = Game::new();
 
     game = game.make_move("e4").unwrap();
     game = game.make_move(san).unwrap();
@@ -57,7 +57,7 @@ fn second_pawn_move_recorded_in_pgn(san: &str) {
 
 #[test]
 fn second_turn_recorded_in_pgn() {
-    let mut game = ChessGame::new();
+    let mut game = Game::new();
 
     game = game.make_move("e4").unwrap();
     game = game.make_move("e5").unwrap();
@@ -70,7 +70,7 @@ fn second_turn_recorded_in_pgn() {
 
 #[test]
 fn partially_complete_second_turn_recorded_in_pgn() {
-    let mut game = ChessGame::new();
+    let mut game = Game::new();
 
     game = game.make_move("e4").unwrap();
     game = game.make_move("e5").unwrap();

@@ -1,11 +1,11 @@
 use std::ops::{Index, IndexMut};
 use crate::fen::parse_fen;
-use crate::piece::{ChessPiece, ChessPieceType};
+use crate::piece::{Piece, PieceType};
 
 const STARTING_POSITION_FEN: &str = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
 pub struct Board {
-    state: [Option<ChessPiece>; 8*8]
+    state: [Option<Piece>; 8*8]
 }
 
 impl Board {
@@ -38,7 +38,7 @@ impl Board {
         board
     }
 
-    pub(crate) fn get_all(&self, piece_type: ChessPieceType, is_owned_by_first_player: bool) -> Vec<(ChessPieceType,usize,usize)> {
+    pub(crate) fn get_all(&self, piece_type: PieceType, is_owned_by_first_player: bool) -> Vec<(PieceType, usize, usize)> {
         let mut result = vec![];
 
         for (index, piece_or_none) in self.state.iter().enumerate() {
@@ -55,14 +55,14 @@ impl Board {
 }
 
 impl Index<(usize,usize)> for Board {
-    type Output = Option<ChessPiece>;
-    fn index(&self, s: (usize,usize)) -> &Option<ChessPiece> {
+    type Output = Option<Piece>;
+    fn index(&self, s: (usize,usize)) -> &Option<Piece> {
         &self.state[s.0 + (s.1 * 8)]
     }
 }
 
 impl IndexMut<(usize,usize)> for Board {
-    fn index_mut(&mut self, s: (usize,usize)) -> &mut Option<ChessPiece> {
+    fn index_mut(&mut self, s: (usize,usize)) -> &mut Option<Piece> {
         &mut self.state[s.0 + (s.1 * 8)]
     }
 }
@@ -88,47 +88,47 @@ mod tests {
     fn insert_piece_into_board_via_index() {
         let mut board = Board::blank();
 
-        board[(0,0)] = Some(ChessPiece::new(true, ChessPieceType::King));
+        board[(0,0)] = Some(Piece::new(true, PieceType::King));
         let result = board[(0,0)];
 
         assert!(!result.is_none());
         let result = result.unwrap();
-        assert_that!(&result.piece_type, eq(ChessPieceType::King));
+        assert_that!(&result.piece_type, eq(PieceType::King));
     }
 
     #[test]
     fn index_outermost_corner_of_board() {
         let mut board = Board::blank();
 
-        board[(7,7)] = Some(ChessPiece::new(true, ChessPieceType::King));
+        board[(7,7)] = Some(Piece::new(true, PieceType::King));
         let result = board[(7,7)];
 
         assert!(!result.is_none());
         let result = result.unwrap();
-        assert_that!(&result.piece_type, eq(ChessPieceType::King));
+        assert_that!(&result.piece_type, eq(PieceType::King));
     }
 
     #[test]
     fn create_board_from_fen_layout() {
         let result = Board::from_fen(STARTING_POSITION_FEN);
 
-        assert_that!(&result[(0,0)].unwrap(), eq(ChessPiece::new(true, ChessPieceType::Rook)));
-        assert_that!(&result[(1,0)].unwrap(), eq(ChessPiece::new(true, ChessPieceType::Knight)));
-        assert_that!(&result[(2,0)].unwrap(), eq(ChessPiece::new(true, ChessPieceType::Bishop)));
-        assert_that!(&result[(3,0)].unwrap(), eq(ChessPiece::new(true, ChessPieceType::Queen)));
-        assert_that!(&result[(4,0)].unwrap(), eq(ChessPiece::new(true, ChessPieceType::King)));
-        assert_that!(&result[(5,0)].unwrap(), eq(ChessPiece::new(true, ChessPieceType::Bishop)));
-        assert_that!(&result[(6,0)].unwrap(), eq(ChessPiece::new(true, ChessPieceType::Knight)));
-        assert_that!(&result[(7,0)].unwrap(), eq(ChessPiece::new(true, ChessPieceType::Rook)));
+        assert_that!(&result[(0,0)].unwrap(), eq(Piece::new(true, PieceType::Rook)));
+        assert_that!(&result[(1,0)].unwrap(), eq(Piece::new(true, PieceType::Knight)));
+        assert_that!(&result[(2,0)].unwrap(), eq(Piece::new(true, PieceType::Bishop)));
+        assert_that!(&result[(3,0)].unwrap(), eq(Piece::new(true, PieceType::Queen)));
+        assert_that!(&result[(4,0)].unwrap(), eq(Piece::new(true, PieceType::King)));
+        assert_that!(&result[(5,0)].unwrap(), eq(Piece::new(true, PieceType::Bishop)));
+        assert_that!(&result[(6,0)].unwrap(), eq(Piece::new(true, PieceType::Knight)));
+        assert_that!(&result[(7,0)].unwrap(), eq(Piece::new(true, PieceType::Rook)));
 
-        assert_that!(&result[(0,1)].unwrap(), eq(ChessPiece::new(true, ChessPieceType::Pawn)));
-        assert_that!(&result[(1,1)].unwrap(), eq(ChessPiece::new(true, ChessPieceType::Pawn)));
-        assert_that!(&result[(2,1)].unwrap(), eq(ChessPiece::new(true, ChessPieceType::Pawn)));
-        assert_that!(&result[(3,1)].unwrap(), eq(ChessPiece::new(true, ChessPieceType::Pawn)));
-        assert_that!(&result[(4,1)].unwrap(), eq(ChessPiece::new(true, ChessPieceType::Pawn)));
-        assert_that!(&result[(5,1)].unwrap(), eq(ChessPiece::new(true, ChessPieceType::Pawn)));
-        assert_that!(&result[(6,1)].unwrap(), eq(ChessPiece::new(true, ChessPieceType::Pawn)));
-        assert_that!(&result[(7,1)].unwrap(), eq(ChessPiece::new(true, ChessPieceType::Pawn)));
+        assert_that!(&result[(0,1)].unwrap(), eq(Piece::new(true, PieceType::Pawn)));
+        assert_that!(&result[(1,1)].unwrap(), eq(Piece::new(true, PieceType::Pawn)));
+        assert_that!(&result[(2,1)].unwrap(), eq(Piece::new(true, PieceType::Pawn)));
+        assert_that!(&result[(3,1)].unwrap(), eq(Piece::new(true, PieceType::Pawn)));
+        assert_that!(&result[(4,1)].unwrap(), eq(Piece::new(true, PieceType::Pawn)));
+        assert_that!(&result[(5,1)].unwrap(), eq(Piece::new(true, PieceType::Pawn)));
+        assert_that!(&result[(6,1)].unwrap(), eq(Piece::new(true, PieceType::Pawn)));
+        assert_that!(&result[(7,1)].unwrap(), eq(Piece::new(true, PieceType::Pawn)));
 
         assert!(result[(0,2)].is_none());
         assert!(result[(1,2)].is_none());
@@ -166,40 +166,40 @@ mod tests {
         assert!(result[(6,5)].is_none());
         assert!(result[(7,5)].is_none());
 
-        assert_that!(&result[(0,6)].unwrap(), eq(ChessPiece::new(false, ChessPieceType::Pawn)));
-        assert_that!(&result[(1,6)].unwrap(), eq(ChessPiece::new(false, ChessPieceType::Pawn)));
-        assert_that!(&result[(2,6)].unwrap(), eq(ChessPiece::new(false, ChessPieceType::Pawn)));
-        assert_that!(&result[(3,6)].unwrap(), eq(ChessPiece::new(false, ChessPieceType::Pawn)));
-        assert_that!(&result[(4,6)].unwrap(), eq(ChessPiece::new(false, ChessPieceType::Pawn)));
-        assert_that!(&result[(5,6)].unwrap(), eq(ChessPiece::new(false, ChessPieceType::Pawn)));
-        assert_that!(&result[(6,6)].unwrap(), eq(ChessPiece::new(false, ChessPieceType::Pawn)));
-        assert_that!(&result[(7,6)].unwrap(), eq(ChessPiece::new(false, ChessPieceType::Pawn)));
+        assert_that!(&result[(0,6)].unwrap(), eq(Piece::new(false, PieceType::Pawn)));
+        assert_that!(&result[(1,6)].unwrap(), eq(Piece::new(false, PieceType::Pawn)));
+        assert_that!(&result[(2,6)].unwrap(), eq(Piece::new(false, PieceType::Pawn)));
+        assert_that!(&result[(3,6)].unwrap(), eq(Piece::new(false, PieceType::Pawn)));
+        assert_that!(&result[(4,6)].unwrap(), eq(Piece::new(false, PieceType::Pawn)));
+        assert_that!(&result[(5,6)].unwrap(), eq(Piece::new(false, PieceType::Pawn)));
+        assert_that!(&result[(6,6)].unwrap(), eq(Piece::new(false, PieceType::Pawn)));
+        assert_that!(&result[(7,6)].unwrap(), eq(Piece::new(false, PieceType::Pawn)));
 
-        assert_that!(&result[(0,7)].unwrap(), eq(ChessPiece::new(false, ChessPieceType::Rook)));
-        assert_that!(&result[(1,7)].unwrap(), eq(ChessPiece::new(false, ChessPieceType::Knight)));
-        assert_that!(&result[(2,7)].unwrap(), eq(ChessPiece::new(false, ChessPieceType::Bishop)));
-        assert_that!(&result[(3,7)].unwrap(), eq(ChessPiece::new(false, ChessPieceType::Queen)));
-        assert_that!(&result[(4,7)].unwrap(), eq(ChessPiece::new(false, ChessPieceType::King)));
-        assert_that!(&result[(5,7)].unwrap(), eq(ChessPiece::new(false, ChessPieceType::Bishop)));
-        assert_that!(&result[(6,7)].unwrap(), eq(ChessPiece::new(false, ChessPieceType::Knight)));
-        assert_that!(&result[(7,7)].unwrap(), eq(ChessPiece::new(false, ChessPieceType::Rook)));
+        assert_that!(&result[(0,7)].unwrap(), eq(Piece::new(false, PieceType::Rook)));
+        assert_that!(&result[(1,7)].unwrap(), eq(Piece::new(false, PieceType::Knight)));
+        assert_that!(&result[(2,7)].unwrap(), eq(Piece::new(false, PieceType::Bishop)));
+        assert_that!(&result[(3,7)].unwrap(), eq(Piece::new(false, PieceType::Queen)));
+        assert_that!(&result[(4,7)].unwrap(), eq(Piece::new(false, PieceType::King)));
+        assert_that!(&result[(5,7)].unwrap(), eq(Piece::new(false, PieceType::Bishop)));
+        assert_that!(&result[(6,7)].unwrap(), eq(Piece::new(false, PieceType::Knight)));
+        assert_that!(&result[(7,7)].unwrap(), eq(Piece::new(false, PieceType::Rook)));
     }
 
     #[test]
     fn get_all_pieces_of_type_and_ownership() {
         let board = Board::new();
 
-        let result = board.get_all(ChessPieceType::Pawn, true);
+        let result = board.get_all(PieceType::Pawn, true);
 
         assert_that!(&result, contains_in_any_order(vec![
-            (ChessPieceType::Pawn,0,1),
-            (ChessPieceType::Pawn,1,1),
-            (ChessPieceType::Pawn,2,1),
-            (ChessPieceType::Pawn,3,1),
-            (ChessPieceType::Pawn,4,1),
-            (ChessPieceType::Pawn,5,1),
-            (ChessPieceType::Pawn,6,1),
-            (ChessPieceType::Pawn,7,1)
+            (PieceType::Pawn,0,1),
+            (PieceType::Pawn,1,1),
+            (PieceType::Pawn,2,1),
+            (PieceType::Pawn,3,1),
+            (PieceType::Pawn,4,1),
+            (PieceType::Pawn,5,1),
+            (PieceType::Pawn,6,1),
+            (PieceType::Pawn,7,1)
         ]));
     }
 }

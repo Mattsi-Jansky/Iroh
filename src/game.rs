@@ -1,20 +1,19 @@
 use crate::pgn::{generate_pgn, parse_san};
 use crate::board::Board;
-use crate::error::ChessGameError;
+use crate::error::IllegalMoveError;
 use crate::move_generation::generate_moves;
 use crate::moves::{Move};
-use crate::piece::ChessPieceType;
 use crate::resolve_move::resolve_move;
 
-pub struct ChessGame {
+pub struct Game {
     sans: Vec<String>,
     board: Board,
     is_first_player_turn: bool,
 }
 
-impl ChessGame {
-    pub fn new() -> ChessGame {
-        ChessGame { sans: vec![], board: Board::new(), is_first_player_turn: true }
+impl Game {
+    pub fn new() -> Game {
+        Game { sans: vec![], board: Board::new(), is_first_player_turn: true }
     }
 
     pub fn get_available_moves(&self) -> Vec<Move> {
@@ -30,7 +29,7 @@ impl ChessGame {
         }
     }
 
-    pub fn make_move(self, san: &str) -> Result<ChessGame,ChessGameError> {
+    pub fn make_move(self, san: &str) -> Result<Game, IllegalMoveError> {
         let mut new = self.sans.clone();
         new.push(String::from(san));
 
@@ -39,16 +38,16 @@ impl ChessGame {
 
         if !possible_moves.contains(&requested_move) {
             println!("Cannot get move {:?} from {:?}", requested_move, possible_moves);
-            Err(ChessGameError {})
+            Err(IllegalMoveError {})
         }
         else {
             let board = resolve_move(requested_move, self.board);
-            Ok(ChessGame { sans: new, board, is_first_player_turn: !self.is_first_player_turn })
+            Ok(Game { sans: new, board, is_first_player_turn: !self.is_first_player_turn })
         }
     }
 }
 
-impl Default for ChessGame {
+impl Default for Game {
     fn default() -> Self {
         Self::new()
     }

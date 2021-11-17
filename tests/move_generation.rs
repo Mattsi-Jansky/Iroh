@@ -5,7 +5,7 @@ use test_case::test_case;
 
 use chess::*;
 use chess::moves::Move;
-use chess::game::ChessGame;
+use chess::game::Game;
 
 #[test_case(0)]
 #[test_case(1)]
@@ -16,7 +16,7 @@ use chess::game::ChessGame;
 #[test_case(6)]
 #[test_case(7)]
 fn generate_first_turn_pawn_moves(rank: usize) {
-    let game = ChessGame::new();
+    let game = Game::new();
 
     let available_moves = game.get_available_moves();
 

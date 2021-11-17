@@ -1,5 +1,5 @@
 #[derive(Debug, Copy, Clone, PartialEq)]
-pub enum ChessPieceType {
+pub enum PieceType {
     Pawn,
     Bishop,
     Knight,
@@ -9,13 +9,13 @@ pub enum ChessPieceType {
 }
 
 #[derive(Debug, Copy, Clone, PartialEq)]
-pub struct ChessPiece {
+pub struct Piece {
     pub is_owned_by_first_player: bool,
-    pub piece_type: ChessPieceType,
+    pub piece_type: PieceType,
 }
 
-impl ChessPiece {
-    pub fn new(is_owned_by_first_player: bool, piece_type: ChessPieceType) -> ChessPiece {
-        ChessPiece {is_owned_by_first_player, piece_type}
+impl Piece {
+    pub fn new(is_owned_by_first_player: bool, piece_type: PieceType) -> Piece {
+        Piece {is_owned_by_first_player, piece_type}
     }
 }
