@@ -4,7 +4,7 @@ use galvanic_assert::matchers::collection::*;
 use test_case::test_case;
 
 use chess::*;
-use chess::moves::Move;
+use chess::moves::moves::Move;
 use chess::game::Game;
 
 #[test_case(0)]

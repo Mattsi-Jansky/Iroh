@@ -67,6 +67,12 @@ impl IndexMut<(usize,usize)> for Board {
     }
 }
 
+impl Default for Board {
+    fn default() -> Self {
+        Board::new()
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use galvanic_assert::assert_that;

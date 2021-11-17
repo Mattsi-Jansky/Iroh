@@ -2,9 +2,9 @@ use crate::serialisers::pgn::generate_pgn;
 use crate::serialisers::san::parse_san;
 use crate::board::Board;
 use crate::error::IllegalMoveError;
-use crate::move_generation::generate_moves;
+use crate::moves::move_generation::generate_moves;
 use crate::moves::{Move};
-use crate::resolve_move::resolve_move;
+use crate::moves::resolve_move::resolve_move;
 
 pub struct Game {
     sans: Vec<String>,

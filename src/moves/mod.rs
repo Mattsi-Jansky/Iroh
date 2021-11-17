@@ -1,3 +1,6 @@
+pub mod move_generation;
+pub mod resolve_move;
+
 #[derive(PartialEq)]
 #[derive(Debug)]
 pub enum Move {
