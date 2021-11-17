@@ -1,6 +1,7 @@
 use crate::pgn::{generate_pgn, parse_san};
 use crate::board::Board;
 use crate::error::ChessGameError;
+use crate::move_generation::generate_moves;
 use crate::moves::{Move, transform_chess_board};
 use crate::piece::ChessPieceType;
 
@@ -16,17 +17,7 @@ impl ChessGame {
     }
 
     pub fn get_available_moves(&self) -> Vec<Move> {
-        let mut available_moves = vec![];
-
-        let pawns = self.board.get_all(ChessPieceType::Pawn, self.is_first_player_turn);
-        for pawn in pawns {
-            let move_once_row = if self.is_first_player_turn {pawn.2 + 1} else {pawn.2 - 1};
-            let move_twice_row = if self.is_first_player_turn {pawn.2 + 2} else {pawn.2 - 2};
-            available_moves.push(Move::PawnMove { 0: pawn.1, 1: (pawn.1, move_once_row) });
-            available_moves.push(Move::PawnMove { 0: pawn.1, 1: (pawn.1, move_twice_row) });
-        }
-
-        available_moves
+        generate_moves(self.is_first_player_turn, &self.board)
     }
 
     pub fn get_pgn(&self) -> String {

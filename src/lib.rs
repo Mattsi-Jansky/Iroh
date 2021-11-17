@@ -2,6 +2,7 @@ mod pgn;
 mod piece;
 mod board;
 mod fen;
-mod moves;
+pub mod moves;
 mod error;
 pub mod game;
+mod move_generation;

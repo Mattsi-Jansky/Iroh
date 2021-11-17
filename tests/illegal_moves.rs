@@ -1,6 +1,7 @@
 use test_case::test_case;
 
 use chess::*;
+use chess::game::ChessGame;
 
 #[test]
 fn cannot_make_illegal_move() {
