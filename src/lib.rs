@@ -1,4 +1,7 @@
 mod pgn;
+mod piece;
+mod board;
+mod fen;
 
 use pgn::{generate_pgn, parse_san};
 
