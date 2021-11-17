@@ -1,4 +1,4 @@
-use crate::Move;
+use crate::moves::Move;
 
 pub fn generate_pgn(sans: &[String]) -> String {
     let number_of_pairs = (sans.len() as f32 / 2.0).ceil() as u8;
