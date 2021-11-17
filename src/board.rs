@@ -2,11 +2,17 @@ use std::ops::{Index, IndexMut};
 use crate::fen::parse_fen;
 use crate::piece::{ChessPiece};
 
+const STARTING_POSITION_FEN: &str = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+
 pub struct Board {
     state: [Option<ChessPiece>; 8*8]
 }
 
 impl Board {
+    pub fn new() -> Board {
+        Board::from_fen(STARTING_POSITION_FEN)
+    }
+
     fn blank() -> Board {
         Board {
             state: [
@@ -89,7 +95,7 @@ mod tests {
 
     #[test]
     fn create_board_from_fen_layout() {
-        let result = Board::from_fen("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+        let result = Board::from_fen(STARTING_POSITION_FEN);
 
         assert_that!(&result[(0,0)].unwrap(), eq(ChessPiece::new(true, ChessPieceType::Rook)));
         assert_that!(&result[(1,0)].unwrap(), eq(ChessPiece::new(true, ChessPieceType::Knight)));
