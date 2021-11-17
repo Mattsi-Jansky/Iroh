@@ -32,7 +32,7 @@ impl ChessGame {
 
     pub fn get_pgn(&self) -> String {
         if self.sans.is_empty() {
-            return String::new()
+            String::new()
         }
         else {
             generate_pgn(&self.sans)

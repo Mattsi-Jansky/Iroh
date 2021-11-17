@@ -25,9 +25,10 @@ pub fn parse_fen(fen: &str, callback: &mut dyn FnMut((usize, usize), Option<Ches
             _ => None
         };
         let is_owned_by_first_player = !char.is_uppercase();
-        callback((column, row),  if piece_type.is_none() { None } else {
-            Some(ChessPiece::new(is_owned_by_first_player,piece_type.unwrap()))
-        });
+        callback((column, row),
+                 piece_type.map(
+                     |piece_type| ChessPiece::new(is_owned_by_first_player,piece_type)
+                 ));
 
         column += 1;
     }
