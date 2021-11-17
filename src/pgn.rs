@@ -1,14 +1,14 @@
 use crate::Move;
 
-pub fn generate_pgn(sans: &Vec<String>) -> String {
-    let number_of_pairs = (sans.len() as f32 / 2 as f32).ceil() as u8;
+pub fn generate_pgn(sans: &[String]) -> String {
+    let number_of_pairs = (sans.len() as f32 / 2.0).ceil() as u8;
     let mut result = String::new();
     let mut i = 1;
     for pair in sans.chunks(2) {
         result = generate_pgn_chunk(number_of_pairs, result, i, pair);
-        i = i + 1;
+        i += 1;
     }
-    return result
+    result
 }
 
 fn generate_pgn_chunk(number_of_pairs: u8, mut result: String, index: u8, pair: &[String]) -> String{
@@ -27,8 +27,9 @@ fn generate_pgn_chunk(number_of_pairs: u8, mut result: String, index: u8, pair: 
 }
 
 pub fn parse_san(san: &str) -> Move {
-    let column = (san.chars().nth(0).unwrap() as u32) as u8 - 97;
-    let row = san.chars().nth(1).unwrap().to_digit(10).unwrap() as u8;
+    let mut chars = san.chars();
+    let column = (chars.next().unwrap() as u32) as u8 - 97;
+    let row = chars.next().unwrap().to_digit(10).unwrap() as u8;
 
     Move::PawnMove { 0: column, 1: (column,row) }
 }
