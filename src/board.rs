@@ -1,6 +1,6 @@
 use std::ops::{Index, IndexMut};
 use crate::fen::parse_fen;
-use crate::piece::{ChessPiece};
+use crate::piece::{ChessPiece, ChessPieceType};
 
 const STARTING_POSITION_FEN: &str = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
@@ -37,6 +37,21 @@ impl Board {
 
         board
     }
+
+    pub(crate) fn get_all(&self, piece_type: ChessPieceType, is_owned_by_first_player: bool) -> Vec<(ChessPieceType,usize,usize)> {
+        let mut result = vec![];
+
+        for (index, piece_or_none) in self.state.iter().enumerate() {
+            if let Some(piece) = piece_or_none {
+                if piece.is_owned_by_first_player == is_owned_by_first_player
+                    && piece.piece_type == piece_type {
+                    result.push((piece.piece_type, index % 8, index / 8));
+                }
+            }
+        }
+
+        result
+    }
 }
 
 impl Index<(usize,usize)> for Board {
@@ -56,8 +71,8 @@ impl IndexMut<(usize,usize)> for Board {
 mod tests {
     use galvanic_assert::assert_that;
     use galvanic_assert::matchers::*;
+    use galvanic_assert::matchers::collection::*;
 
-    use crate::piece::ChessPieceType;
     use super::*;
 
     #[test]
@@ -168,5 +183,23 @@ mod tests {
         assert_that!(&result[(5,7)].unwrap(), eq(ChessPiece::new(false, ChessPieceType::Bishop)));
         assert_that!(&result[(6,7)].unwrap(), eq(ChessPiece::new(false, ChessPieceType::Knight)));
         assert_that!(&result[(7,7)].unwrap(), eq(ChessPiece::new(false, ChessPieceType::Rook)));
+    }
+
+    #[test]
+    fn get_all_pieces_of_type_and_ownership() {
+        let board = Board::new();
+
+        let result = board.get_all(ChessPieceType::Pawn, true);
+
+        assert_that!(&result, contains_in_any_order(vec![
+            (ChessPieceType::Pawn,0,1),
+            (ChessPieceType::Pawn,1,1),
+            (ChessPieceType::Pawn,2,1),
+            (ChessPieceType::Pawn,3,1),
+            (ChessPieceType::Pawn,4,1),
+            (ChessPieceType::Pawn,5,1),
+            (ChessPieceType::Pawn,6,1),
+            (ChessPieceType::Pawn,7,1)
+        ]));
     }
 }
