@@ -68,7 +68,7 @@ fn second_turn() {
 }
 
 #[test]
-fn partially_complete_second() {
+fn partially_complete_second_turn() {
     let mut game = Game::new();
 
     game = game.make_move("e4").unwrap();
@@ -77,4 +77,14 @@ fn partially_complete_second() {
     let result = game.get_pgn();
 
     assert_eq!("1. e4 e5 2. d4 *", result);
+}
+
+#[test]
+fn knight_move() {
+    let mut game = Game::new();
+
+    game = game.make_move("Nc3").unwrap();
+    let result = game.get_pgn();
+
+    assert_eq!("1. Nc3 *", result);
 }
