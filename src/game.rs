@@ -17,6 +17,10 @@ impl Game {
         Game { sans: vec![], board: Board::new(), is_first_player_turn: true }
     }
 
+    pub fn from_fen(fen: &str) -> Game {
+        Game { sans: vec![], board: Board::from_fen(fen), is_first_player_turn: true }
+    }
+
     pub fn get_available_moves(&self) -> Vec<Move> {
         generate_moves(self.is_first_player_turn, &self.board)
     }

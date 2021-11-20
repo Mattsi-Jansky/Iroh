@@ -28,7 +28,7 @@ impl Board {
         }
     }
 
-    fn from_fen(fen: &str) -> Board {
+    pub fn from_fen(fen: &str) -> Board {
         let mut board = Board::blank();
 
         parse_fen(fen, &mut |(column,row),piece| {
