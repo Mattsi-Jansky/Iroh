@@ -1,6 +1,5 @@
 use test_case::test_case;
 
-use chess::*;
 use chess::game::Game;
 
 #[test]

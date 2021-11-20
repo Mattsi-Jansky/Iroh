@@ -43,7 +43,7 @@ mod tests {
         let mut result: Vec<(usize,usize)> = vec![];
         let fen_that_forces_odd_numbered_rank_piece = "8/8/8/4n3/8/8/8/8 w KQkq - 0 1";
 
-        parse_fen(fen_that_forces_odd_numbered_rank_piece, &mut |(column,row),piece| {
+        parse_fen(fen_that_forces_odd_numbered_rank_piece, &mut |(column,row),_piece| {
             result.push((column,row));
         });
 
@@ -56,7 +56,7 @@ mod tests {
         let mut result: Vec<Piece> = vec![];
         let fen_with_uppercase_king = "4K3/8/8/8/8/8/8/8 w KQkq - 0 1";
 
-        parse_fen(fen_with_uppercase_king, &mut |(column,row),piece| {
+        parse_fen(fen_with_uppercase_king, &mut |(_,_),piece| {
             result.push(piece.unwrap());
         });
 
@@ -69,7 +69,7 @@ mod tests {
         let mut result: Vec<Piece> = vec![];
         let fen_with_uppercase_king = "4K3/8/8/8/8/8/8/8 w KQkq - 0 1";
 
-        parse_fen(fen_with_uppercase_king, &mut |(column,row),piece| {
+        parse_fen(fen_with_uppercase_king, &mut |(_,_),piece| {
             result.push(piece.unwrap());
         });
 
