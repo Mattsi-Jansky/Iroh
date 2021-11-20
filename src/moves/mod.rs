@@ -1,4 +1,3 @@
-use crate::board::Board;
 use crate::piece::PieceType;
 use crate::serialisers::san::{generate_pawn_san, generate_san};
 

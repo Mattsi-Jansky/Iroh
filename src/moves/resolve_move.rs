@@ -12,7 +12,7 @@ pub fn resolve_move(requested_move: Move, mut board: Board) -> Board {
                 board[to] = piece;
             } else { todo!("Pawn attack moves")}
         },
-        Move::RegularMove((from_file, from_rank), (to_file, to_rank), piece_type) => {
+        Move::RegularMove((from_file, from_rank), (to_file, to_rank), _) => {
             let from = (from_file,from_rank);
             let to = (to_file,to_rank);
             let piece = board[from];

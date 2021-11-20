@@ -1,6 +1,5 @@
 use std::collections::HashMap;
 use crate::serialisers::pgn::generate_pgn;
-use crate::serialisers::san::parse_san;
 use crate::board::Board;
 use crate::error::IllegalMoveError;
 use crate::moves::move_generation::generate_moves;
@@ -42,16 +41,12 @@ impl Game {
         let mut possible_moves: HashMap<String, Move> = self.get_available_moves().into_iter()
             .map(|m| (m.generate_san(), m))
             .collect();
-        println!("SAN: {}", san);
-        println!("POSSIBLE MOVES!! ==> {:?}", possible_moves);
 
-        if !possible_moves.contains_key(&san.to_string()) {
-            Err(IllegalMoveError {})
-        }
-        else {
-            let requested_move = possible_moves.remove(&san.to_string()).unwrap();
+        if let Some(requested_move) = possible_moves.remove(&san.to_string()) {
             let board = resolve_move(requested_move, self.board);
             Ok(Game { sans: new, board, is_first_player_turn: !self.is_first_player_turn })
+        } else {
+            Err(IllegalMoveError {})
         }
     }
 }

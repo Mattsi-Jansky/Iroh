@@ -1,24 +1,14 @@
-use crate::moves::Move;
 use crate::piece::PieceType;
 
-pub fn parse_san(san: &str) -> Move {
-    let mut chars = san.chars();
-    let column = (chars.next().unwrap() as u32) as usize - 97;
-    let row = chars.next().unwrap().to_digit(10).unwrap() as usize - 1;
-
-    Move::PawnMove { 0: column, 1: (column,row) }
-}
-
 pub fn generate_san(piece_type: PieceType, file: usize, rank: usize) -> String {
-    String::from(format!("{}{}{}",
-                         to_piece_identifier(piece_type),
-                         to_alpha_file(file),
-                         rank+1)
-    )
+    format!("{}{}{}",
+        to_piece_identifier(piece_type),
+        to_alpha_file(file),
+        rank+1)
 }
 
-pub fn generate_pawn_san(starting_rank: usize, file: usize, rank: usize) -> String {
-    String::from(format!("{}{}", to_alpha_file(file), rank+1))
+pub fn generate_pawn_san(_starting_rank: usize, file: usize, rank: usize) -> String {
+    format!("{}{}", to_alpha_file(file), rank+1)
 }
 
 fn to_alpha_file(file: usize) -> char {
@@ -39,13 +29,6 @@ fn to_piece_identifier(piece_type: PieceType) -> char {
 #[cfg(test)]
 mod tests {
     use super::*;
-
-    #[test]
-    fn parse_pawn_move() {
-        let result = parse_san("e4");
-
-        assert_eq!(Move::PawnMove(4, (4,3)), result);
-    }
 
     #[test]
     fn should_generate_san() {
