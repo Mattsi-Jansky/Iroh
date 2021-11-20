@@ -39,13 +39,12 @@ impl Board {
         board
     }
 
-    pub(crate) fn get_all(&self, piece_type: PieceType, is_owned_by_first_player: bool) -> Vec<(PieceType, usize, usize)> {
+    pub(crate) fn get_all_pieces_belonging_to_player(&self, is_owned_by_first_player: bool) -> Vec<(PieceType, usize, usize)> {
         let mut result = vec![];
 
         for (index, piece_or_none) in self.state.iter().enumerate() {
             if let Some(piece) = piece_or_none {
-                if piece.is_owned_by_first_player == is_owned_by_first_player
-                    && piece.piece_type == piece_type {
+                if piece.is_owned_by_first_player == is_owned_by_first_player {
                     result.push((piece.piece_type, index % 8, index / 8));
                 }
             }
@@ -196,7 +195,7 @@ mod tests {
     fn get_all_pieces_of_type_and_ownership() {
         let board = Board::new();
 
-        let result = board.get_all(PieceType::Pawn, true);
+        let result = board.get_all_pieces_belonging_to_player(true);
 
         assert_that!(&result, contains_in_any_order(vec![
             (PieceType::Pawn,0,1),
@@ -206,7 +205,15 @@ mod tests {
             (PieceType::Pawn,4,1),
             (PieceType::Pawn,5,1),
             (PieceType::Pawn,6,1),
-            (PieceType::Pawn,7,1)
+            (PieceType::Pawn,7,1),
+            (PieceType::Rook,0,0),
+            (PieceType::Rook,7,0),
+            (PieceType::Knight,1,0),
+            (PieceType::Knight,6,0),
+            (PieceType::Bishop,5,0),
+            (PieceType::Bishop,2,0),
+            (PieceType::Queen,3,0),
+            (PieceType::King,4,0),
         ]));
     }
 }
