@@ -34,7 +34,7 @@ impl Game {
         }
     }
 
-    pub fn make_move(self, san: &str) -> Result<Game, IllegalMoveError> {
+    pub fn make_move(&self, san: &str) -> Result<Game, IllegalMoveError> {
         let mut new = self.sans.clone();
         new.push(String::from(san));
 

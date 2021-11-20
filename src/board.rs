@@ -4,6 +4,7 @@ use crate::piece::{Piece, PieceType};
 
 const STARTING_POSITION_FEN: &str = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
+#[derive(Debug, Copy, Clone, PartialEq)]
 pub struct Board {
     state: [Option<Piece>; 8*8]
 }
