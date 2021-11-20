@@ -16,23 +16,13 @@ pub fn generate_moves(is_first_player_turn: bool, board: &Board) -> Vec<Move> {
     let knights = board.get_all(PieceType::Knight, is_first_player_turn);
 
     for knight in knights {
-        regular_move_if_legal((knight.1,knight.2),(1,2))
-            .map(|m| available_moves.push(m));
-        regular_move_if_legal((knight.1,knight.2),(2,1))
-            .map(|m| available_moves.push(m));
-        regular_move_if_legal((knight.1,knight.2),(-1,-2))
-            .map(|m| available_moves.push(m));
-        regular_move_if_legal((knight.1,knight.2),(-2,-1))
-            .map(|m| available_moves.push(m));
-
-        regular_move_if_legal((knight.1,knight.2),(1,-2))
-            .map(|m| available_moves.push(m));
-        regular_move_if_legal((knight.1,knight.2),(2,-1))
-            .map(|m| available_moves.push(m));
-        regular_move_if_legal((knight.1,knight.2),(-1,2))
-            .map(|m| available_moves.push(m));
-        regular_move_if_legal((knight.1,knight.2),(-2,1))
-            .map(|m| available_moves.push(m));
+        [(1,2),(2,1),(-1,-2),(-2,-1),(1,-2),(2,-1),(-1,2),(-2,1)].map(|transform| {
+            if let Some(m) = regular_move_if_legal(
+                (knight.1,knight.2),
+                transform) {
+                available_moves.push(m)
+            }
+        });
     }
 
     available_moves
