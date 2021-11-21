@@ -22,48 +22,36 @@ pub fn generate_moves(is_first_player_turn: bool, board: &Board) -> Vec<Move> {
 }
 
 fn generate_bishop_moves(available_moves: &mut Vec<Move>, bishop: (PieceType, File, Rank)) {
-    [(1,1),(1,-1),(-1,1),(-1,-1)].map(|transform| {
-        let (mut file, mut rank) = (Some(bishop.1), Some(bishop.2));
-        loop {
-            file = file.unwrap().transform(transform.0);
-            rank = rank.unwrap().transform(transform.1);
-            if let(Some(file), Some(rank)) = (file,rank) {
-                available_moves.push(Move::RegularMove {
-                    0: (bishop.1, bishop.2),
-                    1: (file,rank),
-                    2: bishop.0
-                })
-            }
-            else {
-                break;
-            }
-        }
-    });
+    generate_dynamic_moves(available_moves, bishop, &[(1,1),(1,-1),(-1,1),(-1,-1)]);
 }
 
 fn generate_rook_moves(available_moves: &mut Vec<Move>, rook: (PieceType, File, Rank)) {
-    [(1,0),(0,1),(-1,0),(0,-1)].map(|transform| {
-        let (mut file, mut rank) = (Some(rook.1), Some(rook.2));
+    generate_dynamic_moves(available_moves, rook,&[(1,0),(0,1),(-1,0),(0,-1)]);
+}
+
+fn generate_dynamic_moves(available_moves: &mut Vec<Move>, piece: (PieceType, File, Rank), transformations: &[(isize, isize)]) {
+    for transform in transformations {
+        let (mut file, mut rank) = (Some(piece.1), Some(piece.2));
         loop {
             file = file.unwrap().transform(transform.0);
             rank = rank.unwrap().transform(transform.1);
             if let(Some(file), Some(rank)) = (file,rank) {
                 available_moves.push(Move::RegularMove {
-                    0: (rook.1, rook.2),
+                    0: (piece.1, piece.2),
                     1: (file,rank),
-                    2: rook.0
+                    2: piece.0
                 })
             }
             else {
                 break;
             }
         }
-    });
+    };
 }
 
 fn generate_knight_moves(available_moves: &mut Vec<Move>, knight: (PieceType, File, Rank)) {
     [(1, 2), (2, 1), (-1, -2), (-2, -1), (1, -2), (2, -1), (-1, 2), (-2, 1)].map(|transform| {
-        if let Some(m) = regular_move_if_legal(
+        if let Some(m) = generate_static_move_if_legal(
             knight,
             transform) {
             available_moves.push(m)
@@ -73,7 +61,7 @@ fn generate_knight_moves(available_moves: &mut Vec<Move>, knight: (PieceType, Fi
 
 fn generate_king_moves(available_moves: &mut Vec<Move>, knight: (PieceType, File, Rank)) {
     [(-1,-1),(-1,0),(-1,1),(0,1),(1,1),(1,0),(1,-1),(0,-1)].map(|transform| {
-        if let Some(m) = regular_move_if_legal(
+        if let Some(m) = generate_static_move_if_legal(
             knight,
             transform) {
             available_moves.push(m)
@@ -88,7 +76,7 @@ fn generate_pawn_moves(is_first_player_turn: bool, available_moves: &mut Vec<Mov
     available_moves.push(Move::PawnMove { 0: pawn.1, 1: (pawn.1, move_twice_rank) });
 }
 
-fn regular_move_if_legal(piece: (PieceType, File, Rank), transformation: (isize, isize)) -> Option<Move> {
+fn generate_static_move_if_legal(piece: (PieceType, File, Rank), transformation: (isize, isize)) -> Option<Move> {
     let target_file = piece.1.transform(transformation.0);
     let target_rank = piece.2.transform(transformation.1);
 
