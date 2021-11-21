@@ -17,7 +17,6 @@ impl Move {
     {
         match *self {
             Move::RegularMove((_,_),(file,rank), piece_type) => {
-                // String::from(format!("{}{}{}",))
                 generate_san(piece_type,file,rank)
             },
             Move::PawnMove(starting_file,(file,rank)) => {

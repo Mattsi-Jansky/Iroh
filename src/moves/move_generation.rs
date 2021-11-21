@@ -26,15 +26,15 @@ fn generate_rook_moves(available_moves: &mut Vec<Move>, rook: (PieceType, File, 
         loop {
             file = file.unwrap().transform(transform.0);
             rank = rank.unwrap().transform(transform.1);
-            if file.is_none() || rank.is_none() {
-                break;
-            }
-            else {
+            if let(Some(file), Some(rank)) = (file,rank) {
                 available_moves.push(Move::RegularMove {
                     0: (rook.1, rook.2),
-                    1: (file.unwrap(),rank.unwrap()),
+                    1: (file,rank),
                     2: rook.0
                 })
+            }
+            else {
+                break;
             }
         }
     });

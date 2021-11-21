@@ -13,8 +13,7 @@ impl File {
 
     pub fn transform(&self, rhs: isize) -> Option<File> {
         let result = (self.inner as isize) + rhs;
-        if result < 0 { None }
-        else if result > 7 { None }
+        if !(0..=7).contains(&result) { None }
         else { Some(File { inner: result as usize }) }
     }
 }
@@ -31,8 +30,7 @@ impl Rank {
 
     pub fn transform(&self, rhs: isize) -> Option<Rank> {
         let result = (self.inner as isize) + rhs;
-        if result < 0 { None }
-        else if result > 7 { None }
+        if !(0..=7).contains(&result) { None }
         else { Some(Rank { inner: result as usize }) }
     }
 }
