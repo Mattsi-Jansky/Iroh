@@ -10,6 +10,12 @@ impl File {
     pub fn new(inner: usize) -> File {
         File{inner}
     }
+
+    pub fn transform(&self, rhs: isize) -> Option<File> {
+        let result = (self.inner as isize) + rhs;
+        if result < 0 { None }
+        else { Some(File { inner: result as usize }) }
+    }
 }
 
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Deref, Display)]
@@ -20,6 +26,12 @@ pub struct Rank {
 impl Rank {
     pub fn new(inner: usize) -> Rank {
         Rank{inner}
+    }
+
+    pub fn transform(&self, rhs: isize) -> Option<Rank> {
+        let result = (self.inner as isize) + rhs;
+        if result < 0 { None }
+        else { Some(Rank { inner: result as usize }) }
     }
 }
 
@@ -239,6 +251,20 @@ mod tests {
     }
 
     #[test]
+    fn file_should_transform_negative_number() {
+        let result = File::new(10).transform(-2).unwrap();
+
+        assert_eq!(8, result);
+    }
+
+    #[test]
+    fn file_transform_should_return_none_if_result_negative() {
+        let result = File::new(1).transform(-2);
+
+        assert!(result.is_none());
+    }
+
+    #[test]
     fn rank_should_equal_integer_regardless_of_order() {
         let rank = Rank::new(8);
 
@@ -287,5 +313,19 @@ mod tests {
         result += 1;
 
         assert_eq!(3, result);
+    }
+
+    #[test]
+    fn rank_should_transform_negative_number() {
+        let result = Rank::new(10).transform(-2).unwrap();
+
+        assert_eq!(8, result);
+    }
+
+    #[test]
+    fn rank_transform_should_return_none_if_result_negative() {
+        let result = Rank::new(1).transform(-2);
+
+        assert!(result.is_none());
     }
 }

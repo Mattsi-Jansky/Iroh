@@ -36,16 +36,13 @@ fn generate_pawn_moves(is_first_player_turn: bool, available_moves: &mut Vec<Mov
 }
 
 fn regular_move_if_legal(piece: (PieceType, File, Rank), transformation: (isize, isize)) -> Option<Move> {
-    let target_file = (*piece.1 as isize) + transformation.0;
-    let target_rank = (*piece.2 as isize) + transformation.1;
+    let target_file = piece.1.transform(transformation.0);
+    let target_rank = piece.2.transform(transformation.1);
 
-    if target_file > 0 && target_rank > 0 {
+    if let (Some(target_file), Some(target_rank)) = (target_file, target_rank) {
         Some(Move::RegularMove {
             0: (piece.1, piece.2),
-            1: (
-                File::new(target_file as usize),
-                Rank::new(target_rank as usize)
-            ),
+            1: (target_file,target_rank),
             2: piece.0
         })
     } else {None}
