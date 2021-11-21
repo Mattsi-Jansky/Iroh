@@ -88,3 +88,15 @@ fn knight_move() {
 
     assert_eq!("1. Nc3 *", result);
 }
+
+#[test]
+fn king_move() {
+    let mut game = Game::from_fen("8/8/8/4K3/8/8/8/k7 w KQkq - 0 1");
+
+    game = game.make_move("Kd4").unwrap();
+    game = game.make_move("Ka2").unwrap();
+    game = game.make_move("Kd5").unwrap();
+    let result = game.get_pgn();
+
+    assert_eq!("1. Kd4 Ka2 2. Kd5 *", result);
+}
