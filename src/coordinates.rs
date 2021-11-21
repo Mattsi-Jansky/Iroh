@@ -115,6 +115,12 @@ impl AddAssign<usize> for File {
     }
 }
 
+impl From<File> for char {
+    fn from(file: File) -> Self {
+        file.inner as u8 as char
+    }
+}
+
 impl Add<usize> for Rank {
     type Output = Rank;
 

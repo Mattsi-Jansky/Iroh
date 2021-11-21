@@ -13,7 +13,7 @@ pub fn generate_pawn_san(_starting_file: File, file: File, rank: Rank) -> String
 }
 
 fn to_alpha_file(file: File) -> char {
-    *(file + 97) as u8 as char
+    (file + 97).into()
 }
 
 fn to_piece_identifier(piece_type: PieceType) -> char {
