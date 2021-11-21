@@ -126,3 +126,21 @@ fn bishop_move() {
 
     assert_eq!("1. Bh2 Bh8 2. Bb8 Bb2 *", result);
 }
+
+#[test]
+fn queen_move() {
+    let mut game = Game::from_fen("8/8/8/4Q3/8/8/8/q7 w KQkq - 0 1");
+
+    game = game.make_move("Qh2").unwrap();
+    game = game.make_move("Qh8").unwrap();
+    game = game.make_move("Qb8").unwrap();
+    game = game.make_move("Qb2").unwrap();
+    game = game.make_move("Qb5").unwrap();
+    game = game.make_move("Qh2").unwrap();
+    game = game.make_move("Qb8").unwrap();
+    game = game.make_move("Qa2").unwrap();
+    let result = game.get_pgn();
+
+    assert_eq!("1. Qh2 Qh8 2. Qb8 Qb2 3. Qb5 Qh2 4. Qb8 Qa2 *", result);
+}
+
