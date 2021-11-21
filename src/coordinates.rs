@@ -87,19 +87,11 @@ impl PartialEq<usize> for File {
     fn eq(&self, other: &usize) -> bool {
         &self.inner == other
     }
-
-    fn ne(&self, other: &usize) -> bool {
-        &self.inner != other
-    }
 }
 
 impl PartialEq<File> for usize {
     fn eq(&self, other: &File) -> bool {
         self == &other.inner
-    }
-
-    fn ne(&self, other: &File) -> bool {
-        self != &other.inner
     }
 }
 
@@ -173,19 +165,11 @@ impl PartialEq<usize> for Rank {
     fn eq(&self, other: &usize) -> bool {
         &self.inner == other
     }
-
-    fn ne(&self, other: &usize) -> bool {
-        &self.inner != other
-    }
 }
 
 impl PartialEq<Rank> for usize {
     fn eq(&self, other: &Rank) -> bool {
         self == &other.inner
-    }
-
-    fn ne(&self, other: &Rank) -> bool {
-        self != &other.inner
     }
 }
 
