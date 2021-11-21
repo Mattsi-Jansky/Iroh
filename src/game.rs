@@ -46,9 +46,6 @@ impl Game {
             let board = resolve_move(requested_move, self.board);
             Ok(Game { sans: new, board, is_first_player_turn: !self.is_first_player_turn })
         } else {
-            for (k, v) in possible_moves {
-                println!("{}", k);
-            }
             Err(IllegalMoveError {})
         }
     }
