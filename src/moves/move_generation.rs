@@ -11,6 +11,7 @@ pub fn generate_moves(is_first_player_turn: bool, board: &Board) -> Vec<Move> {
         match piece.0 {
             PieceType::Pawn => generate_pawn_moves(is_first_player_turn,&mut available_moves,piece),
             PieceType::Knight => generate_knight_moves(&mut available_moves, piece),
+            PieceType::King => generate_king_moves(&mut available_moves, piece),
             _ => {}
         }
     }
@@ -20,6 +21,16 @@ pub fn generate_moves(is_first_player_turn: bool, board: &Board) -> Vec<Move> {
 
 fn generate_knight_moves(available_moves: &mut Vec<Move>, knight: (PieceType, File, Rank)) {
     [(1, 2), (2, 1), (-1, -2), (-2, -1), (1, -2), (2, -1), (-1, 2), (-2, 1)].map(|transform| {
+        if let Some(m) = regular_move_if_legal(
+            knight,
+            transform) {
+            available_moves.push(m)
+        }
+    });
+}
+
+fn generate_king_moves(available_moves: &mut Vec<Move>, knight: (PieceType, File, Rank)) {
+    [(-1,-1),(-1,0),(-1,1),(0,1),(1,1),(1,0),(1,-1),(0,-1)].map(|transform| {
         if let Some(m) = regular_move_if_legal(
             knight,
             transform) {
