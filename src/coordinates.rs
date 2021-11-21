@@ -14,6 +14,7 @@ impl File {
     pub fn transform(&self, rhs: isize) -> Option<File> {
         let result = (self.inner as isize) + rhs;
         if result < 0 { None }
+        else if result > 7 { None }
         else { Some(File { inner: result as usize }) }
     }
 }
@@ -31,6 +32,7 @@ impl Rank {
     pub fn transform(&self, rhs: isize) -> Option<Rank> {
         let result = (self.inner as isize) + rhs;
         if result < 0 { None }
+        else if result > 7 { None }
         else { Some(Rank { inner: result as usize }) }
     }
 }
@@ -258,14 +260,21 @@ mod tests {
 
     #[test]
     fn file_should_transform_negative_number() {
-        let result = File::new(10).transform(-2).unwrap();
+        let result = File::new(7).transform(-2).unwrap();
 
-        assert_eq!(8, result);
+        assert_eq!(5, result);
     }
 
     #[test]
     fn file_transform_should_return_none_if_result_negative() {
         let result = File::new(1).transform(-2);
+
+        assert!(result.is_none());
+    }
+
+    #[test]
+    fn file_transform_should_return_none_if_result_too_big() {
+        let result = File::new(7).transform(1);
 
         assert!(result.is_none());
     }
@@ -323,14 +332,21 @@ mod tests {
 
     #[test]
     fn rank_should_transform_negative_number() {
-        let result = Rank::new(10).transform(-2).unwrap();
+        let result = Rank::new(7).transform(-2).unwrap();
 
-        assert_eq!(8, result);
+        assert_eq!(5, result);
     }
 
     #[test]
     fn rank_transform_should_return_none_if_result_negative() {
         let result = Rank::new(1).transform(-2);
+
+        assert!(result.is_none());
+    }
+
+    #[test]
+    fn rank_transform_should_return_none_if_result_too_big() {
+        let result = Rank::new(7).transform(1);
 
         assert!(result.is_none());
     }
