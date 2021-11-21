@@ -113,3 +113,16 @@ fn rook_move() {
 
     assert_eq!("1. Re1 Ra8 2. Ra1 Rh8 *", result);
 }
+
+#[test]
+fn bishop_move() {
+    let mut game = Game::from_fen("8/8/8/4B3/8/8/8/b7 w KQkq - 0 1");
+
+    game = game.make_move("Bh2").unwrap();
+    game = game.make_move("Bh8").unwrap();
+    game = game.make_move("Bb8").unwrap();
+    game = game.make_move("Bb2").unwrap();
+    let result = game.get_pgn();
+
+    assert_eq!("1. Bh2 Bh8 2. Bb8 Bb2 *", result);
+}
