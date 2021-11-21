@@ -13,11 +13,32 @@ pub fn generate_moves(is_first_player_turn: bool, board: &Board) -> Vec<Move> {
             PieceType::Knight => generate_knight_moves(&mut available_moves, piece),
             PieceType::King => generate_king_moves(&mut available_moves, piece),
             PieceType::Rook => generate_rook_moves(&mut available_moves, piece),
+            PieceType::Bishop => generate_bishop_moves(&mut available_moves, piece),
             _ => {}
         }
     }
 
     available_moves
+}
+
+fn generate_bishop_moves(available_moves: &mut Vec<Move>, bishop: (PieceType, File, Rank)) {
+    [(1,1),(1,-1),(-1,1),(-1,-1)].map(|transform| {
+        let (mut file, mut rank) = (Some(bishop.1), Some(bishop.2));
+        loop {
+            file = file.unwrap().transform(transform.0);
+            rank = rank.unwrap().transform(transform.1);
+            if let(Some(file), Some(rank)) = (file,rank) {
+                available_moves.push(Move::RegularMove {
+                    0: (bishop.1, bishop.2),
+                    1: (file,rank),
+                    2: bishop.0
+                })
+            }
+            else {
+                break;
+            }
+        }
+    });
 }
 
 fn generate_rook_moves(available_moves: &mut Vec<Move>, rook: (PieceType, File, Rank)) {
