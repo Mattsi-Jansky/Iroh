@@ -133,3 +133,41 @@ fn generate_moves_for_bishop() {
         Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(1),Rank::new(7)), 2: PieceType::Bishop },
     ]));
 }
+
+#[test]
+fn generate_moves_for_queen() {
+    let game = Game::from_fen("8/8/8/4Q3/8/8/8/8 w KQkq - 0 1");
+
+    let available_moves = game.get_available_moves();
+
+    assert_that!(&available_moves, contains_in_any_order(vec![
+        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(0),Rank::new(0)), 2: PieceType::Queen },
+        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(1),Rank::new(1)), 2: PieceType::Queen },
+        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(2),Rank::new(2)), 2: PieceType::Queen },
+        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(3),Rank::new(3)), 2: PieceType::Queen },
+        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(5),Rank::new(5)), 2: PieceType::Queen },
+        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(6),Rank::new(6)), 2: PieceType::Queen },
+        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(7),Rank::new(7)), 2: PieceType::Queen },
+        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(7),Rank::new(1)), 2: PieceType::Queen },
+        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(6),Rank::new(2)), 2: PieceType::Queen },
+        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(5),Rank::new(3)), 2: PieceType::Queen },
+        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(3),Rank::new(5)), 2: PieceType::Queen },
+        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(2),Rank::new(6)), 2: PieceType::Queen },
+        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(1),Rank::new(7)), 2: PieceType::Queen },
+
+        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(4),Rank::new(0)), 2: PieceType::Queen },
+        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(4),Rank::new(1)), 2: PieceType::Queen },
+        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(4),Rank::new(2)), 2: PieceType::Queen },
+        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(4),Rank::new(3)), 2: PieceType::Queen },
+        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(4),Rank::new(5)), 2: PieceType::Queen },
+        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(4),Rank::new(6)), 2: PieceType::Queen },
+        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(4),Rank::new(7)), 2: PieceType::Queen },
+        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(0),Rank::new(4)), 2: PieceType::Queen },
+        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(1),Rank::new(4)), 2: PieceType::Queen },
+        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(2),Rank::new(4)), 2: PieceType::Queen },
+        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(3),Rank::new(4)), 2: PieceType::Queen },
+        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(5),Rank::new(4)), 2: PieceType::Queen },
+        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(6),Rank::new(4)), 2: PieceType::Queen },
+        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(7),Rank::new(4)), 2: PieceType::Queen },
+    ]));
+}

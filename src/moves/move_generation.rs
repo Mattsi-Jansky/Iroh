@@ -3,6 +3,9 @@ use crate::coordinates::{File, Rank};
 use crate::moves::Move;
 use crate::piece::PieceType;
 
+const STRAIGHT_DYNAMIC_TRANSFORMS: [(isize,isize);4] = [(1,0),(0,1),(-1,0),(0,-1)];
+const DIAGONAL_DYNAMIC_TRANSFORMS: [(isize,isize);4] = [(1,1),(1,-1),(-1,1),(-1,-1)];
+
 pub fn generate_moves(is_first_player_turn: bool, board: &Board) -> Vec<Move> {
     let mut available_moves = vec![];
 
@@ -14,19 +17,23 @@ pub fn generate_moves(is_first_player_turn: bool, board: &Board) -> Vec<Move> {
             PieceType::King => generate_king_moves(&mut available_moves, piece),
             PieceType::Rook => generate_rook_moves(&mut available_moves, piece),
             PieceType::Bishop => generate_bishop_moves(&mut available_moves, piece),
-            _ => {}
+            PieceType::Queen => generate_queen_moves(&mut available_moves, piece)
         }
     }
 
     available_moves
 }
 
+fn generate_queen_moves(available_moves: &mut Vec<Move>, queen: (PieceType, File, Rank)) {
+    generate_dynamic_moves(available_moves, queen, &[STRAIGHT_DYNAMIC_TRANSFORMS, DIAGONAL_DYNAMIC_TRANSFORMS].concat());
+}
+
 fn generate_bishop_moves(available_moves: &mut Vec<Move>, bishop: (PieceType, File, Rank)) {
-    generate_dynamic_moves(available_moves, bishop, &[(1,1),(1,-1),(-1,1),(-1,-1)]);
+    generate_dynamic_moves(available_moves, bishop, &DIAGONAL_DYNAMIC_TRANSFORMS);
 }
 
 fn generate_rook_moves(available_moves: &mut Vec<Move>, rook: (PieceType, File, Rank)) {
-    generate_dynamic_moves(available_moves, rook,&[(1,0),(0,1),(-1,0),(0,-1)]);
+    generate_dynamic_moves(available_moves, rook,&STRAIGHT_DYNAMIC_TRANSFORMS);
 }
 
 fn generate_dynamic_moves(available_moves: &mut Vec<Move>, piece: (PieceType, File, Rank), transformations: &[(isize, isize)]) {
