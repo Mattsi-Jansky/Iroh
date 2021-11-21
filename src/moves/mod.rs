@@ -1,3 +1,4 @@
+use crate::coordinates::{File, Rank};
 use crate::piece::PieceType;
 use crate::serialisers::san::{generate_pawn_san, generate_san};
 
@@ -7,8 +8,8 @@ pub mod resolve_move;
 #[derive(PartialEq)]
 #[derive(Debug)]
 pub enum Move {
-    RegularMove((usize, usize), (usize, usize), PieceType),
-    PawnMove(usize,(usize,usize))
+    RegularMove((File, Rank), (File, Rank), PieceType),
+    PawnMove(File,(File,Rank))
 }
 
 impl Move {
@@ -32,7 +33,10 @@ mod tests {
 
     #[test]
     fn should_generate_san() {
-        let test_move = Move::RegularMove((0,0),(2,3), PieceType::Knight);
+        let test_move = Move::RegularMove(
+            (File::new(0),Rank::new(0)),
+            (File::new(2),Rank::new(3)),
+            PieceType::Knight);
 
         let result = test_move.generate_san();
 
@@ -41,7 +45,8 @@ mod tests {
 
     #[test]
     fn given_pawn_move_should_generate_san() {
-        let test_move = Move::PawnMove(0,(2,3));
+        let test_move = Move::PawnMove(File::new(0),
+                                       (File::new(2),Rank::new(3)));
 
         let result = test_move.generate_san();
 

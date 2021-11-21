@@ -1,17 +1,18 @@
+use crate::coordinates::{File, Rank};
 use crate::piece::{Piece, PieceType};
 
-pub fn parse_fen(fen: &str, callback: &mut dyn FnMut((usize, usize), Option<Piece>)) {
-    let mut row = 7;
-    let mut column = 0;
+pub fn parse_fen(fen: &str, callback: &mut dyn FnMut((File, Rank), Option<Piece>)) {
+    let mut rank = Rank::new(7);
+    let mut file = File::new(0);
 
     for char in fen[..fen.len() - 13].chars() {
         if char.eq(&'/') {
-            row -= 1;
-            column = 0;
+            rank -= 1;
+            file = File::new(0);
             continue;
         }
         if char.is_digit(10) {
-            column += char as usize - 0x30;
+            file += char as usize - 0x30;
             continue;
         }
 
@@ -25,12 +26,12 @@ pub fn parse_fen(fen: &str, callback: &mut dyn FnMut((usize, usize), Option<Piec
             _ => None
         };
         let is_owned_by_first_player = char.is_uppercase();
-        callback((column, row),
+        callback((file, rank),
                  piece_type.map(
                      |piece_type| Piece::new(is_owned_by_first_player, piece_type)
                  ));
 
-        column += 1;
+        file += 1;
     }
 }
 
@@ -40,15 +41,17 @@ mod tests {
 
     #[test]
     fn parse_fen_from_top_of_board_not_bottom() {
-        let mut result: Vec<(usize,usize)> = vec![];
+        let mut result: Vec<(File,Rank)> = vec![];
         let fen_that_forces_odd_numbered_rank_piece = "8/8/8/4n3/8/8/8/8 w KQkq - 0 1";
 
-        parse_fen(fen_that_forces_odd_numbered_rank_piece, &mut |(column,row),_piece| {
-            result.push((column,row));
+        parse_fen(fen_that_forces_odd_numbered_rank_piece, &mut |(file, rank), _piece| {
+            result.push((file, rank));
         });
 
         assert_eq!(1, result.len());
-        assert_eq!(&(4,4), result.get(0).unwrap());
+        let result = result.get(0).unwrap();
+        assert_eq!(4, result.0);
+        assert_eq!(4, result.1);
     }
 
     #[test]
