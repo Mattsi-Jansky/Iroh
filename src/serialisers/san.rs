@@ -8,6 +8,13 @@ pub fn generate_san(piece_type: PieceType, file: File, rank: Rank) -> String {
         rank+1)
 }
 
+pub fn generate_attack_san(piece_type: PieceType, file: File, rank: Rank) -> String {
+    format!("{}x{}{}",
+            to_piece_identifier(piece_type),
+            to_alpha_file(file),
+            rank+1)
+}
+
 pub fn generate_pawn_san(_starting_file: File, file: File, rank: Rank) -> String {
     format!("{}{}", to_alpha_file(file), rank+1)
 }
@@ -36,6 +43,13 @@ mod tests {
         let result = generate_san(PieceType::Knight,File::new(2),Rank::new(3));
 
         assert_eq!("Nc4", result);
+    }
+
+    #[test]
+    fn should_generate_attack_san() {
+        let result = generate_attack_san(PieceType::Rook, File::new(2), Rank::new(3));
+
+        assert_eq!("Rxc4", result);
     }
 
     #[test]

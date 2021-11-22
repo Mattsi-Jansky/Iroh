@@ -1,6 +1,6 @@
 use crate::coordinates::{File, Rank};
 use crate::piece::PieceType;
-use crate::serialisers::san::{generate_pawn_san, generate_san};
+use crate::serialisers::san::{generate_attack_san, generate_pawn_san, generate_san};
 
 pub mod move_generation;
 pub mod resolve_move;
@@ -9,6 +9,7 @@ pub mod resolve_move;
 #[derive(Debug)]
 pub enum Move {
     RegularMove((File, Rank), (File, Rank), PieceType),
+    AttackMove((File, Rank), (File, Rank), PieceType),
     PawnMove(File,(File,Rank))
 }
 
@@ -22,6 +23,9 @@ impl Move {
             Move::PawnMove(starting_file,(file,rank)) => {
                 generate_pawn_san(starting_file,file,rank)
             },
+            Move::AttackMove((_,_),(file,rank), piece_type) => {
+                generate_attack_san(piece_type,file,rank)
+            }
         }
     }
 }

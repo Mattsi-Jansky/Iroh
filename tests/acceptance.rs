@@ -1,5 +1,9 @@
+#[macro_use]
+extern crate galvanic_assert;
+use galvanic_assert::matchers::collection::*;
 use test_case::test_case;
 
+use chess::piece::PieceType;
 use chess::game::Game;
 
 #[test]
@@ -144,3 +148,20 @@ fn queen_move() {
     assert_eq!("1. Qh2 Qh8 2. Qb8 Qb2 3. Qb5 Qh2 4. Qb8 Qa2 *", result);
 }
 
+#[test]
+fn attack_move_from_dynamic_movement_piece() {
+    let mut game = Game::from_fen("8/8/8/3Rr3/3Rr3/8/8/8 w KQkq - 0 1");
+
+    game = game.make_move("Rxe5").unwrap();
+    game = game.make_move("Rxd4").unwrap();
+    game = game.make_move("Rd5").unwrap();
+    let result = game.get_pgn();
+
+    assert_eq!("1. Rxe5 Rxd4 2. Rd5 *", result);
+    assert_that!(&game.get_captured_pieces().second_player, contains_in_any_order(vec![
+        PieceType::Rook
+    ]));
+    assert_that!(&game.get_captured_pieces().first_player, contains_in_any_order(vec![
+        PieceType::Rook
+    ]));
+}
