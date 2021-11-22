@@ -3,7 +3,7 @@ extern crate galvanic_assert;
 use galvanic_assert::matchers::collection::*;
 use test_case::test_case;
 
-use chess::piece::PieceType;
+use chess::state::piece::PieceType;
 use chess::game::Game;
 
 #[test]

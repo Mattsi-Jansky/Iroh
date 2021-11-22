@@ -1,6 +1,6 @@
-use crate::board::Board;
-use crate::captured_pieces::CapturedPieces;
-use crate::coordinates::{File, Rank};
+use crate::state::board::Board;
+use crate::state::captured_pieces::CapturedPieces;
+use crate::state::coordinates::{File, Rank};
 use crate::moves::Move;
 
 pub fn resolve_move(requested_move: Move, mut board: Board, mut captured_pieces: CapturedPieces, is_first_player_turn: bool) -> (Board, CapturedPieces) {

@@ -1,4 +1,4 @@
-use crate::piece::PieceType;
+use crate::state::piece::PieceType;
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct CapturedPieces {

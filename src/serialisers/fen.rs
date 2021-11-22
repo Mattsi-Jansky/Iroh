@@ -1,5 +1,5 @@
-use crate::coordinates::{File, Rank};
-use crate::piece::{Piece, PieceType};
+use crate::state::coordinates::{File, Rank};
+use crate::state::piece::{Piece, PieceType};
 
 pub fn parse_fen(fen: &str, callback: &mut dyn FnMut((File, Rank), Option<Piece>)) {
     let mut rank = Rank::new(7);

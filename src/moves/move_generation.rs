@@ -1,7 +1,7 @@
-use crate::board::Board;
-use crate::coordinates::{File, Rank};
+use crate::state::board::Board;
+use crate::state::coordinates::{File, Rank};
 use crate::moves::Move;
-use crate::piece::PieceType;
+use crate::state::piece::PieceType;
 
 const STRAIGHT_DYNAMIC_TRANSFORMS: [(isize,isize);4] = [(1,0),(0,1),(-1,0),(0,-1)];
 const DIAGONAL_DYNAMIC_TRANSFORMS: [(isize,isize);4] = [(1,1),(1,-1),(-1,1),(-1,-1)];

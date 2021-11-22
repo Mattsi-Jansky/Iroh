@@ -1,5 +1,5 @@
-use crate::coordinates::{File, Rank};
-use crate::piece::PieceType;
+use crate::state::coordinates::{File, Rank};
+use crate::state::piece::PieceType;
 
 pub fn generate_san(piece_type: PieceType, file: File, rank: Rank) -> String {
     format!("{}{}{}",

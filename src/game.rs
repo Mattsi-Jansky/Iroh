@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 use crate::serialisers::pgn::generate_pgn;
-use crate::board::Board;
-use crate::captured_pieces::CapturedPieces;
+use crate::state::board::Board;
+use crate::state::captured_pieces::CapturedPieces;
 use crate::error::IllegalMoveError;
 use crate::moves::move_generation::generate_moves;
 use crate::moves::{Move};

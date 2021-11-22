@@ -1,7 +1,7 @@
 use std::ops::{Index, IndexMut};
-use crate::coordinates::{File, Rank};
+use crate::state::coordinates::{File, Rank};
 use crate::serialisers::fen::parse_fen;
-use crate::piece::{Piece, PieceType};
+use crate::state::piece::{Piece, PieceType};
 
 const STARTING_POSITION_FEN: &str = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 

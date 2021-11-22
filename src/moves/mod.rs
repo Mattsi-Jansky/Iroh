@@ -1,5 +1,5 @@
-use crate::coordinates::{File, Rank};
-use crate::piece::PieceType;
+use crate::state::coordinates::{File, Rank};
+use crate::state::piece::PieceType;
 use crate::serialisers::san::{generate_attack_san, generate_pawn_san, generate_san};
 
 pub mod move_generation;
