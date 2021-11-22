@@ -165,3 +165,21 @@ fn attack_move_from_dynamic_movement_piece() {
         PieceType::Rook
     ]));
 }
+
+#[test]
+fn attack_move_from_static_movement_piece() {
+    let mut game = Game::from_fen("8/1n4N1/8/2N2n2/8/8/8/8 w - - 0 1");
+
+    game = game.make_move("Nxb7").unwrap();
+    game = game.make_move("Nxg7").unwrap();
+    game = game.make_move("Nc5").unwrap();
+    let result = game.get_pgn();
+
+    assert_eq!("1. Nxb7 Nxg7 2. Nc5 *", result);
+    assert_that!(&game.get_captured_pieces().second_player, contains_in_any_order(vec![
+        PieceType::Knight
+    ]));
+    assert_that!(&game.get_captured_pieces().first_player, contains_in_any_order(vec![
+        PieceType::Knight
+    ]));
+}
