@@ -43,7 +43,7 @@ fn generate_dynamic_moves(board: &Board, available_moves: &mut Vec<Move>, piece:
             file = file.unwrap().transform(transform.0);
             rank = rank.unwrap().transform(transform.1);
             if let(Some(file), Some(rank)) = (file,rank) {
-                if let Some(target_piece) = board[(file,rank)] {
+                if board[(file,rank)].is_some() {
                     available_moves.push(Move::AttackMove {
                         0: (piece.1, piece.2),
                         1: (file, rank),

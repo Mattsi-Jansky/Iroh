@@ -9,3 +9,9 @@ pub struct CapturedPieces {
 impl CapturedPieces {
     pub fn new() -> CapturedPieces { CapturedPieces {first_player: vec![], second_player: vec![]} }
 }
+
+impl Default for CapturedPieces {
+    fn default() -> Self {
+        CapturedPieces::new()
+    }
+}
