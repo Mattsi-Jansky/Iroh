@@ -1,23 +1,24 @@
 use crate::state::board::Board;
 use crate::state::coordinates::{File, Rank};
 use crate::moves::Move;
+use crate::state::GameState;
 use crate::state::piece::PieceType;
 
 const STRAIGHT_DYNAMIC_TRANSFORMS: [(isize,isize);4] = [(1,0),(0,1),(-1,0),(0,-1)];
 const DIAGONAL_DYNAMIC_TRANSFORMS: [(isize,isize);4] = [(1,1),(1,-1),(-1,1),(-1,-1)];
 
-pub fn generate_moves(is_first_player_turn: bool, board: &Board) -> Vec<Move> {
+pub fn generate_moves(game_state: &GameState) -> Vec<Move> {
     let mut available_moves = vec![];
 
-    let pieces = board.get_all_pieces_belonging_to_player(is_first_player_turn);
+    let pieces = game_state.board.get_all_pieces_belonging_to_player(game_state.is_first_player_turn());
     for piece in pieces {
         match piece.0 {
-            PieceType::Pawn => generate_pawn_moves(is_first_player_turn,&mut available_moves,piece),
+            PieceType::Pawn => generate_pawn_moves(game_state.is_first_player_turn(),&mut available_moves,piece),
             PieceType::Knight => generate_knight_moves(&mut available_moves, piece),
             PieceType::King => generate_king_moves(&mut available_moves, piece),
-            PieceType::Rook => generate_rook_moves(&mut available_moves, piece, board),
-            PieceType::Bishop => generate_bishop_moves(&mut available_moves, piece, board),
-            PieceType::Queen => generate_queen_moves(&mut available_moves, piece, board)
+            PieceType::Rook => generate_rook_moves(&mut available_moves, piece, &game_state.board),
+            PieceType::Bishop => generate_bishop_moves(&mut available_moves, piece, &game_state.board),
+            PieceType::Queen => generate_queen_moves(&mut available_moves, piece, &game_state.board)
         }
     }
 
