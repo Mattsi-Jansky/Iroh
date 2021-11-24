@@ -1,5 +1,4 @@
 use crate::state::board::Board;
-use crate::state::captured_pieces::CapturedPieces;
 use crate::state::coordinates::{File, Rank};
 use crate::moves::Move;
 use crate::state::GameState;
