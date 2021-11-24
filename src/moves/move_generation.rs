@@ -13,7 +13,7 @@ pub fn generate_moves(game_state: &GameState) -> Vec<Move> {
     let pieces = game_state.board.get_all_pieces_belonging_to_player(game_state.is_first_player_turn());
     for piece in pieces {
         match piece.0 {
-            PieceType::Pawn => generate_pawn_moves(game_state.is_first_player_turn(),&mut available_moves,piece),
+            PieceType::Pawn => generate_pawn_moves(game_state,&mut available_moves,piece),
             PieceType::Knight => generate_knight_moves(&mut available_moves, piece, &game_state.board),
             PieceType::King => generate_king_moves(&mut available_moves, piece, &game_state.board),
             PieceType::Rook => generate_rook_moves(&mut available_moves, piece, &game_state.board),
@@ -108,9 +108,23 @@ fn generate_static_move_if_legal(piece: (PieceType, File, Rank), transformation:
     } else {None}
 }
 
-fn generate_pawn_moves(is_first_player_turn: bool, available_moves: &mut Vec<Move>, pawn: (PieceType, File, Rank)) {
-    let move_once_rank = if is_first_player_turn { pawn.2 + 1 } else { pawn.2 - 1 };
-    let move_twice_rank = if is_first_player_turn { pawn.2 + 2 } else { pawn.2 - 2 };
-    available_moves.push(Move::PawnMove { 0: pawn.1, 1: (pawn.1, move_once_rank) });
-    available_moves.push(Move::PawnMove { 0: pawn.1, 1: (pawn.1, move_twice_rank) });
+fn generate_pawn_moves(game_state: &GameState, available_moves: &mut Vec<Move>, pawn: (PieceType, File, Rank)) {
+    let left_file = pawn.1.transform(-1);
+    let right_file = pawn.1.transform(1);
+    let ahead_rank = (if game_state.is_first_player_turn() { pawn.2.transform(1) } else { pawn.2.transform(-1) })
+        .expect("Pawn is never on back rank, because of promotion");
+    let ahead_twice_rank = if game_state.is_first_player_turn() { pawn.2 + 2 } else { pawn.2 - 2 };
+    available_moves.push(Move::PawnMove { 0: pawn.1, 1: (pawn.1, ahead_rank) });
+    available_moves.push(Move::PawnMove { 0: pawn.1, 1: (pawn.1, ahead_twice_rank) });
+
+    if let Some(left_file) = left_file {
+        if game_state.board[(left_file, ahead_rank)].is_some() {
+            available_moves.push(Move::PawnAttackMove { 0: pawn.1, 1: (left_file, ahead_rank) })
+        }
+    }
+    if let Some(right_file) = right_file {
+        if game_state.board[(right_file, ahead_rank)].is_some() {
+            available_moves.push(Move::PawnAttackMove { 0: pawn.1, 1: (right_file, ahead_rank) })
+        }
+    }
 }

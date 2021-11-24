@@ -10,7 +10,8 @@ pub mod resolve_move;
 pub enum Move {
     RegularMove((File, Rank), (File, Rank), PieceType),
     AttackMove((File, Rank), (File, Rank), PieceType),
-    PawnMove(File,(File,Rank))
+    PawnMove(File,(File,Rank)),
+    PawnAttackMove(File,(File,Rank)),
 }
 
 impl Move {
@@ -26,6 +27,7 @@ impl Move {
             Move::AttackMove((_,_),(file,rank), piece_type) => {
                 generate_attack_san(piece_type,file,rank)
             }
+            Move::PawnAttackMove(_, _) => {String::from("todo")}
         }
     }
 }

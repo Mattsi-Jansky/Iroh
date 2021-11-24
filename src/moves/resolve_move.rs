@@ -21,6 +21,7 @@ pub fn resolve_move(requested_move: Move, mut game_state: GameState) -> GameStat
             else {game_state.captured_pieces.first_player.push(piece);}
             move_piece(&mut game_state.board, from_file, from_rank, to_file, to_rank);
         }
+        Move::PawnAttackMove(_, _) => {}
     }
 
     game_state.increment_turn_number();
