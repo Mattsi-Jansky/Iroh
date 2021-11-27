@@ -15,8 +15,8 @@ pub fn generate_attack_san(piece_type: PieceType, file: File, rank: Rank) -> Str
             rank+1)
 }
 
-pub fn generate_pawn_san(_starting_file: File, file: File, rank: Rank) -> String {
-    format!("{}{}", to_alpha_file(file), rank+1)
+pub fn generate_pawn_san(_starting_file: File,target_rank: Rank) -> String {
+    format!("{}{}", to_alpha_file(_starting_file), target_rank+1)
 }
 
 fn to_alpha_file(file: File) -> char {
@@ -54,7 +54,7 @@ mod tests {
 
     #[test]
     fn given_pawn_should_generate_san() {
-        let result = generate_pawn_san(File::new(3),File::new(2),Rank::new(3));
+        let result = generate_pawn_san(File::new(2),Rank::new(3));
 
         assert_eq!("c4", result);
     }

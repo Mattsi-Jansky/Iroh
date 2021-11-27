@@ -17,14 +17,14 @@ use chess::state::coordinates::{Rank, File};
 #[test_case(6)]
 #[test_case(7)]
 fn generate_first_turn_pawn_moves(file: usize) {
-    let rank = File::new(file);
+    let file = File::new(file);
     let game = Game::new();
 
     let available_moves = game.get_available_moves();
 
     assert_that!(&available_moves, contains_subset(vec![
-        Move::PawnMove { 0: rank, 1: (rank,Rank::new(2)) },
-        Move::PawnMove { 0: rank, 1: (rank,Rank::new(3)) },
+        Move::PawnMove { 0: file, 1: Rank::new(2) },
+        Move::PawnMove { 0: file, 1: Rank::new(3) },
     ]));
 }
 
@@ -180,8 +180,8 @@ fn pawn_attack_moves() {
 
     assert_that!(&available_moves, contains_in_any_order(vec![
         Move::PawnAttackMove { 0: File::new(3), 1: (File::new(2),Rank::new(5)) },
-        Move::PawnMove { 0: File::new(3), 1: (File::new(3),Rank::new(5)) },
-        Move::PawnMove { 0: File::new(3), 1: (File::new(3),Rank::new(6)) },
+        Move::PawnMove { 0: File::new(3), 1: Rank::new(5) },
+        Move::PawnMove { 0: File::new(3), 1: Rank::new(6) },
         Move::PawnAttackMove { 0: File::new(3), 1: (File::new(4),Rank::new(5)) },
     ]));
 }
