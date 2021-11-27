@@ -183,3 +183,22 @@ fn attack_move_from_static_movement_piece() {
         PieceType::Knight
     ]));
 }
+
+#[test]
+fn attack_move_from_pawn() {
+    let mut game = Game::from_fen("8/8/3p2p1/2P2P2/8/8/8/8 w - - 0 1");
+
+    game = game.make_move("cxd6").unwrap();
+    game = game.make_move("gxf5").unwrap();
+    game = game.make_move("d7").unwrap();
+    game = game.make_move("f4").unwrap();
+    let result = game.get_pgn();
+
+    assert_eq!("1. cxd6 gxf5 2. d7 f4 *", result);
+    assert_that!(&game.get_captured_pieces().second_player, contains_in_any_order(vec![
+        PieceType::Pawn
+    ]));
+    assert_that!(&game.get_captured_pieces().first_player, contains_in_any_order(vec![
+        PieceType::Pawn
+    ]));
+}

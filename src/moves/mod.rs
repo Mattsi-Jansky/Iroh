@@ -1,6 +1,6 @@
 use crate::state::coordinates::{File, Rank};
 use crate::state::piece::PieceType;
-use crate::serialisers::san::{generate_attack_san, generate_pawn_san, generate_san};
+use crate::serialisers::san::{generate_attack_san, generate_pawn_attack_san, generate_pawn_san, generate_san};
 
 pub mod move_generation;
 pub mod resolve_move;
@@ -27,7 +27,9 @@ impl Move {
             Move::AttackMove((_,_),(file,rank), piece_type) => {
                 generate_attack_san(piece_type,file,rank)
             }
-            Move::PawnAttackMove(_, _) => {String::from("todo")}
+            Move::PawnAttackMove(starting_file,(target_file, target_rank)) => {
+                generate_pawn_attack_san(starting_file, target_file, target_rank)
+            }
         }
     }
 }

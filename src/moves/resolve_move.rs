@@ -17,9 +17,24 @@ pub fn resolve_move(requested_move: Move, mut game_state: GameState) -> GameStat
                 .piece_type;
             if game_state.is_first_player_turn() {game_state.captured_pieces.second_player.push(piece);}
             else {game_state.captured_pieces.first_player.push(piece);}
+            
             move_piece(&mut game_state.board, from_file, from_rank, to_file, to_rank);
         }
-        Move::PawnAttackMove(_, _) => {}
+        Move::PawnAttackMove(starting_file,(to_file, to_rank)) => {
+            let piece = game_state.board[(to_file,to_rank)]
+                .expect("Illegal move, no target to attack")
+                .piece_type;
+            if game_state.is_first_player_turn() {game_state.captured_pieces.second_player.push(piece);}
+            else {game_state.captured_pieces.first_player.push(piece);}
+
+            let direction = if game_state.is_first_player_turn() {-1} else {1};
+            move_piece(&mut game_state.board,
+                       starting_file,
+                       to_rank.transform(direction)
+                           .expect("should not be possible to get an out of bounds pawn attack command"),
+                       to_file,
+                       to_rank);
+        }
     }
 
     game_state.increment_turn_number();
