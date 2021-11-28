@@ -26,8 +26,11 @@ fn cannot_move_off_board() {
     assert!(result2.is_err());
 }
 
-#[test_case("8/8/2P5/3K4/8/8/8/8 w - - 0 1", "kxc6")]
-#[test_case("8/2P5/8/3N4/8/8/8/8 w - - 0 1", "nxc7")]
+#[test_case("8/8/2P5/3K4/8/8/8/8 w - - 0 1", "Kxc6")]
+#[test_case("8/2P5/8/3N4/8/8/8/8 w - - 0 1", "Nxc7")]
+#[test_case("8/2P5/8/4B3/8/8/8/8 w - - 0 1", "Bxc7")]
+#[test_case("8/2P5/8/4Q3/8/8/8/8 w - - 0 1", "Qxc7")]
+#[test_case("8/3P4/8/8/3R4/8/8/8 w - - 0 1", "Rxd7")]
 fn cannot_take_friendly_piece(fen: &str, illegal_move: &str) {
     let game = Game::from_fen(fen);
 
