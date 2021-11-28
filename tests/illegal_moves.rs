@@ -65,3 +65,30 @@ fn pawns_only_move_two_if_they_have_not_moved_yet() {
     assert!(result.is_err());
     assert!(result2.is_err());
 }
+
+#[test]
+fn rooks_cannot_jump() {
+    let mut game = Game::new();
+
+    let result = game.make_move("Rh3");
+
+    assert!(result.is_err());
+}
+
+#[test]
+fn queens_cannot_jump() {
+    let mut game = Game::new();
+
+    let result = game.make_move("Qd3");
+
+    assert!(result.is_err());
+}
+
+#[test]
+fn bishops_cannot_jump() {
+    let mut game = Game::new();
+
+    let result = game.make_move("Be3");
+
+    assert!(result.is_err());
+}

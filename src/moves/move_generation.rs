@@ -51,6 +51,7 @@ fn generate_dynamic_moves(game_state: &GameState, available_moves: &mut Vec<Move
                             2: piece.0
                         })
                     }
+                    break;
                 } else {
                     available_moves.push(Move::RegularMove {
                         0: (piece.1, piece.2),
