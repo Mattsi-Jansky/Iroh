@@ -10,7 +10,7 @@ pub mod resolve_move;
 pub enum Move {
     RegularMove((File, Rank), (File, Rank), PieceType),
     AttackMove((File, Rank), (File, Rank), PieceType),
-    PawnMove(File,Rank),
+    PawnMove((File,Rank),Rank),
     PawnAttackMove(File,(File,Rank)),
 }
 
@@ -21,9 +21,9 @@ impl Move {
             Move::RegularMove((_,_),(file,rank), piece_type) => {
                 generate_san(piece_type,file,rank)
             },
-            Move::PawnMove(starting_file,target_rank) => {
-                generate_pawn_san(starting_file,target_rank)
-            },
+            Move::PawnMove(from, target_rank) => {
+                generate_pawn_san(from.0, target_rank)
+            }
             Move::AttackMove((_,_),(file,rank), piece_type) => {
                 generate_attack_san(piece_type,file,rank)
             }
@@ -52,7 +52,7 @@ mod tests {
 
     #[test]
     fn given_pawn_move_should_generate_san() {
-        let test_move = Move::PawnMove(File::new(2),
+        let test_move = Move::PawnMove((File::new(2), Rank::new(2)),
                                        Rank::new(3));
 
         let result = test_move.generate_san();

@@ -23,8 +23,8 @@ fn generate_first_turn_pawn_moves(file: usize) {
     let available_moves = game.get_available_moves();
 
     assert_that!(&available_moves, contains_subset(vec![
-        Move::PawnMove { 0: file, 1: Rank::new(2) },
-        Move::PawnMove { 0: file, 1: Rank::new(3) },
+        Move::PawnMove { 0: (file,Rank::new(1)), 1: Rank::new(2) },
+        Move::PawnMove { 0: (file,Rank::new(1)), 1: Rank::new(3) },
     ]));
 }
 
@@ -180,8 +180,7 @@ fn pawn_attack_moves() {
 
     assert_that!(&available_moves, contains_in_any_order(vec![
         Move::PawnAttackMove { 0: File::new(3), 1: (File::new(2),Rank::new(5)) },
-        Move::PawnMove { 0: File::new(3), 1: Rank::new(5) },
-        Move::PawnMove { 0: File::new(3), 1: Rank::new(6) },
+        Move::PawnMove { 0: (File::new(3),Rank::new(4)), 1: Rank::new(5) },
         Move::PawnAttackMove { 0: File::new(3), 1: (File::new(4),Rank::new(5)) },
     ]));
 }

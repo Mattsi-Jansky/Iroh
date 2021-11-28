@@ -5,8 +5,8 @@ use crate::state::GameState;
 
 pub fn resolve_move(requested_move: Move, mut game_state: GameState) -> GameState {
     match requested_move {
-        Move::PawnMove(from_file, to_rank) => {
-            move_piece(&mut game_state.board, from_file, to_rank - 1, from_file, to_rank);
+        Move::PawnMove(from, to_rank) => {
+            move_piece(&mut game_state.board, from.0, from.1, from.0, to_rank);
         }
         Move::RegularMove((from_file, from_rank), (to_file, to_rank), _) => {
             move_piece(&mut game_state.board, from_file, from_rank, to_file, to_rank);

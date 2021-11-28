@@ -51,3 +51,17 @@ fn pawn_cannot_capture_forwards() {
     assert!(result.is_err());
     assert!(result2.is_err());
 }
+
+#[test]
+fn pawns_only_move_two_if_they_have_not_moved_yet() {
+    let mut game = Game::new();
+
+    game = game.make_move("d4").unwrap();
+    game = game.make_move("e5").unwrap();
+    let result = game.make_move("d6");
+    game = game.make_move("d5").unwrap();
+    let result2 = game.make_move("e3");
+
+    assert!(result.is_err());
+    assert!(result2.is_err());
+}

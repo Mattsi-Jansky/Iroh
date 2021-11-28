@@ -117,12 +117,15 @@ fn generate_pawn_moves(game_state: &GameState, available_moves: &mut Vec<Move>, 
     let right_file = pawn.1.transform(1);
     let ahead_rank = (if game_state.is_first_player_turn() { pawn.2.transform(1) } else { pawn.2.transform(-1) })
         .expect("Pawn is never on back rank, because of promotion");
+    let is_on_starting_file = if game_state.is_first_player_turn() {pawn.2 == 1} else {pawn.2 == 6};
     let ahead_twice_rank = if game_state.is_first_player_turn() { pawn.2 + 2 } else { pawn.2 - 2 };
 
     if !game_state.board[(pawn.1, ahead_rank)].is_some() {
-        available_moves.push(Move::PawnMove { 0: pawn.1, 1: ahead_rank });
+        available_moves.push(Move::PawnMove { 0: (pawn.1, pawn.2), 1: ahead_rank });
     }
-    available_moves.push(Move::PawnMove { 0: pawn.1, 1: ahead_twice_rank });
+    if is_on_starting_file {
+        available_moves.push(Move::PawnMove { 0: (pawn.1, pawn.2), 1: ahead_twice_rank });
+    }
 
     if let Some(left_file) = left_file {
         if let Some(target_piece) = game_state.board[(left_file, ahead_rank)] {
