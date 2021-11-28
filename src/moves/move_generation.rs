@@ -121,10 +121,12 @@ fn generate_pawn_moves(game_state: &GameState, available_moves: &mut Vec<Move>, 
     let is_on_starting_file = if game_state.is_first_player_turn() {pawn.2 == 1} else {pawn.2 == 6};
     let ahead_twice_rank = if game_state.is_first_player_turn() { pawn.2 + 2 } else { pawn.2 - 2 };
 
-    if !game_state.board[(pawn.1, ahead_rank)].is_some() {
+    if game_state.board[(pawn.1, ahead_rank)].is_none() {
         available_moves.push(Move::PawnMove { 0: (pawn.1, pawn.2), 1: ahead_rank });
     }
-    if is_on_starting_file {
+    if is_on_starting_file
+        && game_state.board[(pawn.1, ahead_rank)].is_none()
+        && game_state.board[(pawn.1, ahead_twice_rank)].is_none() {
         available_moves.push(Move::PawnMove { 0: (pawn.1, pawn.2), 1: ahead_twice_rank });
     }
 

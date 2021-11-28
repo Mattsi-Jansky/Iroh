@@ -92,3 +92,12 @@ fn bishops_cannot_jump() {
 
     assert!(result.is_err());
 }
+
+#[test]
+fn pawns_cannot_jump() {
+    let mut game = Game::from_fen("8/8/8/8/8/3p4/3P4/8 w - - 0 1");
+
+    let result = game.make_move("d4");
+
+    assert!(result.is_err());
+}
