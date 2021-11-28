@@ -40,3 +40,14 @@ fn cannot_take_friendly_piece(fen: &str, illegal_move: &str) {
 
     assert!(result.is_err());
 }
+
+#[test]
+fn pawn_cannot_capture_forwards() {
+    let game = Game::from_fen("8/8/8/3p4/3P4/8/8/8 w - - 0 1");
+
+    let result = game.make_move("d5");
+    let result2 = game.make_move("dxd5");
+
+    assert!(result.is_err());
+    assert!(result2.is_err());
+}
