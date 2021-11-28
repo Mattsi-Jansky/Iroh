@@ -1,4 +1,3 @@
-use crate::state::board::Board;
 use crate::state::coordinates::{File, Rank};
 use crate::moves::Move;
 use crate::state::GameState;
@@ -123,13 +122,17 @@ fn generate_pawn_moves(game_state: &GameState, available_moves: &mut Vec<Move>, 
     available_moves.push(Move::PawnMove { 0: pawn.1, 1: ahead_twice_rank });
 
     if let Some(left_file) = left_file {
-        if game_state.board[(left_file, ahead_rank)].is_some() {
-            available_moves.push(Move::PawnAttackMove { 0: pawn.1, 1: (left_file, ahead_rank) })
+        if let Some(target_piece) = game_state.board[(left_file, ahead_rank)] {
+            if target_piece.is_owned_by_first_player != game_state.is_first_player_turn() {
+                available_moves.push(Move::PawnAttackMove { 0: pawn.1, 1: (left_file, ahead_rank) })
+            }
         }
     }
     if let Some(right_file) = right_file {
-        if game_state.board[(right_file, ahead_rank)].is_some() {
-            available_moves.push(Move::PawnAttackMove { 0: pawn.1, 1: (right_file, ahead_rank) })
+        if let Some(target_piece) = game_state.board[(right_file, ahead_rank)] {
+            if target_piece.is_owned_by_first_player != game_state.is_first_player_turn() {
+                available_moves.push(Move::PawnAttackMove { 0: pawn.1, 1: (right_file, ahead_rank) })
+            }
         }
     }
 }
