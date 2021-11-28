@@ -14,8 +14,8 @@ pub fn generate_moves(game_state: &GameState) -> Vec<Move> {
     for piece in pieces {
         match piece.0 {
             PieceType::Pawn => generate_pawn_moves(game_state,&mut available_moves,piece),
-            PieceType::Knight => generate_knight_moves(&mut available_moves, piece, &game_state.board),
-            PieceType::King => generate_king_moves(&mut available_moves, piece, &game_state.board),
+            PieceType::Knight => generate_knight_moves(&mut available_moves, piece, game_state),
+            PieceType::King => generate_king_moves(&mut available_moves, piece, game_state),
             PieceType::Rook => generate_rook_moves(&mut available_moves, piece, &game_state.board),
             PieceType::Bishop => generate_bishop_moves(&mut available_moves, piece, &game_state.board),
             PieceType::Queen => generate_queen_moves(&mut available_moves, piece, &game_state.board)
@@ -65,39 +65,42 @@ fn generate_dynamic_moves(board: &Board, available_moves: &mut Vec<Move>, piece:
     };
 }
 
-fn generate_knight_moves(available_moves: &mut Vec<Move>, knight: (PieceType, File, Rank), board: &Board) {
+fn generate_knight_moves(available_moves: &mut Vec<Move>, knight: (PieceType, File, Rank), game_state: &GameState) {
     [(1, 2), (2, 1), (-1, -2), (-2, -1), (1, -2), (2, -1), (-1, 2), (-2, 1)].map(|transform| {
         if let Some(m) = generate_static_move_if_legal(
             knight,
             transform,
-            board) {
+            game_state) {
             available_moves.push(m)
         }
     });
 }
 
-fn generate_king_moves(available_moves: &mut Vec<Move>, knight: (PieceType, File, Rank), board: &Board) {
+fn generate_king_moves(available_moves: &mut Vec<Move>, knight: (PieceType, File, Rank), game_state: &GameState) {
     [(-1,-1),(-1,0),(-1,1),(0,1),(1,1),(1,0),(1,-1),(0,-1)].map(|transform| {
         if let Some(m) = generate_static_move_if_legal(
             knight,
             transform,
-            board) {
+            game_state) {
             available_moves.push(m)
         }
     });
 }
 
-fn generate_static_move_if_legal(piece: (PieceType, File, Rank), transformation: (isize, isize), board: &Board) -> Option<Move> {
+fn generate_static_move_if_legal(piece: (PieceType, File, Rank), transformation: (isize, isize), game_state: &GameState) -> Option<Move> {
     let target_file = piece.1.transform(transformation.0);
     let target_rank = piece.2.transform(transformation.1);
 
     if let (Some(target_file), Some(target_rank)) = (target_file, target_rank) {
-        if board[(target_file,target_rank)].is_some() {
-            Some(Move::AttackMove {
-                0: (piece.1, piece.2),
-                1: (target_file, target_rank),
-                2: piece.0
-            })
+        if let Some(target_piece) = game_state.board[(target_file, target_rank)] {
+            if target_piece.is_owned_by_first_player != game_state.is_first_player_turn() {
+                Some(Move::AttackMove {
+                    0: (piece.1, piece.2),
+                    1: (target_file, target_rank),
+                    2: piece.0
+                })
+            }
+            else {None}
         } else {
             Some(Move::RegularMove {
                 0: (piece.1, piece.2),
