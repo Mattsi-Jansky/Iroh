@@ -3,10 +3,10 @@ extern crate galvanic_assert;
 use galvanic_assert::matchers::collection::*;
 use test_case::test_case;
 
-use chess::state::piece::PieceType;
-use chess::moves::Move;
-use chess::game::Game;
-use chess::state::coordinates::{Rank, File};
+use iroh::state::piece::PieceType;
+use iroh::moves::Move;
+use iroh::game::Game;
+use iroh::state::coordinates::{Rank, File};
 
 #[test_case(0)]
 #[test_case(1)]

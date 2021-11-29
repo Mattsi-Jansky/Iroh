@@ -1,6 +1,6 @@
 use test_case::test_case;
 
-use chess::game::Game;
+use iroh::game::Game;
 
 #[test_case("e7")]
 #[test_case("ng3")]

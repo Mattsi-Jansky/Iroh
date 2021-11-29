@@ -3,8 +3,8 @@ extern crate galvanic_assert;
 use galvanic_assert::matchers::collection::*;
 use test_case::test_case;
 
-use chess::state::piece::PieceType;
-use chess::game::Game;
+use iroh::state::piece::PieceType;
+use iroh::game::Game;
 
 #[test]
 fn new_game_has_blank_pgn() {
