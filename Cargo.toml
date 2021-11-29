@@ -1,13 +1,5 @@
-[package]
-name = "chess"
-version = "0.1.0"
-edition = "2021"
+[workspace]
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
-[dependencies]
-derive_more = "0.99.16"
-
-[dev-dependencies]
-test-case = "1.2.1"
-galvanic-assert = "0.8.7"
+members = [
+    "iroh",
+]
