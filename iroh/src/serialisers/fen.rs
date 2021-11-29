@@ -7,6 +7,7 @@ pub fn parse_fen(fen: &str, callback: &mut dyn FnMut((File, Rank), Option<Piece>
     let mut file = File::new(0);
 
     for char in fen[..fen.len() - 13].chars() {
+        println!("{}/{}: {}", file, rank, char);
         if char.eq(&'/') {
             rank -= 1;
             file = File::new(0);
@@ -40,18 +41,25 @@ pub fn generate_fen(game_state: &GameState) -> String {
     let mut result = String::new();
 
     for r in (0..=Rank::MAX).rev() {
-        let mut empty_aggr = 0;
+        let mut blank_tiles_count = 0;
         for f in 0..=File::MAX {
+            println!("{}/{}", f, r);
             if let Some(piece) = game_state.board[(File::new(f),Rank::new(r))] {
-                if empty_aggr > 0 { result.push(char::from_digit(empty_aggr, 10).unwrap()) };
+                println!("Found {:?}", piece);
+                if blank_tiles_count > 0 {
+                    result.push(char::from_digit(blank_tiles_count, 10).unwrap());
+                    blank_tiles_count = 0;
+                };
                 let glyph = generate_fen_piece(piece);
                 result.push(glyph);
-            } else { empty_aggr += 1; }
+            } else { blank_tiles_count += 1; }
         }
 
-        if empty_aggr > 0 { result.push(char::from_digit(empty_aggr, 10).unwrap()) };
+        if blank_tiles_count > 0 { result.push(char::from_digit(blank_tiles_count, 10).unwrap()) };
         if r > 0 { result.push('/') };
     }
+
+    println!("Board 0,0: {:?}", game_state.board[(File::new(0),Rank::new(0))]);
 
     result.push_str(" w KQkq - 0 1");
     result
@@ -115,11 +123,23 @@ mod tests {
     }
 
     #[test]
-    fn generate_fen_from_game_state() {
+    fn generate_starting_game_fen() {
         let state = GameState::new();
 
         let result = generate_fen(&state);
 
         assert_eq!("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1", result);
+    }
+
+    #[test]
+    fn generate_complex_fen() {
+        //Technically this FEN is illegal because the kings shouldn't be able to castle,
+        //but we haven't implemented castling at time of writing
+        let test_fen = "rnBNkQn1/ppppNRpp/1PP2p2/2B1p3/2q2Kb1/5r2/2PPPPPP/R7 w KQkq - 0 1";
+        let state = GameState::from_fen(test_fen);
+
+        let result = generate_fen(&state);
+
+        assert_eq!(test_fen, result);
     }
 }
