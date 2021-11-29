@@ -1,5 +1,6 @@
 use crate::state::coordinates::{File, Rank};
 use crate::state::piece::{Piece, PieceType};
+use crate::state::GameState;
 
 pub fn parse_fen(fen: &str, callback: &mut dyn FnMut((File, Rank), Option<Piece>)) {
     let mut rank = Rank::new(7);
@@ -33,6 +34,39 @@ pub fn parse_fen(fen: &str, callback: &mut dyn FnMut((File, Rank), Option<Piece>
 
         file += 1;
     }
+}
+
+pub fn generate_fen(game_state: &GameState) -> String {
+    let mut result = String::new();
+
+    for r in (0..=Rank::MAX).rev() {
+        let mut empty_aggr = 0;
+        for f in 0..=File::MAX {
+            if let Some(piece) = game_state.board[(File::new(f),Rank::new(r))] {
+                if empty_aggr > 0 { result.push(char::from_digit(empty_aggr, 10).unwrap()) };
+                let glyph = generate_fen_piece(piece);
+                result.push(glyph);
+            } else { empty_aggr += 1; }
+        }
+
+        if empty_aggr > 0 { result.push(char::from_digit(empty_aggr, 10).unwrap()) };
+        if r > 0 { result.push('/') };
+    }
+
+    result.push_str(" w KQkq - 0 1");
+    result
+}
+
+fn generate_fen_piece(piece: Piece) -> char {
+    let piece_type = match piece.piece_type {
+        PieceType::Rook => 'r',
+        PieceType::Knight => 'n',
+        PieceType::Bishop => 'b',
+        PieceType::Queen => 'q',
+        PieceType::King => 'k',
+        PieceType::Pawn => 'p',
+    };
+    if piece.is_owned_by_first_player { piece_type.to_uppercase().next().unwrap() } else {piece_type}
 }
 
 #[cfg(test)]
@@ -80,4 +114,12 @@ mod tests {
         assert_eq!(true, result.get(0).unwrap().is_owned_by_first_player);
     }
 
+    #[test]
+    fn generate_fen_from_game_state() {
+        let state = GameState::new();
+
+        let result = generate_fen(&state);
+
+        assert_eq!("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1", result);
+    }
 }

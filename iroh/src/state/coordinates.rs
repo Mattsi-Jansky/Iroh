@@ -7,6 +7,8 @@ pub struct File {
 }
 
 impl File {
+    pub const MAX: usize = 7;
+
     pub fn new(inner: usize) -> File {
         File{inner}
     }
@@ -24,6 +26,8 @@ pub struct Rank {
 }
 
 impl Rank {
+    pub const MAX: usize = 7;
+
     pub fn new(inner: usize) -> Rank {
         Rank{inner}
     }
