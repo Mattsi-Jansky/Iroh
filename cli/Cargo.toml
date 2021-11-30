@@ -8,3 +8,5 @@ edition = "2021"
 [dependencies]
 
 iroh = { path = "../iroh" }
+console = "0.15.0"
+galvanic-assert = "0.8.7"
