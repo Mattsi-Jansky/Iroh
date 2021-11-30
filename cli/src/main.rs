@@ -1,5 +1,4 @@
 mod fen_display;
-mod terminal;
 
 use std::io::Write;
 use console::Term;
@@ -9,14 +8,26 @@ use crate::fen_display::generate_display_from_fen;
 fn main() {
     let mut term = Term::stdout();
     term.clear_screen();
-
     let mut game = Game::new();
-    render(&term, &game);
-    term.write_line("");
-    term.write("Your move: ".as_bytes());
 
-    let read = term.read_line();
-    term.clear_last_lines(8);
+    while true {
+        render(&term, &game);
+        term.write_line("");
+        term.write("Your move: ".as_bytes());
+
+        let input = term.read_line().unwrap();
+        let result = game.make_move(&*input);
+
+        if let Ok(new_game_state) = result {
+            term.clear_screen();
+            term.write_line("");
+            game = new_game_state;
+        } else {
+            term.write_line("");
+            term.clear_screen();
+            term.write_line(&*format!("Sorry, {} is not a legal move.", input));
+        }
+    }
 }
 
 fn render(term: &Term, game: &Game) {

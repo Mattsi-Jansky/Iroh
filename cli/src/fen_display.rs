@@ -1,13 +1,15 @@
-pub fn generate_display_from_fen(fen: &str) -> [String; 8] {
+pub fn generate_display_from_fen(fen: &str) -> [String; 10] {
     let mut result = [
-        String::new(),
-        String::new(),
-        String::new(),
-        String::new(),
-        String::new(),
-        String::new(),
-        String::new(),
-        String::new(),
+        String::from("8| "),
+        String::from("7| "),
+        String::from("6| "),
+        String::from("5| "),
+        String::from("4| "),
+        String::from("3| "),
+        String::from("2| "),
+        String::from("1| "),
+        String::from("   _______________"),
+        String::from("   a b c d e f g h"),
     ];
 
     let mut parts = fen[..fen.len() - 13].split('/');
@@ -54,14 +56,16 @@ mod tests {
         let result = generate_display_from_fen("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
 
         assert_eq!(result, [
-            String::from("r n b q k b n r"),
-            String::from("p p p p p p p p"),
-            String::from("◼ ◼ ◼ ◼ ◼ ◼ ◼ ◼"),
-            String::from("◼ ◼ ◼ ◼ ◼ ◼ ◼ ◼"),
-            String::from("◼ ◼ ◼ ◼ ◼ ◼ ◼ ◼"),
-            String::from("◼ ◼ ◼ ◼ ◼ ◼ ◼ ◼"),
-            String::from("P P P P P P P P"),
-            String::from("R N B Q K B N R"),
+            String::from("8| r n b q k b n r"),
+            String::from("7| p p p p p p p p"),
+            String::from("6| ◼ ◼ ◼ ◼ ◼ ◼ ◼ ◼"),
+            String::from("5| ◼ ◼ ◼ ◼ ◼ ◼ ◼ ◼"),
+            String::from("4| ◼ ◼ ◼ ◼ ◼ ◼ ◼ ◼"),
+            String::from("3| ◼ ◼ ◼ ◼ ◼ ◼ ◼ ◼"),
+            String::from("2| P P P P P P P P"),
+            String::from("1| R N B Q K B N R"),
+            String::from("   _______________"),
+            String::from("   a b c d e f g h"),
         ]);
     }
 }
