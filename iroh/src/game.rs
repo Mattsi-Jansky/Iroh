@@ -5,6 +5,7 @@ use crate::error::IllegalMoveError;
 use crate::moves::move_generation::generate_moves;
 use crate::moves::{Move};
 use crate::moves::resolve_move::resolve_move;
+use crate::serialisers::fen::generate_fen;
 use crate::state::GameState;
 
 pub struct Game {
@@ -25,6 +26,10 @@ impl Game {
             sans: vec![],
             game_state: GameState::from_fen(fen),
         }
+    }
+
+    pub fn generate_fen(&self) -> String {
+        generate_fen(&self.game_state)
     }
 
     pub fn get_available_moves(&self) -> Vec<Move> {

@@ -202,3 +202,12 @@ fn attack_move_from_pawn() {
         PieceType::Pawn
     ]));
 }
+
+#[test]
+fn generate_fen_from_game() {
+    let mut game = Game::new();
+
+    let result = game.generate_fen();
+
+    assert_eq!("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1", result);
+}
