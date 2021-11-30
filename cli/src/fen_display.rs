@@ -20,7 +20,7 @@ pub fn generate_display_from_fen(fen: &str) -> [String; 10] {
         let mut file_index = 0;
         for c in part.chars() {
             if !c.is_digit(10) {
-                line.push(c);
+                line.push(glyph_for(c));
                 if file_index != 7 {
                     line.push(' ');
                 }
@@ -28,7 +28,12 @@ pub fn generate_display_from_fen(fen: &str) -> [String; 10] {
             } else {
                 let digit = c as usize - 0x30;
                 for i in 0..digit {
-                    line.push('◼');
+                    if (rank_index % 2) == (file_index % 2) {
+                        line.push('◻');
+                    } else {
+                        line.push('◼');
+                    }
+
                     if file_index != 7 {
                         line.push(' ')
                     }
@@ -41,6 +46,26 @@ pub fn generate_display_from_fen(fen: &str) -> [String; 10] {
     }
 
     result
+}
+
+fn glyph_for(c: char) -> char {
+    match c {
+        'R' => '♖',
+        'N' => '♘',
+        'B' => '♗',
+        'Q' => '♕',
+        'K' => '♔',
+        'P' => '♙',
+
+        'r' => '♜',
+        'n' => '♞',
+        'b' => '♝',
+        'q' => '♛',
+        'k' => '♚',
+        'p' => '♟',
+
+        _ => panic!("Unknown chess notation, cannot render")
+    }
 }
 
 #[cfg(test)]
@@ -56,14 +81,14 @@ mod tests {
         let result = generate_display_from_fen("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
 
         assert_eq!(result, [
-            String::from("8| r n b q k b n r"),
-            String::from("7| p p p p p p p p"),
-            String::from("6| ◼ ◼ ◼ ◼ ◼ ◼ ◼ ◼"),
-            String::from("5| ◼ ◼ ◼ ◼ ◼ ◼ ◼ ◼"),
-            String::from("4| ◼ ◼ ◼ ◼ ◼ ◼ ◼ ◼"),
-            String::from("3| ◼ ◼ ◼ ◼ ◼ ◼ ◼ ◼"),
-            String::from("2| P P P P P P P P"),
-            String::from("1| R N B Q K B N R"),
+            String::from("8| ♜ ♞ ♝ ♛ ♚ ♝ ♞ ♜"),
+            String::from("7| ♟ ♟ ♟ ♟ ♟ ♟ ♟ ♟"),
+            String::from("6| ◻ ◼ ◻ ◼ ◻ ◼ ◻ ◼"),
+            String::from("5| ◼ ◻ ◼ ◻ ◼ ◻ ◼ ◻"),
+            String::from("4| ◻ ◼ ◻ ◼ ◻ ◼ ◻ ◼"),
+            String::from("3| ◼ ◻ ◼ ◻ ◼ ◻ ◼ ◻"),
+            String::from("2| ♙ ♙ ♙ ♙ ♙ ♙ ♙ ♙"),
+            String::from("1| ♖ ♘ ♗ ♕ ♔ ♗ ♘ ♖"),
             String::from("   _______________"),
             String::from("   a b c d e f g h"),
         ]);
