@@ -7,7 +7,6 @@ pub fn parse_fen(fen: &str, callback: &mut dyn FnMut((File, Rank), Option<Piece>
     let mut file = File::new(0);
 
     for char in fen[..fen.len() - 13].chars() {
-        println!("{}/{}: {}", file, rank, char);
         if char.eq(&'/') {
             rank -= 1;
             file = File::new(0);
@@ -43,9 +42,7 @@ pub fn generate_fen(game_state: &GameState) -> String {
     for r in (0..=Rank::MAX).rev() {
         let mut blank_tiles_count = 0;
         for f in 0..=File::MAX {
-            println!("{}/{}", f, r);
             if let Some(piece) = game_state.board[(File::new(f),Rank::new(r))] {
-                println!("Found {:?}", piece);
                 if blank_tiles_count > 0 {
                     result.push(char::from_digit(blank_tiles_count, 10).unwrap());
                     blank_tiles_count = 0;
@@ -58,8 +55,6 @@ pub fn generate_fen(game_state: &GameState) -> String {
         if blank_tiles_count > 0 { result.push(char::from_digit(blank_tiles_count, 10).unwrap()) };
         if r > 0 { result.push('/') };
     }
-
-    println!("Board 0,0: {:?}", game_state.board[(File::new(0),Rank::new(0))]);
 
     result.push_str(" w KQkq - 0 1");
     result
