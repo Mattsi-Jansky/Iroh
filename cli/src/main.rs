@@ -13,6 +13,8 @@ fn main() {
     while true {
         render(&term, &game);
         term.write_line("");
+        term.write_line(&*game.get_pgn());
+        term.write_line("");
         term.write("Your move: ".as_bytes());
 
         let input = term.read_line().unwrap();
