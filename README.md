@@ -14,6 +14,5 @@ Run tests with `cargo test`
 
 * Shouldn't `from_fen` (both of them) return `Result` / do validation?
 * Pawn nuance
-    * Promotions
     * En Passant
 * Castling
