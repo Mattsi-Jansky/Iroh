@@ -10,16 +10,30 @@ pub mod captured_pieces;
 pub struct GameState {
     turn_number: u16,
     pub board: Board,
-    pub captured_pieces: CapturedPieces
+    pub captured_pieces: CapturedPieces,
+    pub first_player_can_castle_kingside: bool,
+    pub first_player_can_castle_queenside: bool,
 }
 
 impl GameState {
     pub fn new() -> GameState {
-        GameState { turn_number: 1, board: Board::new(), captured_pieces: CapturedPieces::new() }
+        GameState {
+            turn_number: 1,
+            board: Board::new(),
+            captured_pieces: CapturedPieces::new(),
+            first_player_can_castle_kingside: true,
+            first_player_can_castle_queenside: true
+        }
     }
 
     pub fn from_fen(fen: &str) -> GameState {
-        GameState { turn_number: 1, board: Board::from_fen(fen), captured_pieces: CapturedPieces::new() }
+        GameState {
+            turn_number: 1,
+            board: Board::from_fen(fen),
+            captured_pieces: CapturedPieces::new(),
+            first_player_can_castle_kingside: true,
+            first_player_can_castle_queenside: true
+        }
     }
 
     pub fn is_first_player_turn(&self) -> bool {

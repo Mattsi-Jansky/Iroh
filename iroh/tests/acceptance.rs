@@ -220,7 +220,7 @@ fn promote_to_queen() {
     game = game.make_move("d8=Q").unwrap();
 
     assert_eq!("1. d8=Q *", game.get_pgn());
-    assert_eq!("3Q4/8/8/8/8/8/8/8 w KQkq - 0 1", game.generate_fen());
+    assert_eq!("3Q4/8/8/8/8/8/8/8 b KQkq - 0 1", game.generate_fen());
 }
 
 #[test]
@@ -231,7 +231,7 @@ fn promote_to_knight() {
     game = game.make_move("d8=N").unwrap();
 
     assert_eq!("1. d8=N *", game.get_pgn());
-    assert_eq!("3N4/8/8/8/8/8/8/8 w KQkq - 0 1", game.generate_fen());
+    assert_eq!("3N4/8/8/8/8/8/8/8 b KQkq - 0 1", game.generate_fen());
 }
 
 #[test]
@@ -242,7 +242,7 @@ fn promote_to_bishop() {
     game = game.make_move("d8=B").unwrap();
 
     assert_eq!("1. d8=B *", game.get_pgn());
-    assert_eq!("3B4/8/8/8/8/8/8/8 w KQkq - 0 1", game.generate_fen());
+    assert_eq!("3B4/8/8/8/8/8/8/8 b KQkq - 0 1", game.generate_fen());
 }
 
 #[test]
@@ -253,7 +253,7 @@ fn promote_to_rook() {
     game = game.make_move("d8=R").unwrap();
 
     assert_eq!("1. d8=R *", game.get_pgn());
-    assert_eq!("3R4/8/8/8/8/8/8/8 w KQkq - 0 1", game.generate_fen());
+    assert_eq!("3R4/8/8/8/8/8/8/8 b KQkq - 0 1", game.generate_fen());
 }
 
 #[test]

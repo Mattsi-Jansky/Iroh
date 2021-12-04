@@ -56,7 +56,11 @@ pub fn generate_fen(game_state: &GameState) -> String {
         if r > 0 { result.push('/') };
     }
 
-    result.push_str(" w KQkq - 0 1");
+    result.push_str(&*format!(
+        " {} {}{}kq - 0 1",
+        if game_state.is_first_player_turn() {"w"} else {"b"},
+        if game_state.first_player_can_castle_kingside {"K"} else {""},
+        if game_state.first_player_can_castle_queenside {"Q"} else {""}));
     result
 }
 
@@ -136,5 +140,35 @@ mod tests {
         let result = generate_fen(&state);
 
         assert_eq!(test_fen, result);
+    }
+
+    #[test]
+    fn generate_metadata_can_first_player_castle_kingside() {
+        let mut state = GameState::from_fen("8/8/8/8/8/8/8/8 w KQkq - 0 1");
+        state.first_player_can_castle_kingside = false;
+
+        let result = generate_fen(&state);
+
+        assert_eq!("8/8/8/8/8/8/8/8 w Qkq - 0 1", result);
+    }
+
+    #[test]
+    fn generate_metadata_can_first_player_castle_queenside() {
+        let mut state = GameState::from_fen("8/8/8/8/8/8/8/8 w KQkq - 0 1");
+        state.first_player_can_castle_queenside = false;
+
+        let result = generate_fen(&state);
+
+        assert_eq!("8/8/8/8/8/8/8/8 w Kkq - 0 1", result);
+    }
+
+    #[test]
+    fn generate_metadata_which_players_turn_is_it() {
+        let mut state = GameState::from_fen("8/8/8/8/8/8/8/8 w KQkq - 0 1");
+        state.increment_turn_number();
+
+        let result = generate_fen(&state);
+
+        assert_eq!("8/8/8/8/8/8/8/8 b KQkq - 0 1", result);
     }
 }

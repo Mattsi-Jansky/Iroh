@@ -31,6 +31,10 @@ pub fn generate_pawn_promotion_san(file: File, is_owned_by_first_player: bool, p
     )
 }
 
+pub fn generate_castling_san(is_kingside: bool) -> String {
+    String::from("O-O")
+}
+
 fn to_alpha_file(file: File) -> char {
     (file + 97).into()
 }
@@ -76,5 +80,12 @@ mod tests {
         let result = generate_pawn_attack_san(File::new(2), File::new(3), Rank::new(3));
 
         assert_eq!("cxd4", result);
+    }
+
+    #[test]
+    fn given_kingside_castling_move_should_generate_san() {
+        let result = generate_castling_san(true);
+
+        assert_eq!(result, "O-O");
     }
 }

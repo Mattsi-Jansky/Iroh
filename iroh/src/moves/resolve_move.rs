@@ -43,6 +43,16 @@ pub fn resolve_move(requested_move: Move, mut game_state: GameState) -> GameStat
             game_state.board[(file,to_rank)] =
                 Some(Piece { is_owned_by_first_player: game_state.is_first_player_turn(), piece_type })
         }
+        Move::Castle(is_kingside) => {
+            let king = game_state.board[(File::new(4), Rank::new(0))].unwrap();
+            let rook = game_state.board[(File::new(7), Rank::new(0))].unwrap();
+            game_state.board[(File::new(4), Rank::new(0))] = None;
+            game_state.board[(File::new(7), Rank::new(0))] = None;
+            game_state.board[(File::new(5),Rank::new(0))] = Some(rook);
+            game_state.board[(File::new(6),Rank::new(0))] = Some(king);
+            game_state.first_player_can_castle_kingside = false;
+            game_state.first_player_can_castle_queenside = false;
+        }
     }
 
     game_state.increment_turn_number();

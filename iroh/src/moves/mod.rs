@@ -1,12 +1,13 @@
 use crate::state::coordinates::{File, Rank};
 use crate::state::piece::PieceType;
-use crate::serialisers::san::{generate_attack_san, generate_pawn_attack_san, generate_pawn_promotion_san, generate_pawn_san, generate_san};
+use crate::serialisers::san::{generate_attack_san, generate_castling_san, generate_pawn_attack_san, generate_pawn_promotion_san, generate_pawn_san, generate_san};
 
 pub mod move_generation;
 pub mod resolve_move;
 mod pawn_moves;
 mod static_moves;
 mod dynamic_moves;
+mod castling_moves;
 
 #[derive(PartialEq)]
 #[derive(Debug)]
@@ -15,7 +16,8 @@ pub enum Move {
     AttackMove((File, Rank), (File, Rank), PieceType),
     PawnMove((File,Rank),Rank),
     PawnAttackMove(File,(File,Rank)),
-    PawnPromotion(File,bool,PieceType)
+    PawnPromotion(File,bool,PieceType),
+    Castle(bool)
 }
 
 impl Move {
@@ -36,6 +38,9 @@ impl Move {
             },
             Move::PawnPromotion(file, is_owned_by_first_player, piece_type) => {
                 generate_pawn_promotion_san(file, is_owned_by_first_player, piece_type)
+            }
+            Move::Castle(is_kingside) => {
+                generate_castling_san(is_kingside)
             }
         }
     }

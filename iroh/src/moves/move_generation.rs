@@ -1,5 +1,6 @@
 use crate::state::coordinates::{File, Rank};
 use crate::moves::{dynamic_moves, Move, pawn_moves, static_moves};
+use crate::moves::castling_moves::generate_castling_moves;
 use crate::state::GameState;
 use crate::state::piece::PieceType;
 
@@ -17,6 +18,8 @@ pub fn generate_moves(game_state: &GameState) -> Vec<Move> {
             PieceType::Queen => dynamic_moves::generate_queen_moves(&mut available_moves, piece, game_state)
         }
     }
+
+    generate_castling_moves(&mut available_moves, game_state);
 
     available_moves
 }
