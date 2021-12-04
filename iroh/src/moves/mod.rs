@@ -4,6 +4,9 @@ use crate::serialisers::san::{generate_attack_san, generate_pawn_attack_san, gen
 
 pub mod move_generation;
 pub mod resolve_move;
+mod pawn_moves;
+mod static_moves;
+mod dynamic_moves;
 
 #[derive(PartialEq)]
 #[derive(Debug)]
