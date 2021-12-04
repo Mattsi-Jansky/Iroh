@@ -16,3 +16,6 @@ Run tests with `cargo test`
 * Pawn nuance
     * En Passant
 * Castling
+* Check
+* Checkmate
+* Draws and draw offers
