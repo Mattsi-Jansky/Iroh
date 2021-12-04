@@ -68,7 +68,7 @@ fn pawns_only_move_two_if_they_have_not_moved_yet() {
 
 #[test]
 fn rooks_cannot_jump() {
-    let mut game = Game::new();
+    let game = Game::new();
 
     let result = game.make_move("Rh3");
 
@@ -77,7 +77,7 @@ fn rooks_cannot_jump() {
 
 #[test]
 fn queens_cannot_jump() {
-    let mut game = Game::new();
+    let game = Game::new();
 
     let result = game.make_move("Qd3");
 
@@ -86,7 +86,7 @@ fn queens_cannot_jump() {
 
 #[test]
 fn bishops_cannot_jump() {
-    let mut game = Game::new();
+    let game = Game::new();
 
     let result = game.make_move("Be3");
 
@@ -95,7 +95,7 @@ fn bishops_cannot_jump() {
 
 #[test]
 fn pawns_cannot_jump() {
-    let mut game = Game::from_fen("8/8/8/8/8/3p4/3P4/8 w - - 0 1");
+    let game = Game::from_fen("8/8/8/8/8/3p4/3P4/8 w - - 0 1");
 
     let result = game.make_move("d4");
 

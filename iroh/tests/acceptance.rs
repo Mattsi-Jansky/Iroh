@@ -205,7 +205,7 @@ fn attack_move_from_pawn() {
 
 #[test]
 fn generate_fen_from_game() {
-    let mut game = Game::new();
+    let game = Game::new();
 
     let result = game.generate_fen();
 

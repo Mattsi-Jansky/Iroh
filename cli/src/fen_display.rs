@@ -27,7 +27,7 @@ pub fn generate_display_from_fen(fen: &str) -> [String; 10] {
                 file_index += 1;
             } else {
                 let digit = c as usize - 0x30;
-                for i in 0..digit {
+                for _i in 0..digit {
                     if (rank_index % 2) == (file_index % 2) {
                         line.push('◻');
                     } else {
@@ -70,10 +70,6 @@ fn glyph_for(c: char) -> char {
 
 #[cfg(test)]
 mod tests {
-    use galvanic_assert::assert_that;
-    use galvanic_assert::matchers::*;
-    use galvanic_assert::matchers::collection::*;
-
     use super::*;
 
     #[test]
