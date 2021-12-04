@@ -255,3 +255,15 @@ fn promote_to_rook() {
     assert_eq!("1. d8=R *", game.get_pgn());
     assert_eq!("3R4/8/8/8/8/8/8/8 w KQkq - 0 1", game.generate_fen());
 }
+
+#[test]
+fn promote_second_player_pawn_to_queen() {
+    //Technically these FEN are illegal, but at time of writing castling is not implemented
+    let mut game = Game::from_fen("8/8/3P4/8/8/8/3p4/8 w KQkq - 0 1");
+
+    game = game.make_move("d7").unwrap();
+    game = game.make_move("d1=Q").unwrap();
+
+    assert_eq!("1. d7 d1=Q *", game.get_pgn());
+    assert_eq!("8/3P4/8/8/8/8/8/3q4 w KQkq - 0 1", game.generate_fen());
+}

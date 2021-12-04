@@ -36,9 +36,11 @@ pub fn resolve_move(requested_move: Move, mut game_state: GameState) -> GameStat
                        to_file,
                        to_rank);
         }
-        Move::PawnPromotion(file, piece_type) => {
-            game_state.board[(file,Rank::new(6))] = None;
-            game_state.board[(file,Rank::new(7))] =
+        Move::PawnPromotion(file, is_owned_by_first_player, piece_type) => {
+            let from_rank = Rank::new(if is_owned_by_first_player {6} else {1});
+            let to_rank = Rank::new(if is_owned_by_first_player {7} else {0});
+            game_state.board[(file,from_rank)] = None;
+            game_state.board[(file,to_rank)] =
                 Some(Piece { is_owned_by_first_player: game_state.is_first_player_turn(), piece_type })
         }
     }

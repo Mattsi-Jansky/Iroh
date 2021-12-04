@@ -23,8 +23,12 @@ pub fn generate_pawn_attack_san(_starting_file: File,target_file: File, target_r
     format!("{}x{}{}", to_alpha_file(_starting_file), to_alpha_file(target_file), target_rank+1)
 }
 
-pub fn generate_pawn_promotion_san(file: File, piece_type: PieceType) -> String {
-    format!("{}8={}", to_alpha_file(file), to_piece_identifier(piece_type))
+pub fn generate_pawn_promotion_san(file: File, is_owned_by_first_player: bool, piece_type: PieceType) -> String {
+    format!("{}{}={}",
+            to_alpha_file(file),
+            if is_owned_by_first_player {8} else {1},
+            to_piece_identifier(piece_type)
+    )
 }
 
 fn to_alpha_file(file: File) -> char {

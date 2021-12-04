@@ -12,7 +12,7 @@ pub enum Move {
     AttackMove((File, Rank), (File, Rank), PieceType),
     PawnMove((File,Rank),Rank),
     PawnAttackMove(File,(File,Rank)),
-    PawnPromotion(File,PieceType)
+    PawnPromotion(File,bool,PieceType)
 }
 
 impl Move {
@@ -31,8 +31,8 @@ impl Move {
             Move::PawnAttackMove(starting_file,(target_file, target_rank)) => {
                 generate_pawn_attack_san(starting_file, target_file, target_rank)
             },
-            Move::PawnPromotion(file, piece_type) => {
-                generate_pawn_promotion_san(file, piece_type)
+            Move::PawnPromotion(file, is_owned_by_first_player, piece_type) => {
+                generate_pawn_promotion_san(file, is_owned_by_first_player, piece_type)
             }
         }
     }
