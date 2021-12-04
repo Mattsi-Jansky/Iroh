@@ -2,6 +2,7 @@ use crate::state::board::Board;
 use crate::state::coordinates::{File, Rank};
 use crate::moves::Move;
 use crate::state::GameState;
+use crate::state::piece::Piece;
 
 pub fn resolve_move(requested_move: Move, mut game_state: GameState) -> GameState {
     match requested_move {
@@ -34,6 +35,11 @@ pub fn resolve_move(requested_move: Move, mut game_state: GameState) -> GameStat
                            .expect("should not be possible to get an out of bounds pawn attack command"),
                        to_file,
                        to_rank);
+        }
+        Move::PawnPromotion(file, piece_type) => {
+            game_state.board[(file,Rank::new(6))] = None;
+            game_state.board[(file,Rank::new(7))] =
+                Some(Piece { is_owned_by_first_player: game_state.is_first_player_turn(), piece_type })
         }
     }
 

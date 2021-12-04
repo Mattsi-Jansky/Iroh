@@ -211,3 +211,14 @@ fn generate_fen_from_game() {
 
     assert_eq!("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1", result);
 }
+
+#[test]
+fn promote_to_queen() {
+    //Technically these FEN are illegal, but at time of writing castling is not implemented
+    let mut game = Game::from_fen("8/3P4/8/8/8/8/8/8 w KQkq - 0 1");
+
+    game = game.make_move("d8=Q").unwrap();
+
+    assert_eq!("1. d8=Q *", game.get_pgn());
+    assert_eq!("3Q4/8/8/8/8/8/8/8 w KQkq - 0 1", game.generate_fen());
+}

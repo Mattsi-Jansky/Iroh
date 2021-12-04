@@ -122,7 +122,14 @@ fn generate_pawn_moves(game_state: &GameState, available_moves: &mut Vec<Move>, 
     let ahead_twice_rank = if game_state.is_first_player_turn() { pawn.2 + 2 } else { pawn.2 - 2 };
 
     if game_state.board[(pawn.1, ahead_rank)].is_none() {
-        available_moves.push(Move::PawnMove { 0: (pawn.1, pawn.2), 1: ahead_rank });
+        if ahead_rank == 7 {
+            available_moves.push(Move::PawnPromotion { 0: pawn.1, 1: PieceType::Queen });
+            available_moves.push(Move::PawnPromotion { 0: pawn.1, 1: PieceType::Knight });
+            available_moves.push(Move::PawnPromotion { 0: pawn.1, 1: PieceType::Bishop});
+            available_moves.push(Move::PawnPromotion { 0: pawn.1, 1: PieceType::Rook });
+        } else {
+            available_moves.push(Move::PawnMove { 0: (pawn.1, pawn.2), 1: ahead_rank });
+        }
     }
     if is_on_starting_file
         && game_state.board[(pawn.1, ahead_rank)].is_none()
