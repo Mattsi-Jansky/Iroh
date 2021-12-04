@@ -12,9 +12,8 @@ pub fn generate_display_from_fen(fen: &str) -> [String; 10] {
         String::from("   a b c d e f g h"),
     ];
 
-    let mut parts = fen[..fen.len() - 13].split('/');
-    let mut rank_index = 0;
-    while let Some(part) = parts.next() {
+    let parts = fen[..fen.len() - 13].split('/');
+    for (rank_index, part) in parts.enumerate() {
         let line = &mut result[rank_index];
 
         let mut file_index = 0;
@@ -41,8 +40,6 @@ pub fn generate_display_from_fen(fen: &str) -> [String; 10] {
                 }
             }
         }
-
-        rank_index += 1;
     }
 
     result

@@ -15,17 +15,16 @@ fn main() {
         term.write_line("").unwrap();
         term.write_line(&*game.get_pgn()).unwrap();
         term.write_line("").unwrap();
-        term.write("Your move: ".as_bytes()).unwrap();
+        term.write_all("Your move: ".as_bytes()).unwrap();
 
         let input = term.read_line().unwrap();
         let result = game.make_move(&*input);
 
+        term.clear_screen().unwrap();
         if let Ok(new_game_state) = result {
-            term.clear_screen().unwrap();
             term.write_line("").unwrap();
             game = new_game_state;
         } else {
-            term.clear_screen().unwrap();
             term.write_line(&*format!("Sorry, {} is not a legal move.", input)).unwrap();
         }
     }
