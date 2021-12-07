@@ -1,6 +1,5 @@
 use std::ops::{Index, IndexMut};
 use crate::state::coordinates::{File, Rank};
-use crate::serialisers::fen::parse_fen;
 use crate::state::piece::{Piece, PieceType};
 
 const STARTING_POSITION_FEN: &str = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
@@ -11,11 +10,7 @@ pub struct Board {
 }
 
 impl Board {
-    pub fn new() -> Board {
-        Board::from_fen(STARTING_POSITION_FEN)
-    }
-
-    fn blank() -> Board {
+    pub fn blank() -> Board {
         Board {
             state: [
                 None,None,None,None,None,None,None,None,
@@ -28,16 +23,6 @@ impl Board {
                 None,None,None,None,None,None,None,None,
             ]
         }
-    }
-
-    pub fn from_fen(fen: &str) -> Board {
-        let mut board = Board::blank();
-
-        parse_fen(fen, &mut |(file, rank), piece| {
-            board.state[*file + *(rank * 8)] = piece;
-        });
-
-        board
     }
 
     pub(crate) fn get_all_pieces_belonging_to_player(&self, is_owned_by_first_player: bool) -> Vec<(PieceType, File, Rank)> {
@@ -70,7 +55,7 @@ impl IndexMut<(File,Rank)> for Board {
 
 impl Default for Board {
     fn default() -> Self {
-        Board::new()
+        Board::blank()
     }
 }
 
@@ -80,6 +65,8 @@ mod tests {
     use galvanic_assert::matchers::*;
     use galvanic_assert::matchers::collection::*;
 
+    use crate::serialisers::fen::parse_fen;
+    use crate::state::GameState;
     use super::*;
 
     #[test]
@@ -116,85 +103,8 @@ mod tests {
     }
 
     #[test]
-    fn create_board_from_fen_layout() {
-        let result = Board::from_fen(STARTING_POSITION_FEN);
-
-        assert_that!(&result[(File::new(0),Rank::new(0))].unwrap(), eq(Piece::new(true, PieceType::Rook)));
-        assert_that!(&result[(File::new(1),Rank::new(0))].unwrap(), eq(Piece::new(true, PieceType::Knight)));
-        assert_that!(&result[(File::new(2),Rank::new(0))].unwrap(), eq(Piece::new(true, PieceType::Bishop)));
-        assert_that!(&result[(File::new(3),Rank::new(0))].unwrap(), eq(Piece::new(true, PieceType::Queen)));
-        assert_that!(&result[(File::new(4),Rank::new(0))].unwrap(), eq(Piece::new(true, PieceType::King)));
-        assert_that!(&result[(File::new(5),Rank::new(0))].unwrap(), eq(Piece::new(true, PieceType::Bishop)));
-        assert_that!(&result[(File::new(6),Rank::new(0))].unwrap(), eq(Piece::new(true, PieceType::Knight)));
-        assert_that!(&result[(File::new(7),Rank::new(0))].unwrap(), eq(Piece::new(true, PieceType::Rook)));
-
-        assert_that!(&result[(File::new(0),Rank::new(1))].unwrap(), eq(Piece::new(true, PieceType::Pawn)));
-        assert_that!(&result[(File::new(1),Rank::new(1))].unwrap(), eq(Piece::new(true, PieceType::Pawn)));
-        assert_that!(&result[(File::new(2),Rank::new(1))].unwrap(), eq(Piece::new(true, PieceType::Pawn)));
-        assert_that!(&result[(File::new(3),Rank::new(1))].unwrap(), eq(Piece::new(true, PieceType::Pawn)));
-        assert_that!(&result[(File::new(4),Rank::new(1))].unwrap(), eq(Piece::new(true, PieceType::Pawn)));
-        assert_that!(&result[(File::new(5),Rank::new(1))].unwrap(), eq(Piece::new(true, PieceType::Pawn)));
-        assert_that!(&result[(File::new(6),Rank::new(1))].unwrap(), eq(Piece::new(true, PieceType::Pawn)));
-        assert_that!(&result[(File::new(7),Rank::new(1))].unwrap(), eq(Piece::new(true, PieceType::Pawn)));
-
-        assert!(result[(File::new(0),Rank::new(2))].is_none());
-        assert!(result[(File::new(1),Rank::new(2))].is_none());
-        assert!(result[(File::new(2),Rank::new(2))].is_none());
-        assert!(result[(File::new(3),Rank::new(2))].is_none());
-        assert!(result[(File::new(4),Rank::new(2))].is_none());
-        assert!(result[(File::new(5),Rank::new(2))].is_none());
-        assert!(result[(File::new(6),Rank::new(2))].is_none());
-        assert!(result[(File::new(7),Rank::new(2))].is_none());
-
-        assert!(result[(File::new(0),Rank::new(3))].is_none());
-        assert!(result[(File::new(1),Rank::new(3))].is_none());
-        assert!(result[(File::new(2),Rank::new(3))].is_none());
-        assert!(result[(File::new(3),Rank::new(3))].is_none());
-        assert!(result[(File::new(4),Rank::new(3))].is_none());
-        assert!(result[(File::new(5),Rank::new(3))].is_none());
-        assert!(result[(File::new(6),Rank::new(3))].is_none());
-        assert!(result[(File::new(7),Rank::new(3))].is_none());
-
-        assert!(result[(File::new(0),Rank::new(4))].is_none());
-        assert!(result[(File::new(1),Rank::new(4))].is_none());
-        assert!(result[(File::new(2),Rank::new(4))].is_none());
-        assert!(result[(File::new(3),Rank::new(4))].is_none());
-        assert!(result[(File::new(4),Rank::new(4))].is_none());
-        assert!(result[(File::new(5),Rank::new(4))].is_none());
-        assert!(result[(File::new(6),Rank::new(4))].is_none());
-        assert!(result[(File::new(7),Rank::new(4))].is_none());
-
-        assert!(result[(File::new(0),Rank::new(5))].is_none());
-        assert!(result[(File::new(1),Rank::new(5))].is_none());
-        assert!(result[(File::new(2),Rank::new(5))].is_none());
-        assert!(result[(File::new(3),Rank::new(5))].is_none());
-        assert!(result[(File::new(4),Rank::new(5))].is_none());
-        assert!(result[(File::new(5),Rank::new(5))].is_none());
-        assert!(result[(File::new(6),Rank::new(5))].is_none());
-        assert!(result[(File::new(7),Rank::new(5))].is_none());
-
-        assert_that!(&result[(File::new(0),Rank::new(6))].unwrap(), eq(Piece::new(false, PieceType::Pawn)));
-        assert_that!(&result[(File::new(1),Rank::new(6))].unwrap(), eq(Piece::new(false, PieceType::Pawn)));
-        assert_that!(&result[(File::new(2),Rank::new(6))].unwrap(), eq(Piece::new(false, PieceType::Pawn)));
-        assert_that!(&result[(File::new(3),Rank::new(6))].unwrap(), eq(Piece::new(false, PieceType::Pawn)));
-        assert_that!(&result[(File::new(4),Rank::new(6))].unwrap(), eq(Piece::new(false, PieceType::Pawn)));
-        assert_that!(&result[(File::new(5),Rank::new(6))].unwrap(), eq(Piece::new(false, PieceType::Pawn)));
-        assert_that!(&result[(File::new(6),Rank::new(6))].unwrap(), eq(Piece::new(false, PieceType::Pawn)));
-        assert_that!(&result[(File::new(7),Rank::new(6))].unwrap(), eq(Piece::new(false, PieceType::Pawn)));
-
-        assert_that!(&result[(File::new(0),Rank::new(7))].unwrap(), eq(Piece::new(false, PieceType::Rook)));
-        assert_that!(&result[(File::new(1),Rank::new(7))].unwrap(), eq(Piece::new(false, PieceType::Knight)));
-        assert_that!(&result[(File::new(2),Rank::new(7))].unwrap(), eq(Piece::new(false, PieceType::Bishop)));
-        assert_that!(&result[(File::new(3),Rank::new(7))].unwrap(), eq(Piece::new(false, PieceType::Queen)));
-        assert_that!(&result[(File::new(4),Rank::new(7))].unwrap(), eq(Piece::new(false, PieceType::King)));
-        assert_that!(&result[(File::new(5),Rank::new(7))].unwrap(), eq(Piece::new(false, PieceType::Bishop)));
-        assert_that!(&result[(File::new(6),Rank::new(7))].unwrap(), eq(Piece::new(false, PieceType::Knight)));
-        assert_that!(&result[(File::new(7),Rank::new(7))].unwrap(), eq(Piece::new(false, PieceType::Rook)));
-    }
-
-    #[test]
     fn get_all_pieces_of_type_and_ownership() {
-        let board = Board::new();
+        let board = GameState::new().board;
 
         let result = board.get_all_pieces_belonging_to_player(true);
 

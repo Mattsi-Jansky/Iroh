@@ -54,4 +54,11 @@ fn given_first_player_and_king_has_moved_cannot_castle_kingside() {
     assert!(result.is_err());
 }
 
-//Given FEN says you can't castle kingside
+#[test]
+fn given_first_player_and_fen_says_they_cant_castle_kingside_cannot_castle_kingside() {
+    let mut game = Game::from_fen("rnbqk1nr/ppp1bppp/3p4/4p3/4P3/3B1N2/PPPP1PPP/RNBQK2R w Qkq - 0 1");
+
+    let result = game.make_move("O-O");
+
+    assert!(result.is_err());
+}
