@@ -28,7 +28,7 @@ impl GameState {
             turn_number: 1,
             board: Board::blank(),
             captured_pieces: CapturedPieces::new(),
-            first_player_can_castle_kingside: true,
+            first_player_can_castle_kingside: false,
             first_player_can_castle_queenside: true
         };
 
