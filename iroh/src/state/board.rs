@@ -2,8 +2,6 @@ use std::ops::{Index, IndexMut};
 use crate::state::coordinates::{File, Rank};
 use crate::state::piece::{Piece, PieceType};
 
-const STARTING_POSITION_FEN: &str = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
-
 #[derive(Debug, Copy, Clone, PartialEq)]
 pub struct Board {
     state: [Option<Piece>; 8*8]

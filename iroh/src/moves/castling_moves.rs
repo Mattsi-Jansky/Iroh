@@ -2,7 +2,6 @@ use crate::moves::Move;
 use crate::state::coordinates::{File, Rank};
 use crate::state::GameState;
 use crate::state::piece::PieceType;
-use crate::state::piece::PieceType::King;
 
 pub fn generate_castling_moves(available_moves: &mut Vec<Move>, game_state: &GameState) {
     if game_state.is_first_player_turn() && game_state.first_player_can_castle_kingside {

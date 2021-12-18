@@ -1,4 +1,3 @@
-use crate::state::coordinates::{File, Rank};
 use crate::moves::{dynamic_moves, Move, pawn_moves, static_moves};
 use crate::moves::castling_moves::generate_castling_moves;
 use crate::state::GameState;

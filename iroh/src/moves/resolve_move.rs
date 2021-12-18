@@ -1,4 +1,3 @@
-use crate::state::board::Board;
 use crate::state::coordinates::{File, Rank};
 use crate::moves::Move;
 use crate::state::GameState;
@@ -71,13 +70,12 @@ fn move_piece(game_state: &mut GameState, from_file: File, from_rank: Rank, to_f
 
 fn update_castling_state(game_state: &mut GameState, from: (File, Rank), piece: Option<Piece>) {
     let moving_piece_type = piece.unwrap().piece_type;
-    if moving_piece_type == PieceType::Rook
+    if (moving_piece_type == PieceType::Rook
         && from.0 == File::new(7)
-        && from.1 == Rank::new(0) {
-        game_state.first_player_can_castle_kingside = false;
-    } else if moving_piece_type == PieceType::King
+        && from.1 == Rank::new(0))
+        || (moving_piece_type == PieceType::King
         && from.0 == File::new(4)
-        && from.1 == Rank::new(0) {
+        && from.1 == Rank::new(0)) {
         game_state.first_player_can_castle_kingside = false;
     }
 }
