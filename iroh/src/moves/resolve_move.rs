@@ -112,7 +112,7 @@ fn update_castling_state(game_state: &mut GameState, from: (File, Rank), piece: 
     else if moving_piece_type == PieceType::Rook
         && from.0 == File::new(0)
         && from.1 == Rank::new(7) {
-        // game_state.first_player_can_castle_queenside = false;
+        game_state.second_player_can_castle_queenside = false;
     }
     else if moving_piece_type == PieceType::King
         && from.0 == File::new(4)

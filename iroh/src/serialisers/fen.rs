@@ -40,7 +40,7 @@ pub fn parse_fen(fen: &str, game_state: &mut GameState) {
             'K' => { game_state.first_player_can_castle_kingside = true; }
             'Q' => { game_state.first_player_can_castle_queenside = true; }
             'k' => { game_state.second_player_can_castle_kingside = true; }
-            'q' => { }
+            'q' => { game_state.second_player_can_castle_queenside = true; }
             '-' => { /* Do nothing */ }
             _ => panic!("Invalid FEN syntax")
         };

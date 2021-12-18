@@ -197,3 +197,50 @@ fn given_second_player_should_castle_queenside() {
     assert_eq!("1. a3 O-O-O *", game.get_pgn());
     assert_eq!("2kr1bnr/pbpp1ppp/1pn1pq2/8/3PP3/P1NB1N2/1PP2PPP/R1BQK2R w KQ - 0 1", game.generate_fen());
 }
+
+#[test]
+fn given_second_player_without_clear_path_cannot_castle_queenside() {
+    let mut game = Game::from_fen("r1b1kbnr/p1pp1ppp/1pn1pq2/8/3PP3/P1NB1N2/1PP2PPP/R1BQK2R w KQkq - 1 2");
+
+    game = game.make_move("a4").unwrap();
+    let result = game.make_move("O-O-O");
+
+    assert!(result.is_err());
+}
+
+#[test]
+fn given_second_player_and_rook_not_in_place_cannot_castle_queenside() {
+    let mut game = Game::from_fen("r3kbnr/pbpp1ppp/1pn1pq2/8/3PP3/2NB1N2/PPP2PPP/R1BQK2R w KQkq - 0 1");
+
+    game = game.make_move("a3").unwrap();
+    game = game.make_move("Rb8").unwrap();
+    game = game.make_move("a4").unwrap();
+    let result = game.make_move("O-O-O");
+
+    assert!(result.is_err());
+}
+
+
+#[test]
+fn given_second_player_and_rook_has_moved_cannot_castle_queenside() {
+    let mut game = Game::from_fen("r3kbnr/pbpp1ppp/1pn1pq2/8/3PP3/2NB1N2/PPP2PPP/R1BQK2R w KQkq - 0 1");
+
+    game = game.make_move("a3").unwrap();
+    game = game.make_move("Rb8").unwrap();
+    game = game.make_move("a4").unwrap();
+    game = game.make_move("Ra8").unwrap();
+    game = game.make_move("b3").unwrap();
+    let result = game.make_move("O-O-O");
+
+    assert!(result.is_err());
+}
+
+#[test]
+fn given_second_player_and_fen_says_they_cant_castle_queenside_cannot_castle_queenside() {
+    let mut game = Game::from_fen("r3kbnr/pbpp1ppp/1pn1pq2/8/3PP3/2NB1N2/PPP2PPP/R1BQK2R w KQk - 0 1");
+
+    game = game.make_move("a3").unwrap();
+    let result = game.make_move("O-O-O");
+
+    assert!(result.is_err());
+}
