@@ -19,17 +19,18 @@ fn given_first_player_without_clear_path_cannot_castle_kingside() {
 }
 
 #[test]
-fn given_first_player_and_castle_not_in_place_cannot_castle_kingside() {
+fn given_first_player_and_rook_not_in_place_cannot_castle_kingside() {
     let mut game = Game::from_fen("rnbqk1nr/ppp1bppp/3p4/4p3/4P3/3B1N2/PPPP1PPP/RNBQK2R w KQkq - 0 1");
 
     game = game.make_move("Rg1").unwrap();
+    game = game.make_move("h6").unwrap();
     let result = game.make_move("O-O");
 
     assert!(result.is_err());
 }
 
 #[test]
-fn given_first_player_and_castle_has_moved_cannot_castle_kingside() {
+fn given_first_player_and_rook_has_moved_cannot_castle_kingside() {
     let mut game = Game::from_fen("rnbqk1nr/ppp1bppp/3p4/4p3/4P3/3B1N2/PPPP1PPP/RNBQK2R w KQkq - 0 1");
 
     game = game.make_move("Rg1").unwrap();
@@ -70,4 +71,37 @@ fn given_first_player_should_castle_queenside() {
     game = game.make_move("O-O-O").unwrap();
     assert_eq!("1. O-O-O *", game.get_pgn());
     assert_eq!("r1bqk2r/ppp2ppp/2nb1n2/3pp3/8/1PN1PQ2/PBPP1PPP/2KR1BNR b kq - 0 1", game.generate_fen());
+}
+
+#[test]
+fn given_first_player_without_clear_path_cannot_castle_queenside() {
+    let game = Game::from_fen("r1bqk2r/ppp2ppp/2nb1n2/3pp3/8/1PN1PQ2/P1PP1PPP/R1B1KBNR b KQkq - 0 1");
+
+    let result = game.make_move("O-O-O");
+
+    assert!(result.is_err());
+}
+
+#[test]
+fn given_first_player_and_rook_not_in_place_cannot_castle_queenside() {
+    let mut game = Game::from_fen("r1bqk2r/ppp2ppp/2nb1n2/3pp3/8/1PN1PQ2/PBPP1PPP/R3KBNR w KQkq - 0 1");
+
+    game = game.make_move("Rb1").unwrap();
+    game = game.make_move("h6").unwrap();
+    let result = game.make_move("O-O-O");
+
+    assert!(result.is_err());
+}
+
+#[test]
+fn given_first_player_and_rook_has_moved_cannot_castle_queenside() {
+    let mut game = Game::from_fen("r1bqk2r/ppp2ppp/2nb1n2/3pp3/8/1PN1PQ2/PBPP1PPP/R3KBNR w KQkq - 0 1");
+
+    game = game.make_move("Rb1").unwrap();
+    game = game.make_move("a6").unwrap();
+    game = game.make_move("Ra1").unwrap();
+    game = game.make_move("b6").unwrap();
+    let result = game.make_move("O-O-O");
+
+    assert!(result.is_err());
 }

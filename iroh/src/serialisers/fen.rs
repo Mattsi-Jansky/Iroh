@@ -34,7 +34,6 @@ pub fn parse_fen(fen: &str, game_state: &mut GameState) {
         file += 1;
     }
 
-    println!("Blocks: {:?}", blocks);
     blocks.next().expect("Invalid FEN syntax");
     for char in blocks.next().expect("Invalid FEN syntax").chars() {
         match char {
