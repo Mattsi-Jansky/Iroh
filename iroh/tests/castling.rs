@@ -146,3 +146,32 @@ fn given_second_player_and_rook_not_in_place_cannot_castle_kingside() {
 
     assert!(result.is_err());
 }
+
+
+#[test]
+fn given_second_player_and_rook_has_moved_cannot_castle_kingside() {
+    let mut game = Game::from_fen("rnbqk2r/ppppbppp/4pn2/8/3P4/2N2N2/PPP1PPPP/R1BQKB1R w KQkq - 0 1");
+
+    game = game.make_move("e4").unwrap();
+    game = game.make_move("Rg8").unwrap();
+    game = game.make_move("e5").unwrap();
+    game = game.make_move("Rh8").unwrap();
+    game = game.make_move("a3").unwrap();
+    let result = game.make_move("O-O");
+
+    assert!(result.is_err());
+}
+
+#[test]
+fn given_second_player_and_king_has_moved_cannot_castle_kingside() {
+    let mut game = Game::from_fen("rnbqk2r/ppppbppp/4pn2/8/3P4/2N2N2/PPP1PPPP/R1BQKB1R w KQkq - 0 1");
+
+    game = game.make_move("e4").unwrap();
+    game = game.make_move("Kf8").unwrap();
+    game = game.make_move("e5").unwrap();
+    game = game.make_move("Ke8").unwrap();
+    game = game.make_move("a3").unwrap();
+    let result = game.make_move("O-O");
+
+    assert!(result.is_err());
+}
