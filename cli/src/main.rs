@@ -14,6 +14,7 @@ fn main() {
         render(&term, &game);
         term.write_line("").unwrap();
         term.write_line(&*game.get_pgn()).unwrap();
+        term.write_line(&*game.generate_fen()).unwrap();
         term.write_line("").unwrap();
         term.write_all("Your move: ".as_bytes()).unwrap();
 
