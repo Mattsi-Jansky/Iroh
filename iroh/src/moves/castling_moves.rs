@@ -20,7 +20,7 @@ pub fn generate_castling_moves(available_moves: &mut Vec<Move>, game_state: &Gam
             }
         }
     }
-    
+
     if game_state.is_first_player_turn() && game_state.first_player_can_castle_queenside {
         let a1 = game_state.board[(File::new(0),Rank::new(0))];
         let b1 = game_state.board[(File::new(1),Rank::new(0))];

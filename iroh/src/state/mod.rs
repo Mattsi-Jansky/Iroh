@@ -29,7 +29,7 @@ impl GameState {
             board: Board::blank(),
             captured_pieces: CapturedPieces::new(),
             first_player_can_castle_kingside: false,
-            first_player_can_castle_queenside: true
+            first_player_can_castle_queenside: false
         };
 
         parse_fen(fen, &mut state);

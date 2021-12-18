@@ -105,3 +105,12 @@ fn given_first_player_and_rook_has_moved_cannot_castle_queenside() {
 
     assert!(result.is_err());
 }
+
+#[test]
+fn given_first_player_and_fen_says_they_cant_castle_queenside_cannot_castle_queenside() {
+    let mut game = Game::from_fen("r1bqk2r/ppp2ppp/2nb1n2/3pp3/8/1PN1PQ2/PBPP1PPP/R3KBNR w Kkq - 0 1");
+
+    let result = game.make_move("O-O-O");
+
+    assert!(result.is_err());
+}

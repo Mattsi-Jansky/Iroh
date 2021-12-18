@@ -38,7 +38,7 @@ pub fn parse_fen(fen: &str, game_state: &mut GameState) {
     for char in blocks.next().expect("Invalid FEN syntax").chars() {
         match char {
             'K' => { game_state.first_player_can_castle_kingside = true; }
-            'Q' => { }
+            'Q' => { game_state.first_player_can_castle_queenside = true; }
             'k' => { }
             'q' => { }
             '-' => { /* Do nothing */ }
