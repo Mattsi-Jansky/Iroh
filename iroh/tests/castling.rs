@@ -121,6 +121,7 @@ fn given_second_player_should_castle_kingside() {
 
     game = game.make_move("e4").unwrap();
     game = game.make_move("O-O").unwrap();
+
     assert_eq!("1. e4 O-O *", game.get_pgn());
     assert_eq!("rnbq1rk1/ppppbppp/4pn2/8/3PP3/2N2N2/PPP2PPP/R1BQKB1R w KQ - 0 1", game.generate_fen());
 }
@@ -184,4 +185,15 @@ fn given_second_player_and_fen_says_they_cant_castle_kingside_cannot_castle_king
     let result = game.make_move("O-O");
 
     assert!(result.is_err());
+}
+
+#[test]
+fn given_second_player_should_castle_queenside() {
+    let mut game = Game::from_fen("r3kbnr/pbpp1ppp/1pn1pq2/8/3PP3/2NB1N2/PPP2PPP/R1BQK2R w KQkq - 0 1");
+
+    game = game.make_move("a3").unwrap();
+    game = game.make_move("O-O-O").unwrap();
+
+    assert_eq!("1. a3 O-O-O *", game.get_pgn());
+    assert_eq!("2kr1bnr/pbpp1ppp/1pn1pq2/8/3PP3/P1NB1N2/1PP2PPP/R1BQK2R w KQ - 0 1", game.generate_fen());
 }

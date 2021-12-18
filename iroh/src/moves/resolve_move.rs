@@ -61,6 +61,11 @@ pub fn resolve_move(requested_move: Move, mut game_state: GameState) -> GameStat
                                File::new(6), Rank::new(7));
                     move_piece(&mut game_state, File::new(7), Rank::new(7),
                                File::new(5), Rank::new(7));
+                } else {
+                    move_piece(&mut game_state, File::new(4), Rank::new(7),
+                               File::new(2), Rank::new(7));
+                    move_piece(&mut game_state, File::new(0), Rank::new(7),
+                               File::new(3), Rank::new(7));
                 }
             }
         }

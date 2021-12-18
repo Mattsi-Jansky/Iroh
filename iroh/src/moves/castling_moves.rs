@@ -56,5 +56,22 @@ pub fn generate_castling_moves(available_moves: &mut Vec<Move>, game_state: &Gam
                 }
             }
         }
+
+        if game_state.second_player_can_castle_queenside {
+            let a8 = game_state.board[(File::new(0), Rank::new(7))];
+            let b8 = game_state.board[(File::new(1), Rank::new(7))];
+            let c8 = game_state.board[(File::new(2), Rank::new(7))];
+            let d8 = game_state.board[(File::new(3), Rank::new(7))];
+
+            if let (Some(a8_piece), Some(e8_piece)) = (a8, e8) {
+                if e8_piece.piece_type == PieceType::King
+                    && a8_piece.piece_type == PieceType::Rook
+                    && b8.is_none()
+                    && c8.is_none()
+                    && d8.is_none() {
+                    available_moves.push(Move::Castle(false))
+                }
+            }
+        }
     }
 }
