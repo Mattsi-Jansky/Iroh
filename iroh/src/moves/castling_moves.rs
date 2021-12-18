@@ -18,5 +18,20 @@ pub fn generate_castling_moves(available_moves: &mut Vec<Move>, game_state: &Gam
                 available_moves.push(Move::Castle(true))
             }
         }
+
+        let a1 = game_state.board[(File::new(0),Rank::new(0))];
+        let b1 = game_state.board[(File::new(1),Rank::new(0))];
+        let c1 = game_state.board[(File::new(2),Rank::new(0))];
+        let d1 = game_state.board[(File::new(3),Rank::new(0))];
+
+        if let (Some(a1_piece), Some(e1_piece)) = (a1, e1) {
+            if e1_piece.piece_type == PieceType::King
+                && a1_piece.piece_type == PieceType::Rook
+                && b1.is_none()
+                && c1.is_none()
+                && d1.is_none() {
+                available_moves.push(Move::Castle(false))
+            }
+        }
     }
 }

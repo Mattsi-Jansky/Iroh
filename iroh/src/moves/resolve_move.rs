@@ -43,14 +43,17 @@ pub fn resolve_move(requested_move: Move, mut game_state: GameState) -> GameStat
                 Some(Piece { is_owned_by_first_player: game_state.is_first_player_turn(), piece_type })
         }
         Move::Castle(is_kingside) => {
-            let king = game_state.board[(File::new(4), Rank::new(0))].unwrap();
-            let rook = game_state.board[(File::new(7), Rank::new(0))].unwrap();
-            game_state.board[(File::new(4), Rank::new(0))] = None;
-            game_state.board[(File::new(7), Rank::new(0))] = None;
-            game_state.board[(File::new(5),Rank::new(0))] = Some(rook);
-            game_state.board[(File::new(6),Rank::new(0))] = Some(king);
-            game_state.first_player_can_castle_kingside = false;
-            game_state.first_player_can_castle_queenside = false;
+            if is_kingside {
+                move_piece(&mut game_state, File::new(4), Rank::new(0),
+                           File::new(6), Rank::new(0));
+                move_piece(&mut game_state, File::new(7), Rank::new(0),
+                           File::new(5), Rank::new(0));
+            } else {
+                move_piece(&mut game_state, File::new(4), Rank::new(0),
+                           File::new(2), Rank::new(0));
+                move_piece(&mut game_state, File::new(0), Rank::new(0),
+                           File::new(3), Rank::new(0));
+            }
         }
     }
 
@@ -70,12 +73,15 @@ fn move_piece(game_state: &mut GameState, from_file: File, from_rank: Rank, to_f
 
 fn update_castling_state(game_state: &mut GameState, from: (File, Rank), piece: Option<Piece>) {
     let moving_piece_type = piece.unwrap().piece_type;
-    if (moving_piece_type == PieceType::Rook
+    if moving_piece_type == PieceType::Rook
         && from.0 == File::new(7)
-        && from.1 == Rank::new(0))
-        || (moving_piece_type == PieceType::King
-        && from.0 == File::new(4)
-        && from.1 == Rank::new(0)) {
+        && from.1 == Rank::new(0) {
         game_state.first_player_can_castle_kingside = false;
+    }
+    else if moving_piece_type == PieceType::King
+        && from.0 == File::new(4)
+        && from.1 == Rank::new(0) {
+        game_state.first_player_can_castle_kingside = false;
+        game_state.first_player_can_castle_queenside = false;
     }
 }

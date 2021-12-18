@@ -32,7 +32,8 @@ pub fn generate_pawn_promotion_san(file: File, is_owned_by_first_player: bool, p
 }
 
 pub fn generate_castling_san(is_kingside: bool) -> String {
-    String::from("O-O")
+    if is_kingside { String::from("O-O") }
+    else { String::from("O-O-O") }
 }
 
 fn to_alpha_file(file: File) -> char {
