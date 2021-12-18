@@ -68,10 +68,12 @@ pub fn generate_fen(game_state: &GameState) -> String {
     }
 
     result.push_str(&*format!(
-        " {} {}{}kq - 0 1",
+        " {} {}{}{}{} - 0 1",
         if game_state.is_first_player_turn() {"w"} else {"b"},
         if game_state.first_player_can_castle_kingside {"K"} else {""},
-        if game_state.first_player_can_castle_queenside {"Q"} else {""}));
+        if game_state.first_player_can_castle_queenside {"Q"} else {""},
+        if game_state.second_player_can_castle_kingside {"k"} else {""},
+        if game_state.second_player_can_castle_queenside {"q"} else {""}));
     result
 }
 

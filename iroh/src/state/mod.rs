@@ -16,6 +16,8 @@ pub struct GameState {
     pub captured_pieces: CapturedPieces,
     pub first_player_can_castle_kingside: bool,
     pub first_player_can_castle_queenside: bool,
+    pub second_player_can_castle_kingside: bool,
+    pub second_player_can_castle_queenside: bool,
 }
 
 impl GameState {
@@ -29,7 +31,9 @@ impl GameState {
             board: Board::blank(),
             captured_pieces: CapturedPieces::new(),
             first_player_can_castle_kingside: false,
-            first_player_can_castle_queenside: false
+            first_player_can_castle_queenside: false,
+            second_player_can_castle_kingside: true,
+            second_player_can_castle_queenside: true,
         };
 
         parse_fen(fen, &mut state);

@@ -114,3 +114,13 @@ fn given_first_player_and_fen_says_they_cant_castle_queenside_cannot_castle_quee
 
     assert!(result.is_err());
 }
+
+#[test]
+fn given_second_player_should_castle_kingside() {
+    let mut game = Game::from_fen("rnbqk2r/ppppbppp/4pn2/8/3P4/2N2N2/PPP1PPPP/R1BQKB1R w KQkq - 0 1");
+
+    game = game.make_move("e4").unwrap();
+    game = game.make_move("O-O").unwrap();
+    assert_eq!("1. e4 O-O *", game.get_pgn());
+    assert_eq!("rnbq1rk1/ppppbppp/4pn2/8/3PP3/2N2N2/PPP2PPP/R1BQKB1R w KQ - 0 1", game.generate_fen());
+}
