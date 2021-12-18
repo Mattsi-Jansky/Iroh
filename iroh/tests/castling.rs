@@ -175,3 +175,13 @@ fn given_second_player_and_king_has_moved_cannot_castle_kingside() {
 
     assert!(result.is_err());
 }
+
+#[test]
+fn given_second_player_and_fen_says_they_cant_castle_kingside_cannot_castle_kingside() {
+    let mut game = Game::from_fen("rnbqk2r/ppppbppp/4pn2/8/3P4/2N2N2/PPP1PPPP/R1BQKB1R w KQq - 0 1");
+
+    game = game.make_move("e4").unwrap();
+    let result = game.make_move("O-O");
+
+    assert!(result.is_err());
+}

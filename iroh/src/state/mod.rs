@@ -32,7 +32,7 @@ impl GameState {
             captured_pieces: CapturedPieces::new(),
             first_player_can_castle_kingside: false,
             first_player_can_castle_queenside: false,
-            second_player_can_castle_kingside: true,
+            second_player_can_castle_kingside: false,
             second_player_can_castle_queenside: true,
         };
 
