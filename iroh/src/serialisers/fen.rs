@@ -68,12 +68,22 @@ pub fn generate_fen(game_state: &GameState) -> String {
     }
 
     result.push_str(&*format!(
-        " {} {}{}{}{} - 0 1",
+        " {} {} - 0 1",
         if game_state.is_first_player_turn() {"w"} else {"b"},
-        if game_state.first_player_can_castle_kingside {"K"} else {""},
-        if game_state.first_player_can_castle_queenside {"Q"} else {""},
-        if game_state.second_player_can_castle_kingside {"k"} else {""},
-        if game_state.second_player_can_castle_queenside {"q"} else {""}));
+        generate_castling_metadata(game_state)));
+    result
+}
+
+fn generate_castling_metadata(game_state: &GameState) -> String {
+    let mut result = String::new();
+
+    if game_state.first_player_can_castle_kingside { result.push('K')}
+    if game_state.first_player_can_castle_queenside { result.push('Q')}
+    if game_state.second_player_can_castle_kingside { result.push('k')}
+    if game_state.second_player_can_castle_queenside { result.push('q')}
+
+    if result.len() == 0 { result = String::from("-") }
+
     result
 }
 
@@ -173,5 +183,14 @@ mod tests {
         let result = generate_fen(&state);
 
         assert_eq!("8/8/8/8/8/8/8/8 b KQkq - 0 1", result);
+    }
+
+    #[test]
+    fn given_no_player_can_castle_show_hyphen() {
+        let mut state = GameState::from_fen("8/8/8/8/8/8/8/8 w - - 0 1");
+
+        let result = generate_fen(&state);
+
+        assert_eq!("8/8/8/8/8/8/8/8 w - - 0 1", result);
     }
 }
