@@ -5,7 +5,7 @@ use crate::state::piece::PieceType;
 
 pub fn generate_castling_moves(available_moves: &mut Vec<Move>, game_state: &GameState) {
 
-    if game_state.is_first_player_turn() {
+    if game_state.is_first_player_turn {
         let e1 = game_state.board[(File::new(4),Rank::new(0))];
 
         if game_state.first_player_can_castle_kingside {

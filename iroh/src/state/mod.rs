@@ -12,6 +12,7 @@ const STARTING_POSITION_FEN: &str = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR
 #[derive(Debug, Clone, PartialEq)]
 pub struct GameState {
     turn_number: u16,
+    pub is_first_player_turn: bool,
     pub board: Board,
     pub captured_pieces: CapturedPieces,
     pub first_player_can_castle_kingside: bool,
@@ -28,6 +29,7 @@ impl GameState {
     pub fn from_fen(fen: &str) -> GameState {
         let mut state = GameState {
             turn_number: 1,
+            is_first_player_turn: true,
             board: Board::blank(),
             captured_pieces: CapturedPieces::new(),
             first_player_can_castle_kingside: false,
@@ -41,12 +43,9 @@ impl GameState {
         state
     }
 
-    pub fn is_first_player_turn(&self) -> bool {
-        self.turn_number % 2 != 0
-    }
-
-    pub fn increment_turn_number(&mut self) {
+    pub fn next_turn(&mut self) {
         self.turn_number += 1;
+        self.is_first_player_turn = !self.is_first_player_turn;
     }
 }
 
@@ -70,16 +69,16 @@ mod tests {
     fn odd_numbered_turns_are_first_player_turns() {
         let game_state = GameState::new();
 
-        assert!(game_state.is_first_player_turn());
+        assert!(game_state.is_first_player_turn);
     }
 
     #[test]
     fn even_numbered_turns_are_not_first_player_turns() {
         let mut game_state = GameState::new();
 
-        game_state.increment_turn_number();
+        game_state.next_turn();
 
-        assert_eq!(false, game_state.is_first_player_turn());
+        assert_eq!(false, game_state.is_first_player_turn);
     }
 
     #[test]

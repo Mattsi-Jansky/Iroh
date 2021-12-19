@@ -244,3 +244,13 @@ fn given_second_player_and_fen_says_they_cant_castle_queenside_cannot_castle_que
 
     assert!(result.is_err());
 }
+
+//Commenting this test out for now as it'll be easier to implement after implementing checking
+// #[test]
+// fn given_first_player_cannot_castle_if_king_would_go_through_attacked_tile() {
+//     let game = Game::from_fen("rnb1kbnr/pppppppp/5q2/8/8/8/PPPPP3/RNBQK2R w KQkq - 0 1");
+//
+//     let result = game.make_move("O-O");
+//
+//     assert!(result.is_err());
+// }

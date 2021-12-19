@@ -6,7 +6,7 @@ use crate::state::piece::PieceType;
 pub fn generate_moves(game_state: &GameState) -> Vec<Move> {
     let mut available_moves = vec![];
 
-    let pieces = game_state.board.get_all_pieces_belonging_to_player(game_state.is_first_player_turn());
+    let pieces = game_state.board.get_all_pieces_belonging_to_player(game_state.is_first_player_turn);
     for piece in pieces {
         match piece.0 {
             PieceType::Pawn => pawn_moves::generate_pawn_moves(game_state, &mut available_moves, piece),

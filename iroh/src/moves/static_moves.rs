@@ -31,7 +31,7 @@ fn generate_static_move_if_legal(piece: (PieceType, File, Rank), transformation:
 
     if let (Some(target_file), Some(target_rank)) = (target_file, target_rank) {
         if let Some(target_piece) = game_state.board[(target_file, target_rank)] {
-            if target_piece.is_owned_by_first_player != game_state.is_first_player_turn() {
+            if target_piece.is_owned_by_first_player != game_state.is_first_player_turn {
                 Some(Move::AttackMove {
                     0: (piece.1, piece.2),
                     1: (target_file, target_rank),

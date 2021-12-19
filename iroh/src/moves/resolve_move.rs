@@ -15,7 +15,7 @@ pub fn resolve_move(requested_move: Move, mut game_state: GameState) -> GameStat
             let piece = game_state.board[(to_file,to_rank)]
                 .expect("Illegal move, no target to attack")
                 .piece_type;
-            if game_state.is_first_player_turn() {game_state.captured_pieces.second_player.push(piece);}
+            if game_state.is_first_player_turn {game_state.captured_pieces.second_player.push(piece);}
             else {game_state.captured_pieces.first_player.push(piece);}
             
             move_piece(&mut game_state, from_file, from_rank, to_file, to_rank);
@@ -24,10 +24,10 @@ pub fn resolve_move(requested_move: Move, mut game_state: GameState) -> GameStat
             let piece = game_state.board[(to_file,to_rank)]
                 .expect("Illegal move, no target to attack")
                 .piece_type;
-            if game_state.is_first_player_turn() {game_state.captured_pieces.second_player.push(piece);}
+            if game_state.is_first_player_turn {game_state.captured_pieces.second_player.push(piece);}
             else {game_state.captured_pieces.first_player.push(piece);}
 
-            let direction = if game_state.is_first_player_turn() {-1} else {1};
+            let direction = if game_state.is_first_player_turn {-1} else {1};
             move_piece(&mut game_state,
                        starting_file,
                        to_rank.transform(direction)
@@ -40,10 +40,10 @@ pub fn resolve_move(requested_move: Move, mut game_state: GameState) -> GameStat
             let to_rank = Rank::new(if is_owned_by_first_player {7} else {0});
             game_state.board[(file,from_rank)] = None;
             game_state.board[(file,to_rank)] =
-                Some(Piece { is_owned_by_first_player: game_state.is_first_player_turn(), piece_type })
+                Some(Piece { is_owned_by_first_player: game_state.is_first_player_turn, piece_type })
         }
         Move::Castle(is_kingside) => {
-            if game_state.is_first_player_turn() {
+            if game_state.is_first_player_turn {
                 if is_kingside {
                     move_piece(&mut game_state, File::new(4), Rank::new(0),
                                File::new(6), Rank::new(0));
@@ -71,7 +71,7 @@ pub fn resolve_move(requested_move: Move, mut game_state: GameState) -> GameStat
         }
     }
 
-    game_state.increment_turn_number();
+    game_state.next_turn();
     game_state
 }
 

@@ -34,7 +34,13 @@ pub fn parse_fen(fen: &str, game_state: &mut GameState) {
         file += 1;
     }
 
-    blocks.next().expect("Invalid FEN syntax");
+    let player_to_move = blocks.next().expect("Invalid FEN syntax");
+    match player_to_move {
+        "w" => { game_state.is_first_player_turn = true; },
+        "b" => { game_state.is_first_player_turn = false; },
+        _ => panic!("Invalid FEN syntax")
+    }
+
     for char in blocks.next().expect("Invalid FEN syntax").chars() {
         match char {
             'K' => { game_state.first_player_can_castle_kingside = true; }
@@ -69,7 +75,7 @@ pub fn generate_fen(game_state: &GameState) -> String {
 
     result.push_str(&*format!(
         " {} {} - 0 1",
-        if game_state.is_first_player_turn() {"w"} else {"b"},
+        if game_state.is_first_player_turn {"w"} else {"b"},
         generate_castling_metadata(game_state)));
     result
 }
@@ -82,7 +88,7 @@ fn generate_castling_metadata(game_state: &GameState) -> String {
     if game_state.second_player_can_castle_kingside { result.push('k')}
     if game_state.second_player_can_castle_queenside { result.push('q')}
 
-    if result.len() == 0 { result = String::from("-") }
+    if result.is_empty() { result = String::from("-") }
 
     result
 }
@@ -178,7 +184,7 @@ mod tests {
     #[test]
     fn generate_metadata_which_players_turn_is_it() {
         let mut state = GameState::from_fen("8/8/8/8/8/8/8/8 w KQkq - 0 1");
-        state.increment_turn_number();
+        state.next_turn();
 
         let result = generate_fen(&state);
 
@@ -192,5 +198,19 @@ mod tests {
         let result = generate_fen(&state);
 
         assert_eq!("8/8/8/8/8/8/8/8 w - - 0 1", result);
+    }
+
+    #[test]
+    fn given_metadata_says_so_first_player_starts() {
+        let mut state = GameState::from_fen("8/8/8/8/8/8/8/8 w - - 0 1");
+
+        assert_eq!(true, state.is_first_player_turn);
+    }
+
+    #[test]
+    fn given_metadata_says_so_second_player_starts() {
+        let mut state = GameState::from_fen("8/8/8/8/8/8/8/8 b - - 0 1");
+
+        assert_eq!(false, state.is_first_player_turn);
     }
 }
