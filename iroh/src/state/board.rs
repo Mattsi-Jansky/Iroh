@@ -45,9 +45,22 @@ impl Index<(File,Rank)> for Board {
     }
 }
 
+impl Index<(&File,&Rank)> for Board {
+    type Output = Option<Piece>;
+    fn index(&self, s: (&File,&Rank)) -> &Option<Piece> {
+        &self.state[*(*s.0 + *(*s.1 * 8))]
+    }
+}
+
 impl IndexMut<(File,Rank)> for Board {
     fn index_mut(&mut self, s: (File,Rank)) -> &mut Option<Piece> {
         &mut self.state[*s.0 + *(s.1 * 8)]
+    }
+}
+
+impl IndexMut<(&File,&Rank)> for Board {
+    fn index_mut(&mut self, s: (&File,&Rank)) -> &mut Option<Piece> {
+        &mut self.state[*(*s.0 + *(*s.1 * 8))]
     }
 }
 

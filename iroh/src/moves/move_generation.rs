@@ -27,7 +27,7 @@ pub fn generate_moves(game_state: &GameState) -> Vec<Move> {
 
 fn remove_moves_that_result_in_check(available_moves: Vec<Move>, game_state: &GameState) -> Vec<Move>{
     available_moves.into_iter().filter(|requested_move| {
-        let new_game_state = resolve_move(requested_move.clone(), game_state.clone());
+        let new_game_state = resolve_move(requested_move, game_state.clone());
 
         !new_game_state.is_check(game_state.is_first_player_turn)
     }).collect()

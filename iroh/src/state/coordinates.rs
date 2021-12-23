@@ -8,8 +8,16 @@ pub struct File {
 
 impl File {
     pub const MAX: usize = 7;
+    pub const A: File = File::new(0);
+    pub const B: File = File::new(1);
+    pub const C: File = File::new(2);
+    pub const D: File = File::new(3);
+    pub const E: File = File::new(4);
+    pub const F: File = File::new(5);
+    pub const G: File = File::new(6);
+    pub const H: File = File::new(7);
 
-    pub fn new(inner: usize) -> File {
+    pub const fn new(inner: usize) -> File {
         File{inner}
     }
 
@@ -27,8 +35,16 @@ pub struct Rank {
 
 impl Rank {
     pub const MAX: usize = 7;
+    pub const ONE: Rank = Rank::new(0);
+    pub const TWO: Rank = Rank::new(1);
+    pub const THREE: Rank = Rank::new(2);
+    pub const FOUR: Rank = Rank::new(3);
+    pub const FIVE: Rank = Rank::new(4);
+    pub const SIX: Rank = Rank::new(5);
+    pub const SEVEN: Rank = Rank::new(6);
+    pub const EIGHT: Rank = Rank::new(7);
 
-    pub fn new(inner: usize) -> Rank {
+    pub const fn new(inner: usize) -> Rank {
         Rank{inner}
     }
 

@@ -53,7 +53,7 @@ impl Game {
         if let Some(requested_move) = possible_moves.remove(&san.to_string()) {
             let mut sans = self.sans.clone();
             sans.push(String::from(san));
-            let game_state = resolve_move(requested_move, self.game_state.clone());
+            let game_state = resolve_move(&requested_move, self.game_state.clone());
             Ok(Game {
                 sans,
                 game_state
