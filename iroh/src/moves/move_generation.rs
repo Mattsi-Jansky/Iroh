@@ -1,5 +1,6 @@
 use crate::moves::{dynamic_moves, Move, pawn_moves, static_moves};
 use crate::moves::castling_moves::generate_castling_moves;
+use crate::moves::resolve_move::resolve_move;
 use crate::state::GameState;
 use crate::state::piece::PieceType;
 
@@ -19,6 +20,15 @@ pub fn generate_moves(game_state: &GameState) -> Vec<Move> {
     }
 
     generate_castling_moves(&mut available_moves, game_state);
+    available_moves = remove_moves_that_result_in_check(available_moves, game_state);
 
     available_moves
+}
+
+fn remove_moves_that_result_in_check(available_moves: Vec<Move>, game_state: &GameState) -> Vec<Move>{
+    available_moves.into_iter().filter(|requested_move| {
+        let new_game_state = resolve_move(requested_move.clone(), game_state.clone());
+
+        !new_game_state.is_check(game_state.is_first_player_turn)
+    }).collect()
 }

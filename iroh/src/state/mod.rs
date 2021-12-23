@@ -1,11 +1,13 @@
 use crate::serialisers::fen::parse_fen;
 use crate::state::board::Board;
 use crate::state::captured_pieces::CapturedPieces;
+use crate::state::check::is_check;
 
 pub mod board;
 pub mod piece;
 pub mod coordinates;
 pub mod captured_pieces;
+mod check;
 
 const STARTING_POSITION_FEN: &str = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
@@ -46,6 +48,10 @@ impl GameState {
     pub fn next_turn(&mut self) {
         self.turn_number += 1;
         self.is_first_player_turn = !self.is_first_player_turn;
+    }
+
+    pub(crate) fn is_check(&self, first_player : bool) -> bool {
+        is_check(first_player, self)
     }
 }
 
