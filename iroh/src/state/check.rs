@@ -16,7 +16,8 @@ pub fn is_check(is_first_player: bool, game_state: &GameState) -> bool{
 
             if let (Some(target_file), Some(target_rank)) = (target_file, target_rank) {
                 if let Some(piece) = game_state.board[(target_file, target_rank)] {
-                    if piece.piece_type == PieceType::King { result = true; }
+                    if piece.is_owned_by_first_player != is_first_player
+                        && piece.piece_type == PieceType::King { result = true; }
                 }
             }
         });
@@ -27,7 +28,8 @@ pub fn is_check(is_first_player: bool, game_state: &GameState) -> bool{
 
             if let (Some(target_file), Some(target_rank)) = (target_file, target_rank) {
                 if let Some(piece) = game_state.board[(target_file, target_rank)] {
-                    if piece.piece_type == PieceType::Knight { result = true; }
+                    if piece.is_owned_by_first_player != is_first_player
+                        && piece.piece_type == PieceType::Knight { result = true; }
                 }
             }
         });

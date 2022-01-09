@@ -51,7 +51,7 @@ pub fn resolve_move(requested_move: &Move, mut game_state: GameState) -> GameSta
                                &File::F, &Rank::ONE);
                 } else {
                     move_piece(&mut game_state, &File::E, &Rank::ONE,
-                               &File::B, &Rank::ONE);
+                               &File::C, &Rank::ONE);
                     move_piece(&mut game_state, &File::A, &Rank::ONE,
                                &File::D, &Rank::ONE);
                 }

@@ -4,7 +4,9 @@ use galvanic_assert::matchers::collection::*;
 use test_case::test_case;
 
 use iroh::state::piece::PieceType;
+use iroh::moves::*;
 use iroh::game::Game;
+use iroh::state::coordinates::{Rank, File};
 
 #[test]
 fn new_game_has_blank_pgn() {

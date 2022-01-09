@@ -19,7 +19,6 @@ pub fn generate_display_from_fen(fen: &str) -> [String; 10] {
 
         let mut file_index = 0;
         for c in part.chars() {
-            println!("Parsing {} with index {} from {}", c, file_index, part);
             if !c.is_digit(10) {
                 line.push(glyph_for(c));
                 if file_index != 7 {
