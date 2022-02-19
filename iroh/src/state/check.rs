@@ -1,6 +1,22 @@
 use crate::state::GameState;
 use crate::state::piece::PieceType;
 
+macro_rules! static_check {
+    ($result:expr, $is_first_player:expr, $game_state:expr, $king:expr, $piece:pat, $($transform:expr),+) => {
+        [$($transform),+].map(|transformation| {
+            let target_file = $king.1.transform(transformation.0);
+            let target_rank = $king.2.transform(transformation.1);
+
+            if let (Some(target_file), Some(target_rank)) = (target_file, target_rank) {
+                if let Some(piece) = $game_state.board[(target_file, target_rank)] {
+                    if piece.is_owned_by_first_player != $is_first_player
+                        && matches!(piece.piece_type, $piece) { $result = true; }
+                }
+            }
+        });
+    }
+}
+
 pub fn is_check(is_first_player: bool, game_state: &GameState) -> bool{
     let mut result = false;
 
@@ -10,41 +26,12 @@ pub fn is_check(is_first_player: bool, game_state: &GameState) -> bool{
         .next();
 
     if let Some(king) = king {
-        [(-1, -1), (-1, 0), (-1, 1), (0, 1), (1, 1), (1, 0), (1, -1), (0, -1)].map(|transformation| {
-            let target_file = king.1.transform(transformation.0);
-            let target_rank = king.2.transform(transformation.1);
-
-            if let (Some(target_file), Some(target_rank)) = (target_file, target_rank) {
-                if let Some(piece) = game_state.board[(target_file, target_rank)] {
-                    if piece.is_owned_by_first_player != is_first_player
-                        && piece.piece_type == PieceType::King { result = true; }
-                }
-            }
-        });
-
-        [(1, 2), (2, 1), (-1, -2), (-2, -1), (1, -2), (2, -1), (-1, 2), (-2, 1)].map(|transformation| {
-            let target_file = king.1.transform(transformation.0);
-            let target_rank = king.2.transform(transformation.1);
-
-            if let (Some(target_file), Some(target_rank)) = (target_file, target_rank) {
-                if let Some(piece) = game_state.board[(target_file, target_rank)] {
-                    if piece.is_owned_by_first_player != is_first_player
-                        && piece.piece_type == PieceType::Knight { result = true; }
-                }
-            }
-        });
-
-        [(-1,-1), (1,-1)].map(|transformation| {
-            let target_file = king.1.transform(transformation.0);
-            let target_rank = king.2.transform(transformation.1);
-
-            if let (Some(target_file), Some(target_rank)) = (target_file, target_rank) {
-                if let Some(piece) = game_state.board[(target_file, target_rank)] {
-                    if piece.is_owned_by_first_player != is_first_player
-                        && piece.piece_type == PieceType::Pawn { result = true; }
-                }
-            }
-        });
+        static_check!(result, is_first_player, game_state, king, PieceType::King,
+            (-1, -1), (-1, 0), (-1, 1), (0, 1), (1, 1), (1, 0), (1, -1), (0, -1));
+        static_check!(result, is_first_player, game_state, king, PieceType::Knight,
+            (1, 2), (2, 1), (-1, -2), (-2, -1), (1, -2), (2, -1), (-1, 2), (-2, 1));
+        static_check!(result, is_first_player, game_state, king, PieceType::Pawn,
+            (-1,-1), (1,-1));
     }
 
     result
