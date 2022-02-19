@@ -33,6 +33,18 @@ pub fn is_check(is_first_player: bool, game_state: &GameState) -> bool{
                 }
             }
         });
+
+        [(-1,-1), (1,-1)].map(|transformation| {
+            let target_file = king.1.transform(transformation.0);
+            let target_rank = king.2.transform(transformation.1);
+
+            if let (Some(target_file), Some(target_rank)) = (target_file, target_rank) {
+                if let Some(piece) = game_state.board[(target_file, target_rank)] {
+                    if piece.is_owned_by_first_player != is_first_player
+                        && piece.piece_type == PieceType::Pawn { result = true; }
+                }
+            }
+        });
     }
 
     result
@@ -64,6 +76,15 @@ mod tests {
     #[test]
     fn knight_check() {
         let game_state = GameState::from_fen("8/8/8/3n4/8/4K3/8/8 w - - 0 1");
+
+        let result = is_check(true, &game_state);
+
+        assert_eq!(true, result);
+    }
+
+    #[test]
+    fn pawn_check() {
+        let game_state = GameState::from_fen("8/8/8/8/8/4K3/3p4/8 w - - 0 1");
 
         let result = is_check(true, &game_state);
 
