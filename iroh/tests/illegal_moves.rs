@@ -101,3 +101,16 @@ fn pawns_cannot_jump() {
 
     assert!(result.is_err());
 }
+
+
+#[test_case("8/8/8/8/8/1q2K3/2Q5/8 w - - 0 1", "Qc4")]
+#[test_case("8/8/8/2b5/1B6/4K3/8/8 w - - 0 1", "Ba3")]
+#[test_case("8/8/8/3n4/8/4KN2/8/8 w - - 0 1", "Ne5")]
+#[test_case("8/3k4/3r4/8/8/8/3KR3/8 w - - 0 1", "Re6")]
+fn cannot_move_when_in_check(fen: &str, illegal_move: &str) {
+    let game = Game::from_fen(fen);
+
+    let result = game.make_move(illegal_move);
+
+    assert!(result.is_err());
+}
