@@ -1,19 +1,16 @@
+use crate::state::coordinates::{File, Rank};
 use crate::state::GameState;
 use crate::state::piece::PieceType;
 
-macro_rules! static_check {
-    ($result:expr, $is_first_player:expr, $game_state:expr, $king:expr, $piece:pat, $($transform:expr),+) => {
-        [$($transform),+].map(|transformation| {
-            let target_file = $king.1.transform(transformation.0);
-            let target_rank = $king.2.transform(transformation.1);
+fn static_check(result: &mut bool, is_first_player: bool, game_state: &GameState, king: &(PieceType, File, Rank), attacking_piece_type: PieceType, transformation: (isize,isize)) {
+    let target_file = king.1.transform(transformation.0);
+    let target_rank = king.2.transform(transformation.1);
 
-            if let (Some(target_file), Some(target_rank)) = (target_file, target_rank) {
-                if let Some(piece) = $game_state.board[(target_file, target_rank)] {
-                    if piece.is_owned_by_first_player != $is_first_player
-                        && matches!(piece.piece_type, $piece) { $result = true; }
-                }
-            }
-        });
+    if let (Some(target_file), Some(target_rank)) = (target_file, target_rank) {
+        if let Some(piece) = game_state.board[(target_file, target_rank)] {
+            if piece.is_owned_by_first_player != is_first_player
+                && piece.piece_type == attacking_piece_type { *result = true; }
+        }
     }
 }
 
@@ -26,12 +23,11 @@ pub fn is_check(is_first_player: bool, game_state: &GameState) -> bool{
         .next();
 
     if let Some(king) = king {
-        static_check!(result, is_first_player, game_state, king, PieceType::King,
-            (-1, -1), (-1, 0), (-1, 1), (0, 1), (1, 1), (1, 0), (1, -1), (0, -1));
-        static_check!(result, is_first_player, game_state, king, PieceType::Knight,
-            (1, 2), (2, 1), (-1, -2), (-2, -1), (1, -2), (2, -1), (-1, 2), (-2, 1));
-        static_check!(result, is_first_player, game_state, king, PieceType::Pawn,
-            (-1,-1), (1,-1));
+        [(-1, -1 ), (-1, 0), (-1, 1), (0, 1), (1, 1), (1, 0), (1, -1), (0, -1)].map(|transformation|
+            static_check(&mut result, is_first_player, game_state, &king, PieceType::King, transformation));
+        [(1, 2), (2, 1), (-1, -2), (-2, -1), (1, -2), (2, -1), (-1, 2), (-2, 1)].map(|transformation|
+            static_check(&mut result, is_first_player, game_state, &king, PieceType::Knight, transformation));
+        [(-1,-1), (1,-1)].map(|transformation| static_check(&mut result, is_first_player, game_state, &king, PieceType::Pawn, transformation));
     }
 
     result
@@ -44,7 +40,7 @@ mod tests {
 
     #[test]
     fn no_check() {
-        let game_state = GameState::from_fen("8/8/8/8/8/8/4K3/8 w - - 0 1");
+        let game_state = GameState::from_fen("8/8/8/8/8/8/4K3/4p3 w - - 0 1");
 
         let result = is_check(true, &game_state);
 
