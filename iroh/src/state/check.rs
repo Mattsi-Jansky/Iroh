@@ -56,39 +56,24 @@ mod tests {
     use super::*;
     use crate::state::GameState;
 
-    #[test]
-    fn no_check() {
-        let game_state = GameState::from_fen("8/8/8/8/8/8/4K3/4p3 w - - 0 1");
+    macro_rules! check_tests {
+        ($($name:ident {$fen:expr;$expected:expr}),+) => {
+            $(#[test]
+            fn $name() {
+                let game_state = GameState::from_fen($fen);
 
-        let result = is_check(true, &game_state);
+                let result = is_check(true, &game_state);
 
-        assert_eq!(false, result);
+                assert_eq!($expected, result);
+            })+
+        }
     }
 
-    #[test]
-    fn king_check() {
-        let game_state = GameState::from_fen("8/8/8/8/8/3k4/4K3/8 w - - 0 1");
-
-        let result = is_check(true, &game_state);
-
-        assert_eq!(true, result);
-    }
-
-    #[test]
-    fn knight_check() {
-        let game_state = GameState::from_fen("8/8/8/3n4/8/4K3/8/8 w - - 0 1");
-
-        let result = is_check(true, &game_state);
-
-        assert_eq!(true, result);
-    }
-
-    #[test]
-    fn pawn_check() {
-        let game_state = GameState::from_fen("8/8/8/8/8/4K3/3p4/8 w - - 0 1");
-
-        let result = is_check(true, &game_state);
-
-        assert_eq!(true, result);
+    check_tests! {
+        no_check {"8/8/8/8/8/8/4K3/4p3 w - - 0 1";false},
+        king_check {"8/8/8/8/8/3k4/4K3/8 w - - 0 1";true},
+        knight_check {"8/8/8/3n4/8/4K3/8/8 w - - 0 1";true},
+        pawn_check {"8/8/8/8/8/4K3/3p4/8 w - - 0 1";true}
     }
 }
+
