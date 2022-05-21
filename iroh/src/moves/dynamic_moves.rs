@@ -27,19 +27,19 @@ fn generate_dynamic_moves(game_state: &GameState, available_moves: &mut Vec<Move
             if let(Some(file), Some(rank)) = (file,rank) {
                 if let Some(target_piece) = game_state.board[(file, rank)] {
                     if target_piece.is_owned_by_first_player != game_state.is_first_player_turn {
-                        available_moves.push(Move::AttackMove {
-                            0: (piece.1, piece.2),
-                            1: (file, rank),
-                            2: piece.0
-                        })
+                        available_moves.push(Move::AttackMove (
+                            (piece.1, piece.2),
+                            (file, rank),
+                            piece.0
+                        ))
                     }
                     break;
                 } else {
-                    available_moves.push(Move::RegularMove {
-                        0: (piece.1, piece.2),
-                        1: (file, rank),
-                        2: piece.0
-                    })
+                    available_moves.push(Move::RegularMove (
+                        (piece.1, piece.2),
+                        (file, rank),
+                        piece.0
+                    ))
                 }
             }
             else {
