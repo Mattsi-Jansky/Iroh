@@ -15,7 +15,9 @@ pub fn is_check(is_first_player: bool, game_state: &GameState) -> bool{
         let mut static_check = StaticCheckTester::new(&mut result, is_first_player, &game_state.board, &king);
         static_check.test(PieceType::King, &KING_STATIC_TRANSFORMS);
         static_check.test(PieceType::Knight, &KNIGHT_STATIC_TRANSFORMS);
-        static_check.test(PieceType::Pawn, &[(-1, -1), (1, -1)]);
+        static_check.test(PieceType::Pawn,
+                          if is_first_player { &[(-1, 1), (1, 1)]}
+                          else {&[(-1, -1), (1, -1)]});
 
         let mut dynamic_check = DynamicCheckTester::new(&mut result, is_first_player, &game_state.board, &king);
         dynamic_check.test(&[PieceType::Rook, PieceType::Queen], &STRAIGHT_DYNAMIC_TRANSFORMS);
@@ -115,7 +117,7 @@ mod tests {
         no_check {"8/8/8/8/8/8/4K3/4p3 w - - 0 1";false},
         king_check {"8/8/8/8/8/3k4/4K3/8 w - - 0 1";true},
         knight_check {"8/8/8/3n4/8/4K3/8/8 w - - 0 1";true},
-        pawn_check {"8/8/8/8/8/4K3/3p4/8 w - - 0 1";true},
+        pawn_check {"8/8/8/8/3p4/4K3/8/8 w - - 0 1";true},
         rook_check_vertical {"8/8/8/8/8/4K3/8/4r3 w - - 0 1";true},
         rook_check_horizontal {"8/8/8/8/8/1r2K3/8/8 w - - 0 1";true},
         rook_no_check_if_blocked {"8/8/8/8/8/1r1RK3/8/8 w - - 0 1";false},
@@ -131,5 +133,14 @@ mod tests {
         queen_check_upright {"8/8/8/6q1/8/4K3/8/8 w - - 0 1";true},
         queen_check_bottomleft {"8/8/8/8/8/4K3/8/2q5 w - - 0 1";true},
         queen_check_bottomright {"8/8/8/8/8/4K3/8/6q1 w - - 0 1";true}
+    }
+
+    #[test]
+    fn pawn_checks_in_opposite_direction_during_second_players_turn() {
+        let game_state = GameState::from_fen("8/8/8/8/8/4k3/3P4/8 b - - 0 1");
+
+        let result = is_check(false, &game_state);
+
+        assert_eq!(true, result);
     }
 }
