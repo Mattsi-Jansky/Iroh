@@ -57,7 +57,7 @@ fn given_first_player_and_king_has_moved_cannot_castle_kingside() {
 
 #[test]
 fn given_first_player_and_fen_says_they_cant_castle_kingside_cannot_castle_kingside() {
-    let mut game = Game::from_fen("rnbqk1nr/ppp1bppp/3p4/4p3/4P3/3B1N2/PPPP1PPP/RNBQK2R w Qkq - 0 1");
+    let game = Game::from_fen("rnbqk1nr/ppp1bppp/3p4/4p3/4P3/3B1N2/PPPP1PPP/RNBQK2R w Qkq - 0 1");
 
     let result = game.make_move("O-O");
 
@@ -108,7 +108,7 @@ fn given_first_player_and_rook_has_moved_cannot_castle_queenside() {
 
 #[test]
 fn given_first_player_and_fen_says_they_cant_castle_queenside_cannot_castle_queenside() {
-    let mut game = Game::from_fen("r1bqk2r/ppp2ppp/2nb1n2/3pp3/8/1PN1PQ2/PBPP1PPP/R3KBNR w Kkq - 0 1");
+    let game = Game::from_fen("r1bqk2r/ppp2ppp/2nb1n2/3pp3/8/1PN1PQ2/PBPP1PPP/R3KBNR w Kkq - 0 1");
 
     let result = game.make_move("O-O-O");
 

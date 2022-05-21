@@ -76,7 +76,6 @@ mod tests {
     use galvanic_assert::matchers::*;
     use galvanic_assert::matchers::collection::*;
 
-    use crate::serialisers::fen::parse_fen;
     use crate::state::GameState;
     use super::*;
 

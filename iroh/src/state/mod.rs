@@ -65,7 +65,6 @@ impl Default for GameState {
 mod tests {
     use galvanic_assert::assert_that;
     use galvanic_assert::matchers::*;
-    use galvanic_assert::matchers::collection::*;
 
     use crate::state::coordinates::{File, Rank};
     use crate::state::piece::{Piece, PieceType};
