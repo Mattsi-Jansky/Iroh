@@ -1,10 +1,7 @@
-use crate::moves::Move;
+use crate::moves::{DIAGONAL_DYNAMIC_TRANSFORMS, Move, STRAIGHT_DYNAMIC_TRANSFORMS};
 use crate::state::coordinates::{File, Rank};
 use crate::state::GameState;
 use crate::state::piece::PieceType;
-
-const STRAIGHT_DYNAMIC_TRANSFORMS: [(isize,isize);4] = [(1,0),(0,1),(-1,0),(0,-1)];
-const DIAGONAL_DYNAMIC_TRANSFORMS: [(isize,isize);4] = [(1,1),(1,-1),(-1,1),(-1,-1)];
 
 pub fn generate_queen_moves(available_moves: &mut Vec<Move>, queen: (PieceType, File, Rank), game_state: &GameState) {
     generate_dynamic_moves(game_state, available_moves, queen, &[STRAIGHT_DYNAMIC_TRANSFORMS, DIAGONAL_DYNAMIC_TRANSFORMS].concat());

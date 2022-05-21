@@ -1,4 +1,4 @@
-use crate::moves::{KING_STATIC_TRANSFORMS, KNIGHT_STATIC_TRANSFORMS};
+use crate::moves::{KING_STATIC_TRANSFORMS, KNIGHT_STATIC_TRANSFORMS, STRAIGHT_DYNAMIC_TRANSFORMS};
 use crate::state::board::Board;
 use crate::state::coordinates::{File, Rank};
 use crate::state::GameState;
@@ -16,6 +16,26 @@ pub fn is_check(is_first_player: bool, game_state: &GameState) -> bool{
         static_check.test(PieceType::King, &KING_STATIC_TRANSFORMS);
         static_check.test(PieceType::Knight, &KNIGHT_STATIC_TRANSFORMS);
         static_check.test(PieceType::Pawn, &[(-1, -1), (1, -1)]);
+
+        for transform in STRAIGHT_DYNAMIC_TRANSFORMS {
+            let (mut file, mut rank) = (Some(king.1), Some(king.2));
+            loop {
+                file = file.unwrap().transform(transform.0);
+                rank = rank.unwrap().transform(transform.1);
+                if let(Some(file), Some(rank)) = (file,rank) {
+                    if let Some(target_piece) = game_state.board[(file, rank)] {
+                        if target_piece.is_owned_by_first_player != is_first_player
+                            && target_piece.piece_type == PieceType::Rook {
+                            result = true;
+                        }
+                        break;
+                    }
+                }
+                else {
+                    break;
+                }
+            }
+        }
     }
 
     result
@@ -73,7 +93,9 @@ mod tests {
         no_check {"8/8/8/8/8/8/4K3/4p3 w - - 0 1";false},
         king_check {"8/8/8/8/8/3k4/4K3/8 w - - 0 1";true},
         knight_check {"8/8/8/3n4/8/4K3/8/8 w - - 0 1";true},
-        pawn_check {"8/8/8/8/8/4K3/3p4/8 w - - 0 1";true}
+        pawn_check {"8/8/8/8/8/4K3/3p4/8 w - - 0 1";true},
+        rook_check_vertical {"8/8/8/8/8/4K3/8/4r3 w - - 0 1";true},
+        rook_check_horizontal {"8/8/8/8/8/1r2K3/8/8 w - - 0 1";true}
     }
 }
 

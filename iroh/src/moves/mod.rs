@@ -4,6 +4,8 @@ use crate::serialisers::san::{generate_attack_san, generate_castling_san, genera
 
 pub const KNIGHT_STATIC_TRANSFORMS: [(isize,isize);8] = [(1, 2), (2, 1), (-1, -2), (-2, -1), (1, -2), (2, -1), (-1, 2), (-2, 1)];
 pub const KING_STATIC_TRANSFORMS : [(isize,isize);8] = [(-1,-1),(-1,0),(-1,1),(0,1),(1,1),(1,0),(1,-1),(0,-1)];
+pub const STRAIGHT_DYNAMIC_TRANSFORMS: [(isize, isize);4] = [(1, 0),(0, 1),(-1, 0),(0, -1)];
+pub const DIAGONAL_DYNAMIC_TRANSFORMS: [(isize, isize);4] = [(1, 1),(1, -1),(-1, 1),(-1, -1)];
 
 pub mod move_generation;
 pub mod resolve_move;
