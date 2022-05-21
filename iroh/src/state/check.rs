@@ -9,8 +9,7 @@ pub fn is_check(is_first_player: bool, game_state: &GameState) -> bool{
 
     let king = game_state.board.get_all_pieces_belonging_to_player(is_first_player)
         .into_iter()
-        .skip_while(|piece| piece.0 != PieceType::King)
-        .next();
+        .find(|piece| piece.0 == PieceType::King);
 
     if let Some(king) = king {
         let mut static_check = StaticCheckTester::new(&mut result, is_first_player, &game_state.board, &king);
