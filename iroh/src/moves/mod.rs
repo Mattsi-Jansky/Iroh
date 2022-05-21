@@ -2,6 +2,9 @@ use crate::state::coordinates::{File, Rank};
 use crate::state::piece::PieceType;
 use crate::serialisers::san::{generate_attack_san, generate_castling_san, generate_pawn_attack_san, generate_pawn_promotion_san, generate_pawn_san, generate_san};
 
+pub const KNIGHT_STATIC_TRANSFORMS: [(isize,isize);8] = [(1, 2), (2, 1), (-1, -2), (-2, -1), (1, -2), (2, -1), (-1, 2), (-2, 1)];
+pub const KING_STATIC_TRANSFORMS : [(isize,isize);8] = [(-1,-1),(-1,0),(-1,1),(0,1),(1,1),(1,0),(1,-1),(0,-1)];
+
 pub mod move_generation;
 pub mod resolve_move;
 mod pawn_moves;

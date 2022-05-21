@@ -1,3 +1,4 @@
+use crate::moves::{KING_STATIC_TRANSFORMS, KNIGHT_STATIC_TRANSFORMS};
 use crate::state::coordinates::{File, Rank};
 use crate::state::GameState;
 use crate::state::piece::PieceType;
@@ -23,9 +24,9 @@ pub fn is_check(is_first_player: bool, game_state: &GameState) -> bool{
         .next();
 
     if let Some(king) = king {
-        [(-1, -1 ), (-1, 0), (-1, 1), (0, 1), (1, 1), (1, 0), (1, -1), (0, -1)].map(|transformation|
+        KING_STATIC_TRANSFORMS.map(|transformation|
             static_check(&mut result, is_first_player, game_state, &king, PieceType::King, transformation));
-        [(1, 2), (2, 1), (-1, -2), (-2, -1), (1, -2), (2, -1), (-1, 2), (-2, 1)].map(|transformation|
+        KNIGHT_STATIC_TRANSFORMS.map(|transformation|
             static_check(&mut result, is_first_player, game_state, &king, PieceType::Knight, transformation));
         [(-1,-1), (1,-1)].map(|transformation| static_check(&mut result, is_first_player, game_state, &king, PieceType::Pawn, transformation));
     }

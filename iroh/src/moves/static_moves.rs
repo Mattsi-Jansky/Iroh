@@ -1,10 +1,10 @@
-use crate::moves::Move;
+use crate::moves::{KING_STATIC_TRANSFORMS, KNIGHT_STATIC_TRANSFORMS, Move};
 use crate::state::coordinates::{File, Rank};
 use crate::state::GameState;
 use crate::state::piece::PieceType;
 
 pub fn generate_knight_moves(available_moves: &mut Vec<Move>, knight: (PieceType, File, Rank), game_state: &GameState) {
-    [(1, 2), (2, 1), (-1, -2), (-2, -1), (1, -2), (2, -1), (-1, 2), (-2, 1)].map(|transform| {
+    KNIGHT_STATIC_TRANSFORMS.map(|transform| {
         if let Some(m) = generate_static_move_if_legal(
             knight,
             transform,
@@ -15,7 +15,7 @@ pub fn generate_knight_moves(available_moves: &mut Vec<Move>, knight: (PieceType
 }
 
 pub fn generate_king_moves(available_moves: &mut Vec<Move>, knight: (PieceType, File, Rank), game_state: &GameState) {
-    [(-1,-1),(-1,0),(-1,1),(0,1),(1,1),(1,0),(1,-1),(0,-1)].map(|transform| {
+    KING_STATIC_TRANSFORMS.map(|transform| {
         if let Some(m) = generate_static_move_if_legal(
             knight,
             transform,
