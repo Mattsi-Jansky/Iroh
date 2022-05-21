@@ -43,25 +43,26 @@ pub fn resolve_move(requested_move: &Move, mut game_state: GameState) -> GameSta
                 Some(Piece { is_owned_by_first_player: game_state.is_first_player_turn, piece_type: *piece_type })
         }
         Move::Castle(is_kingside) => {
-            if game_state.is_first_player_turn {
-                if *is_kingside {
+            match (game_state.is_first_player_turn, *is_kingside) {
+                (true, true) => {
                     move_piece(&mut game_state, &File::E, &Rank::ONE,
                                &File::G, &Rank::ONE);
                     move_piece(&mut game_state, &File::H, &Rank::ONE,
                                &File::F, &Rank::ONE);
-                } else {
+                }
+                (true, false) => {
                     move_piece(&mut game_state, &File::E, &Rank::ONE,
                                &File::C, &Rank::ONE);
                     move_piece(&mut game_state, &File::A, &Rank::ONE,
                                &File::D, &Rank::ONE);
                 }
-            } else {
-                if *is_kingside {
+                (false, true) => {
                     move_piece(&mut game_state, &File::E, &Rank::EIGHT,
                                &File::G, &Rank::EIGHT);
                     move_piece(&mut game_state, &File::H, &Rank::EIGHT,
                                &File::F, &Rank::EIGHT);
-                } else {
+                }
+                (false, false) => {
                     move_piece(&mut game_state, &File::E, &Rank::EIGHT,
                                &File::C, &Rank::EIGHT);
                     move_piece(&mut game_state, &File::A, &Rank::EIGHT,
