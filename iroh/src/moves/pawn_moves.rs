@@ -13,7 +13,7 @@ pub fn generate_pawn_moves(game_state: &GameState, available_moves: &mut Vec<Mov
         if ahead_rank_is_last_rank {
             generate_promotion_moves(game_state, available_moves, pawn);
         } else {
-            available_moves.push(Move::PawnMove { 0: (pawn.1, pawn.2), 1: ahead_rank });
+            available_moves.push(Move::PawnMove((pawn.1, pawn.2), ahead_rank));
         }
     }
 
@@ -27,7 +27,7 @@ fn generate_double_move(game_state: &GameState, available_moves: &mut Vec<Move>,
     let ahead_twice_rank = if game_state.is_first_player_turn { pawn.2 + 2 } else { pawn.2 - 2 };
     if game_state.board[(pawn.1, ahead_rank)].is_none()
         && game_state.board[(pawn.1, ahead_twice_rank)].is_none() {
-        available_moves.push(Move::PawnMove { 0: (pawn.1, pawn.2), 1: ahead_twice_rank });
+        available_moves.push(Move::PawnMove((pawn.1, pawn.2),ahead_twice_rank));
     }
 }
 
@@ -43,31 +43,31 @@ fn generate_attack_move(game_state: &GameState, available_moves: &mut Vec<Move>,
     if let Some(file) = file {
         if let Some(target_piece) = game_state.board[(file, ahead_rank)] {
             if target_piece.is_owned_by_first_player != game_state.is_first_player_turn {
-                available_moves.push(Move::PawnAttackMove { 0: pawn.1, 1: (file, ahead_rank) })
+                available_moves.push(Move::PawnAttackMove(pawn.1,(file, ahead_rank)))
             }
         }
     }
 }
 
 fn generate_promotion_moves(game_state: &GameState, available_moves: &mut Vec<Move>, pawn: (PieceType, File, Rank)) {
-    available_moves.push(Move::PawnPromotion {
-        0: pawn.1,
-        1: game_state.is_first_player_turn,
-        2: PieceType::Queen
-    });
-    available_moves.push(Move::PawnPromotion {
-        0: pawn.1,
-        1: game_state.is_first_player_turn,
-        2: PieceType::Knight
-    });
-    available_moves.push(Move::PawnPromotion {
-        0: pawn.1,
-        1: game_state.is_first_player_turn,
-        2: PieceType::Bishop
-    });
-    available_moves.push(Move::PawnPromotion {
-        0: pawn.1,
-        1: game_state.is_first_player_turn,
-        2: PieceType::Rook
-    });
+    available_moves.push(Move::PawnPromotion (
+        pawn.1,
+        game_state.is_first_player_turn,
+        PieceType::Queen
+    ));
+    available_moves.push(Move::PawnPromotion (
+        pawn.1,
+        game_state.is_first_player_turn,
+        PieceType::Knight
+    ));
+    available_moves.push(Move::PawnPromotion (
+        pawn.1,
+        game_state.is_first_player_turn,
+        PieceType::Bishop
+    ));
+    available_moves.push(Move::PawnPromotion (
+        pawn.1,
+        game_state.is_first_player_turn,
+        PieceType::Rook
+    ));
 }
