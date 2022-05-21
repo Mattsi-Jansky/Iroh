@@ -18,8 +18,8 @@ pub fn is_check(is_first_player: bool, game_state: &GameState) -> bool{
         static_check.test(PieceType::Pawn, &[(-1, -1), (1, -1)]);
 
         let mut dynamic_check = DynamicCheckTester::new(&mut result, is_first_player, &game_state.board, &king);
-        dynamic_check.test(&[PieceType::Rook], &STRAIGHT_DYNAMIC_TRANSFORMS);
-        dynamic_check.test(&[PieceType::Bishop], &DIAGONAL_DYNAMIC_TRANSFORMS);
+        dynamic_check.test(&[PieceType::Rook, PieceType::Queen], &STRAIGHT_DYNAMIC_TRANSFORMS);
+        dynamic_check.test(&[PieceType::Bishop, PieceType::Queen], &DIAGONAL_DYNAMIC_TRANSFORMS);
     }
 
     result
@@ -121,6 +121,13 @@ mod tests {
         bishop_check_upleft {"8/8/8/2b5/8/4K3/8/8 w - - 0 1";true},
         bishop_check_upright {"8/8/8/6b1/8/4K3/8/8 w - - 0 1";true},
         bishop_check_bottomleft {"8/8/8/8/8/4K3/8/2b5 w - - 0 1";true},
-        bishop_check_bottomright {"8/8/8/8/8/4K3/8/6b1 w - - 0 1";true}
+        bishop_check_bottomright {"8/8/8/8/8/4K3/8/6b1 w - - 0 1";true},
+
+        queen_check_vertical {"8/8/8/8/8/4K3/8/4q3 w - - 0 1";true},
+        queen_check_horizontal {"8/8/8/8/8/1q2K3/8/8 w - - 0 1";true},
+        queen_check_upleft {"8/8/8/2q5/8/4K3/8/8 w - - 0 1";true},
+        queen_check_upright {"8/8/8/6q1/8/4K3/8/8 w - - 0 1";true},
+        queen_check_bottomleft {"8/8/8/8/8/4K3/8/2q5 w - - 0 1";true},
+        queen_check_bottomright {"8/8/8/8/8/4K3/8/6q1 w - - 0 1";true}
     }
 }
