@@ -1,19 +1,8 @@
 use crate::moves::{KING_STATIC_TRANSFORMS, KNIGHT_STATIC_TRANSFORMS};
+use crate::state::board::Board;
 use crate::state::coordinates::{File, Rank};
 use crate::state::GameState;
 use crate::state::piece::PieceType;
-
-fn static_check(result: &mut bool, is_first_player: bool, game_state: &GameState, king: &(PieceType, File, Rank), attacking_piece_type: PieceType, transformation: (isize,isize)) {
-    let target_file = king.1.transform(transformation.0);
-    let target_rank = king.2.transform(transformation.1);
-
-    if let (Some(target_file), Some(target_rank)) = (target_file, target_rank) {
-        if let Some(piece) = game_state.board[(target_file, target_rank)] {
-            if piece.is_owned_by_first_player != is_first_player
-                && piece.piece_type == attacking_piece_type { *result = true; }
-        }
-    }
-}
 
 pub fn is_check(is_first_player: bool, game_state: &GameState) -> bool{
     let mut result = false;
@@ -24,14 +13,43 @@ pub fn is_check(is_first_player: bool, game_state: &GameState) -> bool{
         .next();
 
     if let Some(king) = king {
-        KING_STATIC_TRANSFORMS.map(|transformation|
-            static_check(&mut result, is_first_player, game_state, &king, PieceType::King, transformation));
-        KNIGHT_STATIC_TRANSFORMS.map(|transformation|
-            static_check(&mut result, is_first_player, game_state, &king, PieceType::Knight, transformation));
-        [(-1,-1), (1,-1)].map(|transformation| static_check(&mut result, is_first_player, game_state, &king, PieceType::Pawn, transformation));
+        let mut static_check = StaticCheckTester::new(&mut result, is_first_player, &game_state.board, &king);
+        static_check.test(PieceType::King, &KING_STATIC_TRANSFORMS);
+        static_check.test(PieceType::Knight, &KNIGHT_STATIC_TRANSFORMS);
+        static_check.test(PieceType::Pawn, &[(-1, -1), (1, -1)]);
     }
 
     result
+}
+
+struct StaticCheckTester<'a> {
+    result: &'a mut bool,
+    is_first_player: bool,
+    board: &'a Board,
+    king: &'a (PieceType, File, Rank)
+}
+
+impl<'a> StaticCheckTester<'a> {
+    fn new(result: &'a mut bool,
+           is_first_player: bool,
+           board: &'a Board,
+           king: &'a (PieceType, File, Rank)) -> StaticCheckTester<'a> {
+        StaticCheckTester {result, is_first_player, board, king}
+    }
+
+    fn test(&mut self, attacking_piece_type: PieceType, transformations: &[(isize, isize)]) {
+        for transform in transformations {
+            let target_file = self.king.1.transform(transform.0);
+            let target_rank = self.king.2.transform(transform.1);
+
+            if let (Some(target_file), Some(target_rank)) = (target_file, target_rank) {
+                if let Some(piece) = self.board[(target_file, target_rank)] {
+                    if piece.is_owned_by_first_player != self.is_first_player
+                        && piece.piece_type == attacking_piece_type { *self.result = true; }
+                }
+            }
+        }
+    }
 }
 
 #[cfg(test)]
