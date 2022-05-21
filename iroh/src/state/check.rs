@@ -118,10 +118,12 @@ mod tests {
         pawn_check {"8/8/8/8/8/4K3/3p4/8 w - - 0 1";true},
         rook_check_vertical {"8/8/8/8/8/4K3/8/4r3 w - - 0 1";true},
         rook_check_horizontal {"8/8/8/8/8/1r2K3/8/8 w - - 0 1";true},
+        rook_no_check_if_blocked {"8/8/8/8/8/1r1RK3/8/8 w - - 0 1";false},
         bishop_check_upleft {"8/8/8/2b5/8/4K3/8/8 w - - 0 1";true},
         bishop_check_upright {"8/8/8/6b1/8/4K3/8/8 w - - 0 1";true},
         bishop_check_bottomleft {"8/8/8/8/8/4K3/8/2b5 w - - 0 1";true},
         bishop_check_bottomright {"8/8/8/8/8/4K3/8/6b1 w - - 0 1";true},
+        bishop_no_check_if_blocked {"8/8/8/8/8/4K3/5B2/6b1 w - - 0 1";false},
 
         queen_check_vertical {"8/8/8/8/8/4K3/8/4q3 w - - 0 1";true},
         queen_check_horizontal {"8/8/8/8/8/1q2K3/8/8 w - - 0 1";true},
