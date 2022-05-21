@@ -1,4 +1,5 @@
 use crate::moves::Move;
+use crate::moves::resolve_move::resolve_move;
 use crate::state::coordinates::{File, Rank};
 use crate::state::GameState;
 use crate::state::piece::PieceType;
@@ -18,7 +19,17 @@ pub fn generate_castling_moves(available_moves: &mut Vec<Move>, game_state: &Gam
                     && h1_piece.piece_type == PieceType::Rook
                     && f1.is_none()
                     && g1.is_none() {
-                    available_moves.push(Move::Castle(true))
+                    let f1_move = Move::RegularMove (
+                        (File::E, Rank::ONE),
+                        (File::F, Rank::ONE),
+                        PieceType::King
+                    );
+                    let f1_result = resolve_move(&f1_move, game_state.clone());
+                    let f1_would_be_check = f1_result.is_check(true);
+
+                    if !f1_would_be_check {
+                        available_moves.push(Move::Castle(true))
+                    }
                 }
             }
         }

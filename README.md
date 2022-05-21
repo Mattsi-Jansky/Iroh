@@ -13,9 +13,10 @@ Run tests with `cargo test`
 ## TODO
 
 * Shouldn't `from_fen` (both of them) return `Result` / do validation?
+* Is there a better way to do `castling_moves.rs` check for whether king would be in check without cloning GameState?
 * Pawn nuance
     * En Passant
 * Castling
-* Check
+  * Need to ensure king can't castle if doing so would put them in check while travelling
 * Checkmate
 * Draws and draw offers
