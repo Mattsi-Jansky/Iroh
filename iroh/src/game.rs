@@ -10,21 +10,28 @@ use crate::state::GameState;
 
 pub struct Game {
     sans: Vec<String>,
-    game_state: GameState
+    game_state: GameState,
+    possible_moves: Vec<Move>
 }
 
 impl Game {
     pub fn new() -> Game {
+        let state = GameState::new();
+        let moves = generate_moves(&state);
         Game {
             sans: vec![],
-            game_state: GameState::new()
+            game_state: state,
+            possible_moves: moves
         }
     }
 
     pub fn from_fen(fen: &str) -> Game {
+        let state = GameState::from_fen(fen);
+        let moves = generate_moves(&state);
         Game {
             sans: vec![],
-            game_state: GameState::from_fen(fen),
+            game_state: state,
+            possible_moves: moves
         }
     }
 
@@ -33,7 +40,7 @@ impl Game {
     }
 
     pub fn get_available_moves(&self) -> Vec<Move> {
-        generate_moves(&self.game_state)
+        self.possible_moves.clone()
     }
 
     pub fn get_pgn(&self) -> String {
@@ -46,17 +53,19 @@ impl Game {
     }
 
     pub fn make_move(&self, san: &str) -> Result<Game, IllegalMoveError> {
-        let mut possible_moves: HashMap<String, Move> = self.get_available_moves().into_iter()
+        let possible_moves: HashMap<String, &Move> = self.possible_moves.iter()
             .map(|m| (m.generate_san(), m))
             .collect();
 
-        if let Some(requested_move) = possible_moves.remove(&san.to_string()) {
+        if let Some(requested_move) = possible_moves.get(&san.to_string()) {
             let mut sans = self.sans.clone();
             sans.push(String::from(san));
             let game_state = resolve_move(&requested_move, self.game_state.clone());
+            let moves = generate_moves(&game_state);
             Ok(Game {
                 sans,
-                game_state
+                game_state,
+                possible_moves: moves
             })
         } else {
             Err(IllegalMoveError {})
