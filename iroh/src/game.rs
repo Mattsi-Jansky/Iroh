@@ -56,6 +56,10 @@ impl Game {
         !self.possible_moves.is_empty()
     }
 
+    pub fn is_first_player_turn(&self) -> bool {
+        self.game_state.is_first_player_turn
+    }
+
     pub fn make_move(&self, san: &str) -> Result<Game, IllegalMoveError> {
         let possible_moves: HashMap<String, &Move> = self.possible_moves.iter()
             .map(|m| (m.generate_san(), m))

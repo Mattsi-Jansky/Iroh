@@ -23,8 +23,19 @@ fn main() {
 
         term.clear_screen().unwrap();
         if let Ok(new_game_state) = result {
-            term.write_line("").unwrap();
-            game = new_game_state;
+            if new_game_state.is_game_ongoing() {
+                term.write_line("").unwrap();
+                game = new_game_state;
+            }
+            else {
+                term.write_line("").unwrap();
+                render(&term, &new_game_state);
+                term.write_line("----------------------").unwrap();
+                let winning_player_name = if new_game_state.is_first_player_turn() {"Second player"}
+                    else {"First player"};
+                term.write_line(&format!("Check mate. Game over! {} loses", winning_player_name));
+                break;
+            }
         } else {
             term.write_line(&*format!("Sorry, {} is not a legal move.", input)).unwrap();
         }
