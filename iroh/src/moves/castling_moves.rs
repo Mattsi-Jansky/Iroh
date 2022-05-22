@@ -20,7 +20,7 @@ pub fn generate_castling_moves(available_moves: &mut Vec<Move>, game_state: &Gam
                     && f1.is_none()
                     && g1.is_none() {
                     let f1_would_be_check = would_be_check_first_player(File::F, game_state);
-                    //do not need to check g1 because it would result in check anyway
+                    //Do not need to check g1 because castling there would result in check anyway
 
                     if !f1_would_be_check {
                         available_moves.push(Move::Castle(true))
@@ -42,7 +42,7 @@ pub fn generate_castling_moves(available_moves: &mut Vec<Move>, game_state: &Gam
                     && c1.is_none()
                     && d1.is_none() {
                     let d1_would_be_check = would_be_check_first_player(File::D, game_state);
-                    //Do not need to check c1 because it would result in check anyway
+                    //Do not need to check c1 because castling there would result in check anyway
 
                     if !d1_would_be_check {
                         available_moves.push(Move::Castle(false))
@@ -63,7 +63,12 @@ pub fn generate_castling_moves(available_moves: &mut Vec<Move>, game_state: &Gam
                     && h8_piece.piece_type == PieceType::Rook
                     && f8.is_none()
                     && g8.is_none() {
-                    available_moves.push(Move::Castle(true))
+                    let f8_would_be_check = would_be_check_second_player(File::F, game_state);
+                    //Do not need to check g8 because castling there would result in check anyway
+
+                    if !f8_would_be_check {
+                        available_moves.push(Move::Castle(true))
+                    }
                 }
             }
         }
@@ -80,7 +85,12 @@ pub fn generate_castling_moves(available_moves: &mut Vec<Move>, game_state: &Gam
                     && b8.is_none()
                     && c8.is_none()
                     && d8.is_none() {
-                    available_moves.push(Move::Castle(false))
+                    let d8_would_be_check = would_be_check_second_player(File::D, game_state);
+                    //Do not need to check c8 because castling there would result in check anyway
+
+                    if !d8_would_be_check {
+                        available_moves.push(Move::Castle(false))
+                    }
                 }
             }
         }
@@ -88,11 +98,21 @@ pub fn generate_castling_moves(available_moves: &mut Vec<Move>, game_state: &Gam
 }
 
 fn would_be_check_first_player(target_file: File, game_state: &GameState) -> bool {
-    let f1_move = Move::RegularMove (
+    let skipped_move = Move::RegularMove (
         (File::E, Rank::ONE),
         (target_file, Rank::ONE),
         PieceType::King
     );
-    let f1_result = resolve_move(&f1_move, game_state.clone());
-    f1_result.is_check(true)
+    let result = resolve_move(&skipped_move, game_state.clone());
+    result.is_check(true)
+}
+
+fn would_be_check_second_player(target_file: File, game_state: &GameState) -> bool {
+    let skipped_move = Move::RegularMove (
+        (File::E, Rank::EIGHT),
+        (target_file, Rank::EIGHT),
+        PieceType::King
+    );
+    let result = resolve_move(&skipped_move, game_state.clone());
+    result.is_check(false)
 }
