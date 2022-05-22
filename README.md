@@ -21,3 +21,11 @@ Start the CLI interface in your terminal with `cargo run`.
 * Pawn nuance
     * En Passant
 * Draws and draw offers
+  * Mutual agreement 
+  * Stalemates (Auto-draw when player has no legal moves but king is not in check)
+  * Five-fold repetition rule
+  * Seventyfive-move rule
+  * Three-fold and fift-move rules (non-automatic variants of previous two)
+  * Dead position
+  * https://en.wikipedia.org/wiki/Draw_(chess)#Draws_in_all_games
+* Resignations
