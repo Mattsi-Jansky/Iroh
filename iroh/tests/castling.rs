@@ -249,6 +249,7 @@ fn given_second_player_and_fen_says_they_cant_castle_queenside_cannot_castle_que
 #[test_case("rnb1kbnr/pppppppp/5q2/8/8/8/PPPPP3/RNBQK2R w KQkq - 0 1", "O-O")]
 #[test_case("rnb1kbnr/pppppppp/6q1/8/8/8/PPPPP3/RNBQK2R w KQkq - 0 1", "O-O")]
 #[test_case("rnb1kbnr/pppppppp/3q4/8/8/8/P3PPPP/R3KBNR w KQkq - 0 1", "O-O-O")]
+#[test_case("rnb1kbnr/pppppppp/2q5/8/8/8/P3PPPP/R3KBNR w KQkq - 0 1", "O-O-O")]
 fn given_first_player_and_king_would_go_through_attacked_tile_cannot_castle(fen: &str, sen: &str) {
     let game = Game::from_fen(fen);
 
