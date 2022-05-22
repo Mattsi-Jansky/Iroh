@@ -10,6 +10,10 @@ Rust and Cargo. See the official docs: [Install Rust](https://www.rust-lang.org/
 
 Run tests with `cargo test`
 
+## Run
+
+Start the CLI interface in your terminal with `cargo run`.
+
 ## TODO
 
 * Shouldn't `from_fen` (both of them) return `Result` / do validation?
