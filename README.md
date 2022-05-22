@@ -16,5 +16,4 @@ Run tests with `cargo test`
 * Is there a better way to do `castling_moves.rs` check for whether king would be in check without cloning GameState?
 * Pawn nuance
     * En Passant
-* Checkmate
 * Draws and draw offers

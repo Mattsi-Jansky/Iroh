@@ -10,6 +10,7 @@ pub fn generate_pgn(sans: &[String], is_game_ongoing: bool, is_first_player_turn
     }
 
     if is_game_ongoing { result += "*"}
+    else if is_first_player_turn { result += "0-1" }
     else if !is_first_player_turn { result += "1-0" }
 
     result
