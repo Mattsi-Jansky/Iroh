@@ -1,5 +1,7 @@
 # Iroh
 
+[![Tests](https://github.com/Mattsi-Jansky/Iroh/actions/workflows/tests.yml/badge.svg)](https://github.com/Mattsi-Jansky/Iroh/actions/workflows/tests.yml)
+
 Iroh is an in-progress [chess engine](https://en.wikipedia.org/wiki/Chess_engine) written in Rust. It is affectionately named after a fictional character that wished to play board games every day.
 
 ## Dependencies
