@@ -20,6 +20,7 @@ pub fn generate_castling_moves(available_moves: &mut Vec<Move>, game_state: &Gam
                     && f1.is_none()
                     && g1.is_none() {
                     let f1_would_be_check = would_be_check_first_player(File::F, game_state);
+                    //do not need to check g1 because it would result in check anyway
 
                     if !f1_would_be_check {
                         available_moves.push(Move::Castle(true))
@@ -40,7 +41,11 @@ pub fn generate_castling_moves(available_moves: &mut Vec<Move>, game_state: &Gam
                     && b1.is_none()
                     && c1.is_none()
                     && d1.is_none() {
-                    available_moves.push(Move::Castle(false))
+                    let d1_would_be_check = would_be_check_first_player(File::D, game_state);
+
+                    if !d1_would_be_check {
+                        available_moves.push(Move::Castle(false))
+                    }
                 }
             }
         }
