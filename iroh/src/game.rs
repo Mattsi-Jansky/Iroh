@@ -48,8 +48,12 @@ impl Game {
             String::new()
         }
         else {
-            generate_pgn(&self.sans)
+            generate_pgn(&self.sans, self.is_game_ongoing(), self.game_state.is_first_player_turn)
         }
+    }
+
+    pub fn is_game_ongoing(&self) -> bool {
+        !self.possible_moves.is_empty()
     }
 
     pub fn make_move(&self, san: &str) -> Result<Game, IllegalMoveError> {

@@ -218,7 +218,7 @@ fn promote_to_queen() {
 
     game = game.make_move("d8=Q").unwrap();
 
-    assert_eq!("1. d8=Q *", game.get_pgn());
+    assert_eq!("1. d8=Q 1-0", game.get_pgn());
     assert_eq!("3Q4/8/8/8/8/8/8/8 b - - 0 1", game.generate_fen());
 }
 
@@ -228,7 +228,7 @@ fn promote_to_knight() {
 
     game = game.make_move("d8=N").unwrap();
 
-    assert_eq!("1. d8=N *", game.get_pgn());
+    assert_eq!("1. d8=N 1-0", game.get_pgn());
     assert_eq!("3N4/8/8/8/8/8/8/8 b - - 0 1", game.generate_fen());
 }
 
@@ -238,7 +238,7 @@ fn promote_to_bishop() {
 
     game = game.make_move("d8=B").unwrap();
 
-    assert_eq!("1. d8=B *", game.get_pgn());
+    assert_eq!("1. d8=B 1-0", game.get_pgn());
     assert_eq!("3B4/8/8/8/8/8/8/8 b - - 0 1", game.generate_fen());
 }
 
@@ -248,7 +248,7 @@ fn promote_to_rook() {
 
     game = game.make_move("d8=R").unwrap();
 
-    assert_eq!("1. d8=R *", game.get_pgn());
+    assert_eq!("1. d8=R 1-0", game.get_pgn());
     assert_eq!("3R4/8/8/8/8/8/8/8 b - - 0 1", game.generate_fen());
 }
 
@@ -261,4 +261,22 @@ fn promote_second_player_pawn_to_queen() {
 
     assert_eq!("1. d7 d1=Q *", game.get_pgn());
     assert_eq!("8/3P4/8/8/8/8/8/3q4 w - - 0 1", game.generate_fen());
+}
+
+#[test]
+fn given_current_player_can_move_game_is_ongoing() {
+    let mut game = Game::from_fen("5k2/R7/8/8/8/8/8/1R2K3 w - - 0 1");
+
+    assert_eq!(true, game.is_game_ongoing());
+}
+
+#[test]
+fn checkmate() {
+    let mut game = Game::from_fen("5k2/R7/8/8/8/8/8/1R2K3 w - - 0 1");
+    assert_eq!(true, game.is_game_ongoing());
+
+    game = game.make_move("Rb8").unwrap();
+
+    assert_eq!("1. Rb8 1-0", game.get_pgn());
+    assert_eq!(false, game.is_game_ongoing());
 }
