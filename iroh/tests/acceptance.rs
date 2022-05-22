@@ -5,6 +5,7 @@ use test_case::test_case;
 
 use iroh::state::piece::PieceType;
 use iroh::game::Game;
+use iroh::state::status::Status;
 
 #[test]
 fn new_game_has_blank_pgn() {
@@ -267,27 +268,27 @@ fn promote_second_player_pawn_to_queen() {
 fn given_current_player_can_move_game_is_ongoing() {
     let mut game = Game::from_fen("5k2/R7/8/8/8/8/8/1R2K3 w - - 0 1");
 
-    assert_eq!(true, game.is_game_ongoing());
+    assert_eq!(Status::Ongoing, game.status());
 }
 
 #[test]
 fn checkmate_second_player() {
     let mut game = Game::from_fen("5k2/R7/8/8/8/8/8/1R2K3 w - - 0 1");
-    assert_eq!(true, game.is_game_ongoing());
+    assert_eq!(Status::Ongoing, game.status());
 
     game = game.make_move("Rb8").unwrap();
 
     assert_eq!("1. Rb8 1-0", game.get_pgn());
-    assert_eq!(false, game.is_game_ongoing());
+    assert_eq!(Status::FirstPlayerWin, game.status());
 }
 
 #[test]
 fn checkmate_first_player() {
     let mut game = Game::from_fen("1r3k2/8/8/8/8/8/r7/4K3 b - - 0 1");
-    assert_eq!(true, game.is_game_ongoing());
+    assert_eq!(Status::Ongoing, game.status());
 
     game = game.make_move("Rb1").unwrap();
 
     assert_eq!("1. Rb1 0-1", game.get_pgn());
-    assert_eq!(false, game.is_game_ongoing());
+    assert_eq!(Status::SecondPlayerWin, game.status());
 }

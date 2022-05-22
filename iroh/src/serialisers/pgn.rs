@@ -1,6 +1,7 @@
 use crate::state::GameState;
+use crate::state::status::Status;
 
-pub fn generate_pgn(sans: &[String], is_game_ongoing: bool, is_first_player_turn: bool) -> String {
+pub fn generate_pgn(sans: &[String], status: Status, is_first_player_turn: bool) -> String {
     let number_of_pairs = (sans.len() as f32 / 2.0).ceil() as u8;
     let mut result = String::new();
     let mut i = 1;
@@ -9,9 +10,12 @@ pub fn generate_pgn(sans: &[String], is_game_ongoing: bool, is_first_player_turn
         i += 1;
     }
 
-    if is_game_ongoing { result += "*"}
-    else if is_first_player_turn { result += "0-1" }
-    else if !is_first_player_turn { result += "1-0" }
+    match status {
+        Status::Ongoing => { result += "*"}
+        Status::FirstPlayerWin => { result += "1-0" }
+        Status::SecondPlayerWin => { result += "0-1" }
+        Status::Draw => {}
+    }
 
     result
 }

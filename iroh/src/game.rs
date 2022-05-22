@@ -7,11 +7,13 @@ use crate::moves::{Move};
 use crate::moves::resolve_move::resolve_move;
 use crate::serialisers::fen::generate_fen;
 use crate::state::GameState;
+use crate::state::status::Status;
 
 pub struct Game {
     sans: Vec<String>,
     game_state: GameState,
-    possible_moves: Vec<Move>
+    possible_moves: Vec<Move>,
+    status: Status
 }
 
 impl Game {
@@ -21,18 +23,32 @@ impl Game {
         Game {
             sans: vec![],
             game_state: state,
-            possible_moves: moves
+            possible_moves: moves,
+            status: Status::Ongoing
         }
     }
 
     pub fn from_fen(fen: &str) -> Game {
         let state = GameState::from_fen(fen);
         let moves = generate_moves(&state);
-        Game {
-            sans: vec![],
-            game_state: state,
-            possible_moves: moves
-        }
+        Game::from (
+            vec![],
+            state,
+            moves
+        )
+    }
+
+    fn from(sans: Vec<String>,
+            game_state: GameState,
+            possible_moves: Vec<Move>) -> Game {
+        let mut result = Game {
+            sans,
+            game_state,
+            possible_moves,
+            status: Status::Ongoing
+        };
+        result.update_status();
+        result
     }
 
     pub fn generate_fen(&self) -> String {
@@ -48,16 +64,16 @@ impl Game {
             String::new()
         }
         else {
-            generate_pgn(&self.sans, self.is_game_ongoing(), self.game_state.is_first_player_turn)
+            generate_pgn(&self.sans, self.status, self.game_state.is_first_player_turn)
         }
-    }
-
-    pub fn is_game_ongoing(&self) -> bool {
-        !self.possible_moves.is_empty()
     }
 
     pub fn is_first_player_turn(&self) -> bool {
         self.game_state.is_first_player_turn
+    }
+
+    pub fn status(&self) -> Status {
+        self.status
     }
 
     pub fn make_move(&self, san: &str) -> Result<Game, IllegalMoveError> {
@@ -70,13 +86,23 @@ impl Game {
             sans.push(String::from(san));
             let game_state = resolve_move(&requested_move, self.game_state.clone());
             let moves = generate_moves(&game_state);
-            Ok(Game {
+            Ok(Game::from(
                 sans,
                 game_state,
-                possible_moves: moves
-            })
+                moves
+            ))
         } else {
             Err(IllegalMoveError {})
+        }
+    }
+
+    fn update_status(&mut self) {
+        if self.possible_moves.is_empty() {
+            if !self.is_first_player_turn() {
+                self.status = Status::FirstPlayerWin
+            } else {
+                self.status = Status::SecondPlayerWin
+            }
         }
     }
 

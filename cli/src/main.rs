@@ -3,6 +3,7 @@ mod fen_display;
 use std::io::Write;
 use console::Term;
 use iroh::game::Game;
+use iroh::state::status::Status;
 use crate::fen_display::generate_display_from_fen;
 
 fn main() {
@@ -23,23 +24,32 @@ fn main() {
 
         term.clear_screen().unwrap();
         if let Ok(new_game_state) = result {
-            if new_game_state.is_game_ongoing() {
-                term.write_line("").unwrap();
-                game = new_game_state;
-            }
-            else {
-                term.write_line("").unwrap();
-                render(&term, &new_game_state);
-                term.write_line("----------------------").unwrap();
-                let winning_player_name = if new_game_state.is_first_player_turn() {"Second player"}
-                    else {"First player"};
-                term.write_line(&format!("Check mate. Game over! {} loses", winning_player_name));
-                break;
+            match new_game_state.status() {
+                Status::Ongoing => {
+                    term.write_line("").unwrap();
+                    game = new_game_state;
+                },
+                Status::FirstPlayerWin | Status::SecondPlayerWin | Status::Draw => {
+                    end_game(&mut term, &new_game_state);
+                    break;
+                }
             }
         } else {
             term.write_line(&*format!("Sorry, {} is not a legal move.", input)).unwrap();
         }
     }
+}
+
+fn end_game(term: &mut Term, new_game_state: &Game) {
+    term.write_line("").unwrap();
+    render(&term, &new_game_state);
+    term.write_line("----------------------").unwrap();
+    match new_game_state.status() {
+        Status::FirstPlayerWin => term.write_line("Check mate. Game over! First player wins"),
+        Status::SecondPlayerWin => term.write_line("Check mate. Game over! Second player wins"),
+        Status::Draw => term.write_line("It is a draw!"),
+        Status::Ongoing => Ok(())
+    };
 }
 
 fn render(term: &Term, game: &Game) {
