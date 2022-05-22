@@ -8,12 +8,12 @@ use iroh::game::Game;
 use iroh::state::status::Status;
 
 #[test]
-fn new_game_has_blank_pgn() {
+fn new_game_pgn_has_asterisk_only() {
     let game = Game::new();
 
     let result = game.get_pgn();
 
-    assert_eq!(result,"");
+    assert_eq!(result,"*");
 }
 
 #[test_case("a3")]
@@ -219,7 +219,7 @@ fn promote_to_queen() {
 
     game = game.make_move("d8=Q").unwrap();
 
-    assert_eq!("1. d8=Q 1-0", game.get_pgn());
+    assert_eq!("1. d8=Q 1/2-1/2", game.get_pgn());
     assert_eq!("3Q4/8/8/8/8/8/8/8 b - - 0 1", game.generate_fen());
 }
 
@@ -229,7 +229,7 @@ fn promote_to_knight() {
 
     game = game.make_move("d8=N").unwrap();
 
-    assert_eq!("1. d8=N 1-0", game.get_pgn());
+    assert_eq!("1. d8=N 1/2-1/2", game.get_pgn());
     assert_eq!("3N4/8/8/8/8/8/8/8 b - - 0 1", game.generate_fen());
 }
 
@@ -239,7 +239,7 @@ fn promote_to_bishop() {
 
     game = game.make_move("d8=B").unwrap();
 
-    assert_eq!("1. d8=B 1-0", game.get_pgn());
+    assert_eq!("1. d8=B 1/2-1/2", game.get_pgn());
     assert_eq!("3B4/8/8/8/8/8/8/8 b - - 0 1", game.generate_fen());
 }
 
@@ -249,7 +249,7 @@ fn promote_to_rook() {
 
     game = game.make_move("d8=R").unwrap();
 
-    assert_eq!("1. d8=R 1-0", game.get_pgn());
+    assert_eq!("1. d8=R 1/2-1/2", game.get_pgn());
     assert_eq!("3R4/8/8/8/8/8/8/8 b - - 0 1", game.generate_fen());
 }
 
@@ -291,4 +291,12 @@ fn checkmate_first_player() {
 
     assert_eq!("1. Rb1 0-1", game.get_pgn());
     assert_eq!(Status::SecondPlayerWin, game.status());
+}
+
+#[test]
+fn given_stalemate_should_automatically_draw() {
+    let mut game = Game::from_fen("1N6/8/2R5/3k4/4R3/8/5N2/3K4 b - - 0 1");
+
+    assert_eq!(Status::Draw, game.status());
+    assert_eq!("1/2-1/2", game.get_pgn());
 }

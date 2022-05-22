@@ -60,12 +60,7 @@ impl Game {
     }
 
     pub fn get_pgn(&self) -> String {
-        if self.sans.is_empty() {
-            String::new()
-        }
-        else {
-            generate_pgn(&self.sans, self.status, self.game_state.is_first_player_turn)
-        }
+        generate_pgn(&self.sans, self.status)
     }
 
     pub fn is_first_player_turn(&self) -> bool {
@@ -98,7 +93,10 @@ impl Game {
 
     fn update_status(&mut self) {
         if self.possible_moves.is_empty() {
-            if !self.is_first_player_turn() {
+            if !self.game_state.is_check(self.game_state.is_first_player_turn) {
+                self.status = Status::Draw
+            }
+            else if !self.is_first_player_turn() {
                 self.status = Status::FirstPlayerWin
             } else {
                 self.status = Status::SecondPlayerWin
