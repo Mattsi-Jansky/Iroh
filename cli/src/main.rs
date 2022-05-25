@@ -42,13 +42,13 @@ fn main() {
 
 fn end_game(term: &mut Term, new_game_state: &Game) {
     term.write_line("").unwrap();
-    render(&term, &new_game_state);
+    render(term, new_game_state);
     term.write_line("----------------------").unwrap();
     match new_game_state.status() {
-        Status::FirstPlayerWin => term.write_line("Check mate. Game over! First player wins"),
-        Status::SecondPlayerWin => term.write_line("Check mate. Game over! Second player wins"),
-        Status::Draw => term.write_line("It is a draw!"),
-        Status::Ongoing => Ok(())
+        Status::FirstPlayerWin => term.write_line("Check mate. Game over! First player wins").unwrap(),
+        Status::SecondPlayerWin => term.write_line("Check mate. Game over! Second player wins").unwrap(),
+        Status::Draw => term.write_line("It is a draw!").unwrap(),
+        Status::Ongoing => ()
     };
 }
 
