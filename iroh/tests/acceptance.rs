@@ -1,18 +1,21 @@
 #[macro_use]
 extern crate galvanic_assert;
+extern crate core;
+
 use galvanic_assert::matchers::collection::*;
 use test_case::test_case;
 mod generators;
 
 use iroh::state::piece::PieceType;
 use iroh::game::Game;
+use iroh::move_result::MoveResult;
 use iroh::state::status::Status;
 
 #[test]
 fn new_game_pgn_has_asterisk_only() {
     let game = Game::new();
 
-    let result = game.get_pgn();
+    let result = game.generate_pgn().unwrap();
 
     assert_eq!(result,"*");
 }
@@ -26,10 +29,10 @@ fn new_game_pgn_has_asterisk_only() {
 #[test_case("g3")]
 #[test_case("h3")]
 fn first_pawn_move(san: &str) {
-    let mut game = Game::new();
+    let mut game = Game::new().unwrap();
 
-    game = game.make_move(san).unwrap();
-    let result = game.get_pgn();
+    let game = game.make_move(san);
+    let result = game.generate_pgn().unwrap();
 
     assert_eq!(format!("1. {} *", san), result);
 }
@@ -51,11 +54,11 @@ fn first_pawn_move(san: &str) {
 #[test_case("g6")]
 #[test_case("h6")]
 fn second_pawn_move(san: &str) {
-    let mut game = Game::new();
+    let mut game = Game::new().unwrap();
 
     game = game.make_move("e4").unwrap();
-    game = game.make_move(san).unwrap();
-    let result = game.get_pgn();
+    let game = game.make_move(san);
+    let result = game.generate_pgn().unwrap();
 
     assert_eq!(format!("1. e4 {} *", san), result);
 }
@@ -87,62 +90,65 @@ chess_test! {
 
 #[test]
 fn attack_move_from_dynamic_movement_piece() {
-    let mut game = Game::from_fen("8/8/8/3Rr3/3Rr3/8/8/8 w KQkq - 0 1");
+    let mut game = Game::from_fen("8/8/8/3Rr3/3Rr3/8/8/8 w KQkq - 0 1").unwrap();
 
     game = game.make_move("Rxe5").unwrap();
     game = game.make_move("Rxd4").unwrap();
-    game = game.make_move("Rd5").unwrap();
-    let result = game.get_pgn();
+    let game = game.make_move("Rd5");
+    let result_pgn = game.generate_pgn().unwrap();
+    let result_game = game.unwrap();
 
-    assert_eq!("1. Rxe5 Rxd4 2. Rd5 *", result);
-    assert_that!(&game.get_captured_pieces().second_player, contains_in_any_order(vec![
+    assert_eq!("1. Rxe5 Rxd4 2. Rd5 *", result_pgn);
+    assert_that!(&result_game.get_captured_pieces().second_player, contains_in_any_order(vec![
         PieceType::Rook
     ]));
-    assert_that!(&game.get_captured_pieces().first_player, contains_in_any_order(vec![
+    assert_that!(&result_game.get_captured_pieces().first_player, contains_in_any_order(vec![
         PieceType::Rook
     ]));
 }
 
 #[test]
 fn attack_move_from_static_movement_piece() {
-    let mut game = Game::from_fen("8/1n4N1/8/2N2n2/8/8/8/8 w - - 0 1");
+    let mut game = Game::from_fen("8/1n4N1/8/2N2n2/8/8/8/8 w - - 0 1").unwrap();
 
     game = game.make_move("Nxb7").unwrap();
     game = game.make_move("Nxg7").unwrap();
-    game = game.make_move("Nc5").unwrap();
-    let result = game.get_pgn();
+    let game = game.make_move("Nc5");
+    let result = game.generate_pgn().unwrap();
+    let result_game = game.unwrap();
 
     assert_eq!("1. Nxb7 Nxg7 2. Nc5 *", result);
-    assert_that!(&game.get_captured_pieces().second_player, contains_in_any_order(vec![
+    assert_that!(&result_game.get_captured_pieces().second_player, contains_in_any_order(vec![
         PieceType::Knight
     ]));
-    assert_that!(&game.get_captured_pieces().first_player, contains_in_any_order(vec![
+    assert_that!(&result_game.get_captured_pieces().first_player, contains_in_any_order(vec![
         PieceType::Knight
     ]));
 }
 
 #[test]
 fn attack_move_from_pawn() {
-    let mut game = Game::from_fen("8/8/3p2p1/2P2P2/8/8/8/8 w - - 0 1");
+    let mut game = Game::from_fen("8/8/3p2p1/2P2P2/8/8/8/8 w - - 0 1").unwrap();
 
     game = game.make_move("cxd6").unwrap();
     game = game.make_move("gxf5").unwrap();
     game = game.make_move("d7").unwrap();
-    game = game.make_move("f4").unwrap();
-    let result = game.get_pgn();
+    let game = game.make_move("f4");
+    let result = game.generate_pgn().unwrap();
+    let result_game = game.unwrap();
 
     assert_eq!("1. cxd6 gxf5 2. d7 f4 *", result);
-    assert_that!(&game.get_captured_pieces().second_player, contains_in_any_order(vec![
+    assert_that!(&result_game.get_captured_pieces().second_player, contains_in_any_order(vec![
         PieceType::Pawn
     ]));
-    assert_that!(&game.get_captured_pieces().first_player, contains_in_any_order(vec![
+    assert_that!(&result_game.get_captured_pieces().first_player, contains_in_any_order(vec![
         PieceType::Pawn
     ]));
 }
 
 #[test]
 fn generate_fen_from_game() {
-    let game = Game::new();
+    let game = Game::new().unwrap();
 
     let result = game.generate_fen();
 
@@ -153,35 +159,35 @@ fn generate_fen_from_game() {
 fn given_current_player_can_move_game_is_ongoing() {
     let game = Game::from_fen("5k2/R7/8/8/8/8/8/1R2K3 w - - 0 1");
 
-    assert_eq!(Status::Ongoing, game.status());
+    assert!(matches!(game, MoveResult::OngoingGame {..}));
 }
 
 #[test]
 fn checkmate_second_player() {
     let mut game = Game::from_fen("5k2/R7/8/8/8/8/8/1R2K3 w - - 0 1");
-    assert_eq!(Status::Ongoing, game.status());
+    assert!(matches!(game, MoveResult::OngoingGame {..}));
 
-    game = game.make_move("Rb8").unwrap();
+    let result = game.unwrap().make_move("Rb8");
 
-    assert_eq!("1. Rb8 1-0", game.get_pgn());
-    assert_eq!(Status::FirstPlayerWin, game.status());
+    assert_eq!("1. Rb8 1-0", result.generate_pgn().unwrap());
+    assert!(matches!(result, MoveResult::Win {is_first_player_win: true,..}));
 }
 
 #[test]
 fn checkmate_first_player() {
     let mut game = Game::from_fen("1r3k2/8/8/8/8/8/r7/4K3 b - - 0 1");
-    assert_eq!(Status::Ongoing, game.status());
+    assert!(matches!(game, MoveResult::OngoingGame {..}));
 
-    game = game.make_move("Rb1").unwrap();
+    let game = game.unwrap().make_move("Rb1");
 
-    assert_eq!("1. Rb1 0-1", game.get_pgn());
-    assert_eq!(Status::SecondPlayerWin, game.status());
+    assert_eq!("1. Rb1 0-1", game.generate_pgn().unwrap());
+    assert!(matches!(game, MoveResult::Win {is_first_player_win: false,..}));
 }
 
 #[test]
 fn given_stalemate_should_automatically_draw() {
     let game = Game::from_fen("1N6/8/2R5/3k4/4R3/8/5N2/3K4 b - - 0 1");
 
-    assert_eq!(Status::Draw, game.status());
-    assert_eq!("1/2-1/2", game.get_pgn());
+    assert!(matches!(game, MoveResult::Draw {..}));
+    assert_eq!("1/2-1/2", game.generate_pgn().unwrap());
 }

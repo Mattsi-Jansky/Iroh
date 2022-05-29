@@ -2,53 +2,39 @@ use std::collections::HashMap;
 use crate::serialisers::pgn::generate_pgn;
 use crate::state::captured_pieces::CapturedPieces;
 use crate::error::IllegalMoveError;
+use crate::move_result::MoveResult;
 use crate::moves::move_generation::generate_moves;
 use crate::moves::{Move};
 use crate::moves::resolve_move::resolve_move;
 use crate::serialisers::fen::generate_fen;
 use crate::state::GameState;
-use crate::state::status::Status;
 
+#[derive(PartialEq,Debug,Clone)]
 pub struct Game {
-    sans: Vec<String>,
+    pub(crate) sans: Vec<String>,
     game_state: GameState,
-    possible_moves: Vec<Move>,
-    status: Status
+    possible_moves: Vec<Move>
 }
 
 impl Game {
-    pub fn new() -> Game {
+    pub fn new() -> MoveResult {
         let state = GameState::new();
         let moves = generate_moves(&state);
-        Game {
+        MoveResult::OngoingGame{game: Game {
             sans: vec![],
             game_state: state,
-            possible_moves: moves,
-            status: Status::Ongoing
-        }
+            possible_moves: moves
+        }}
     }
 
-    pub fn from_fen(fen: &str) -> Game {
-        let state = GameState::from_fen(fen);
-        let moves = generate_moves(&state);
-        Game::from (
-            vec![],
-            state,
-            moves
-        )
-    }
-
-    fn from(sans: Vec<String>,
-            game_state: GameState,
-            possible_moves: Vec<Move>) -> Game {
-        let mut result = Game {
-            sans,
+    pub fn from_fen(fen: &str) -> MoveResult {
+        let game_state = GameState::from_fen(fen);
+        let possible_moves = generate_moves(&game_state);
+        Self::determine_status(Game {
+            sans: vec![],
             game_state,
-            possible_moves,
-            status: Status::Ongoing
-        };
-        result.update_status();
-        result
+            possible_moves
+        })
     }
 
     pub fn generate_fen(&self) -> String {
@@ -59,19 +45,11 @@ impl Game {
         self.possible_moves.clone()
     }
 
-    pub fn get_pgn(&self) -> String {
-        generate_pgn(&self.sans, self.status)
-    }
-
     pub fn is_first_player_turn(&self) -> bool {
         self.game_state.is_first_player_turn
     }
 
-    pub fn status(&self) -> Status {
-        self.status
-    }
-
-    pub fn make_move(&self, san: &str) -> Result<Game, IllegalMoveError> {
+    pub fn make_move(&self, san: &str) -> MoveResult {
         let possible_moves: HashMap<String, &Move> = self.possible_moves.iter()
             .map(|m| (m.generate_san(), m))
             .collect();
@@ -80,37 +58,27 @@ impl Game {
             let mut sans = self.sans.clone();
             sans.push(String::from(san));
             let game_state = resolve_move(requested_move, self.game_state.clone());
-            let moves = generate_moves(&game_state);
-            Ok(Game::from(
+            let possible_moves = generate_moves(&game_state);
+            Self::determine_status(Game {
                 sans,
                 game_state,
-                moves
-            ))
+                possible_moves
+            })
         } else {
-            Err(IllegalMoveError {})
+            MoveResult::IllegalMove
         }
     }
 
-    fn update_status(&mut self) {
-        if self.possible_moves.is_empty() {
-            if !self.game_state.is_check(self.game_state.is_first_player_turn) {
-                self.status = Status::Draw
+    fn determine_status(game: Game) -> MoveResult {
+        if game.possible_moves.is_empty() {
+            if game.game_state.is_check(game.game_state.is_first_player_turn) {
+                MoveResult::Win{ is_first_player_win: !game.is_first_player_turn(), sans: game.sans }
             }
-            else if !self.is_first_player_turn() {
-                self.status = Status::FirstPlayerWin
-            } else {
-                self.status = Status::SecondPlayerWin
-            }
-        }
+            else { MoveResult::Draw{game} }
+        } else { MoveResult::OngoingGame {game} }
     }
 
     pub fn get_captured_pieces(&self) -> &CapturedPieces {
         &self.game_state.captured_pieces
-    }
-}
-
-impl Default for Game {
-    fn default() -> Self {
-        Self::new()
     }
 }

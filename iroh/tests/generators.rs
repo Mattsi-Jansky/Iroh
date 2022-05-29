@@ -11,12 +11,12 @@ macro_rules! chess_test_inner {
         fn $name() {
             let mut game = if $fen.is_empty() {Game::new()} else {Game::from_fen($fen)};
 
-            $(game = game.make_move($san).unwrap();)+
-            let result_pgn = game.get_pgn();
-            let result_fen = game.generate_fen();
+            $(game = game.unwrap().make_move($san);)+
+            let result_pgn = game.generate_pgn().unwrap();
+            let result_fen = game.generate_fen().unwrap();
 
             assert_eq!($pgn, result_pgn);
-            if!$expected_fen.is_empty() {assert_eq!($expected_fen,result_fen)}
+            if !$expected_fen.is_empty() {assert_eq!($expected_fen,result_fen)}
         }
     }
 }

@@ -18,7 +18,7 @@ use iroh::state::coordinates::{Rank, File};
 #[test_case(7)]
 fn generate_first_turn_pawn_moves(file: usize) {
     let file = File::new(file);
-    let game = Game::new();
+    let game = Game::new().unwrap();
 
     let available_moves = game.get_available_moves();
 
@@ -30,7 +30,7 @@ fn generate_first_turn_pawn_moves(file: usize) {
 
 #[test]
 fn generate_moves_for_knight() {
-    let game = Game::from_fen("8/8/8/4N3/8/8/8/8 w KQkq - 0 1");
+    let game = Game::from_fen("8/8/8/4N3/8/8/8/8 w KQkq - 0 1").unwrap();
 
     let available_moves = game.get_available_moves();
 
@@ -51,7 +51,7 @@ fn generate_moves_for_knight() {
 
 #[test]
 fn knight_moves_do_not_go_off_edge_of_board() {
-    let game = Game::from_fen("8/8/8/8/8/8/8/N7 w KQkq - 0 1");
+    let game = Game::from_fen("8/8/8/8/8/8/8/N7 w KQkq - 0 1").unwrap();
 
     let available_moves = game.get_available_moves();
 
@@ -63,7 +63,7 @@ fn knight_moves_do_not_go_off_edge_of_board() {
 
 #[test]
 fn generate_moves_for_king() {
-    let game = Game::from_fen("8/8/8/4K3/8/8/8/8 w KQkq - 0 1");
+    let game = Game::from_fen("8/8/8/4K3/8/8/8/8 w KQkq - 0 1").unwrap();
 
     let available_moves = game.get_available_moves();
 
@@ -83,7 +83,7 @@ fn generate_moves_for_king() {
 
 #[test]
 fn generate_moves_for_rook() {
-    let game = Game::from_fen("8/8/8/4R3/8/8/8/8 w KQkq - 0 1");
+    let game = Game::from_fen("8/8/8/4R3/8/8/8/8 w KQkq - 0 1").unwrap();
 
     let available_moves = game.get_available_moves();
 
@@ -110,7 +110,7 @@ fn generate_moves_for_rook() {
 
 #[test]
 fn generate_moves_for_bishop() {
-    let game = Game::from_fen("8/8/8/4B3/8/8/8/8 w KQkq - 0 1");
+    let game = Game::from_fen("8/8/8/4B3/8/8/8/8 w KQkq - 0 1").unwrap();
 
     let available_moves = game.get_available_moves();
 
@@ -136,7 +136,7 @@ fn generate_moves_for_bishop() {
 
 #[test]
 fn generate_moves_for_queen() {
-    let game = Game::from_fen("8/8/8/4Q3/8/8/8/8 w KQkq - 0 1");
+    let game = Game::from_fen("8/8/8/4Q3/8/8/8/8 w KQkq - 0 1").unwrap();
 
     let available_moves = game.get_available_moves();
 
@@ -174,7 +174,7 @@ fn generate_moves_for_queen() {
 
 #[test]
 fn pawn_attack_moves() {
-    let game = Game::from_fen("8/8/2p1p3/3P4/8/8/8/8 w KQkq - 0 1");
+    let game = Game::from_fen("8/8/2p1p3/3P4/8/8/8/8 w KQkq - 0 1").unwrap();
 
     let available_moves = game.get_available_moves();
 
