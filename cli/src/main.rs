@@ -2,8 +2,8 @@ mod fen_display;
 
 use std::io::Write;
 use console::Term;
-use iroh::game::Game;
-use iroh::move_result::MoveResult;
+use iroh::game::GameInner;
+use iroh::move_result::Game;
 use iroh::state::status::Status;
 use crate::fen_display::generate_display_from_fen;
 
@@ -48,7 +48,7 @@ fn main() {
     // }
 }
 
-fn end_game(term: &mut Term, new_game_state: &Game) {
+fn end_game(term: &mut Term, new_game_state: &GameInner) {
     term.write_line("").unwrap();
     render(term, new_game_state);
     term.write_line("----------------------").unwrap();
@@ -60,7 +60,7 @@ fn end_game(term: &mut Term, new_game_state: &Game) {
     // };
 }
 
-fn render(term: &Term, game: &Game) {
+fn render(term: &Term, game: &GameInner) {
     let fen = game.generate_fen();
     let display = generate_display_from_fen(&fen[..]);
 

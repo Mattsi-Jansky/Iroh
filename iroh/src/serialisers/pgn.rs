@@ -1,7 +1,7 @@
-use crate::move_result::MoveResult;
+use crate::move_result::Game;
 use crate::state::status::Status;
 
-pub fn generate_pgn(sans: &[String], move_result: &MoveResult) -> String {
+pub fn generate_pgn(sans: &[String], move_result: &Game) -> String {
     let mut result = String::new();
     let mut i = 1;
     for pair in sans.chunks(2) {
@@ -10,11 +10,11 @@ pub fn generate_pgn(sans: &[String], move_result: &MoveResult) -> String {
     }
 
     match move_result {
-        MoveResult::OngoingGame{..} => { result += "*"},
-        MoveResult::Win {is_first_player_win: true, ..} => { result += "1-0" },
-        MoveResult::Win {is_first_player_win: false, ..} => { result += "0-1" },
-        MoveResult::Draw{..} => { result += "1/2-1/2" },
-        MoveResult::IllegalMove => { panic!("Illegal move cannot generate a PGN") }
+        Game::Ongoing {..} => { result += "*"},
+        Game::Win {is_first_player_win: true, ..} => { result += "1-0" },
+        Game::Win {is_first_player_win: false, ..} => { result += "0-1" },
+        Game::Draw{..} => { result += "1/2-1/2" },
+        Game::IllegalMove => { panic!("Illegal move cannot generate a PGN") }
     }
 
     result
