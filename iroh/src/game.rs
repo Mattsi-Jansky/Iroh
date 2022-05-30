@@ -1,7 +1,5 @@
 use std::collections::HashMap;
-use crate::serialisers::pgn::generate_pgn;
 use crate::state::captured_pieces::CapturedPieces;
-use crate::error::IllegalMoveError;
 use crate::move_result::Game;
 use crate::moves::move_generation::generate_moves;
 use crate::moves::{Move};

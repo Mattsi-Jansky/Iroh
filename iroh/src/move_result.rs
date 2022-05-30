@@ -1,4 +1,3 @@
-use std::fmt::Error;
 use crate::game::GameInner;
 use crate::serialisers::pgn::generate_pgn;
 
@@ -19,10 +18,7 @@ impl Game {
     }
 
     pub fn is_err(&self) -> bool {
-        match self {
-            Game::IllegalMove => true,
-            _ => false
-        }
+        matches!(self, Game::IllegalMove)
     }
 
     pub fn generate_pgn(&self) -> Result<String,String> {
@@ -30,10 +26,10 @@ impl Game {
             Game::Ongoing {game} | Game::Draw {game} => {
                 Ok(generate_pgn(&game.sans, self))
             }
-            Game::Win{is_first_player_win, sans} => {
+            Game::Win{is_first_player_win: _, sans} => {
                 Ok(generate_pgn(sans, self))
             }
-            IllegalMove => { Err(String::from("An illegal move cannot generate a PGN")) }
+            Game::IllegalMove => { Err(String::from("An illegal move cannot generate a PGN")) }
         }
     }
 
