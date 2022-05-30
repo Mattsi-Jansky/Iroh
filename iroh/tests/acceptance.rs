@@ -9,7 +9,6 @@ mod generators;
 use iroh::state::piece::PieceType;
 use iroh::game::GameInner;
 use iroh::move_result::Game;
-use iroh::state::status::Status;
 
 #[test]
 fn new_game_pgn_has_asterisk_only() {

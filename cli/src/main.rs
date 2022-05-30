@@ -4,7 +4,6 @@ use std::io::Write;
 use console::Term;
 use iroh::game::GameInner;
 use iroh::move_result::Game;
-use iroh::state::status::Status;
 use crate::fen_display::generate_display_from_fen;
 
 fn main() {
