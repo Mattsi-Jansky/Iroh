@@ -9,11 +9,10 @@ pub fn generate_pgn(sans: &[String], game: &Game) -> String {
     }
 
     match game {
-        Game::Ongoing {..} => { result += "*"},
+        Game::Ongoing {..} | Game::IllegalMove {..} => { result += "*"},
         Game::Win {is_first_player_win: true, ..} => { result += "1-0" },
         Game::Win {is_first_player_win: false, ..} => { result += "0-1" },
-        Game::Draw{..} => { result += "1/2-1/2" },
-        Game::IllegalMove => { panic!("Illegal move cannot generate a PGN") }
+        Game::Draw{..} => { result += "1/2-1/2" }
     }
 
     result

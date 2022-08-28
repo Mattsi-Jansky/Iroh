@@ -63,14 +63,14 @@ impl GameInner {
                 possible_moves
             })
         } else {
-            Game::IllegalMove
+            Game::IllegalMove { game: self.clone() }
         }
     }
 
     fn determine_status(game: GameInner) -> Game {
         if game.possible_moves.is_empty() {
             if game.game_state.is_check(game.game_state.is_first_player_turn) {
-                Game::Win{ is_first_player_win: !game.is_first_player_turn(), sans: game.sans }
+                Game::Win{ is_first_player_win: !game.is_first_player_turn(), game }
             }
             else { Game::Draw{game} }
         } else { Game::Ongoing {game} }

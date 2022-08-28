@@ -3,10 +3,10 @@ use crate::serialisers::pgn::generate_pgn;
 
 #[derive(Clone,PartialEq)]
 pub enum Game {
-    Ongoing {game: GameInner },
-    IllegalMove,
-    Draw{game: GameInner },
-    Win{is_first_player_win: bool, sans: Vec<String>}
+    Ongoing { game: GameInner },
+    IllegalMove{ game: GameInner },
+    Draw{ game: GameInner },
+    Win{ is_first_player_win: bool, game: GameInner }
 }
 
 impl Game {
@@ -17,8 +17,16 @@ impl Game {
         }
     }
 
+    pub fn make_move(&self, san: &str) -> Game {
+        match self {
+            Game::Ongoing { game } => { game.make_move(san) }
+            Game::IllegalMove { game } => { game.make_move(san) }
+            Game::Draw { .. } | Game::Win { .. } => { panic!("Cannot make move on a finished game") }
+        }
+    }
+
     pub fn is_err(&self) -> bool {
-        matches!(self, Game::IllegalMove)
+        matches!(self, Game::IllegalMove {..})
     }
 
     pub fn generate_pgn(&self) -> Result<String,String> {
@@ -26,10 +34,10 @@ impl Game {
             Game::Ongoing {game} | Game::Draw {game} => {
                 Ok(generate_pgn(&game.sans, self))
             }
-            Game::Win{is_first_player_win: _, sans} => {
-                Ok(generate_pgn(sans, self))
+            Game::Win{game, ..} => {
+                Ok(generate_pgn(&game.sans, self))
             }
-            Game::IllegalMove => { Err(String::from("An illegal move cannot generate a PGN")) }
+            Game::IllegalMove {..} => { Err(String::from("An illegal move cannot generate a PGN")) }
         }
     }
 
@@ -62,7 +70,8 @@ mod tests {
     #[test]
     #[should_panic(expected = "Game is not ongoing, cannot unwrap")]
     fn given_illegal_move_unwrap_should_panic() {
-        let result = IllegalMove;
+        let game = GameInner::new().unwrap();
+        let result = IllegalMove { game };
 
         result.unwrap();
     }
@@ -79,23 +88,16 @@ mod tests {
     #[test]
     #[should_panic(expected = "Game is not ongoing, cannot unwrap")]
     fn given_win_unwrap_should_panic() {
-        let result = Win {is_first_player_win: true, sans: vec![]};
+        let game = GameInner::new().unwrap();
+        let result = Win { is_first_player_win: true, game };
 
         result.unwrap();
     }
 
     #[test]
-    fn given_illegal_move_generate_pgn_should_return_error() {
-        let move_result = IllegalMove;
-
-        let result = move_result.generate_pgn();
-
-        assert!(result.is_err())
-    }
-
-    #[test]
     fn given_illegal_move_is_err_should_return_true() {
-        let move_result = IllegalMove;
+        let game = GameInner::new().unwrap();
+        let move_result = IllegalMove { game };
 
         assert!(move_result.is_err());
     }

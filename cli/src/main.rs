@@ -16,39 +16,37 @@ fn main() {
         match &game {
             Game::Ongoing {game: inner_game} => {
                 render(&term, &game, &inner_game);
-                term.write_all("Your move: ".as_bytes()).unwrap();
-                input = term.read_line().unwrap();
+                ask_for_next_move(&mut term, &mut input);
                 game = inner_game.make_move(&*input);
-                // if let Ok(new_game_state) = result {
-                //     match new_game_state.status() {
-                //         Status::Ongoing => {
-                //             term.write_line("").unwrap();
-                //             game = new_game_state;
-                //         },
-                //         Status::FirstPlayerWin | Status::SecondPlayerWin | Status::Draw => {
-                //             end_game(&mut term, &new_game_state);
-                //             break;
-                //         }
-                //     }
-                // }
             }
-            Game::IllegalMove => { term.write_line(&*format!("Sorry, {} is not a legal move.", input)).unwrap(); }
-            Game::Draw { .. } => {}
-            Game::Win { .. } => {}
+            Game::IllegalMove { game: inner_game} => {
+                term.write_line(&*format!("Sorry, {} is not a legal move.", input)).unwrap();
+                ask_for_next_move(&mut term, &mut input);
+                game = inner_game.make_move(&*input);
+            }
+            Game::Draw { game: inner_game } | Game::Win { game: inner_game, .. } => {
+                end_game(&mut term, &game, inner_game);
+                break;
+            }
         }
     }
+}
+
+fn ask_for_next_move(term: &mut Term, input: &mut String) {
+    term.write_all("Your move: ".as_bytes()).unwrap();
+    *input = term.read_line().unwrap();
 }
 
 fn end_game(term: &mut Term, game: &Game, inner_game: &GameInner) {
     term.write_line("").unwrap();
     render(term, game, inner_game);
     term.write_line("----------------------").unwrap();
-    // match new_game_state.status() {
-    //     Status::FirstPlayerWin => term.write_line("Check mate. Game over! First player wins").unwrap(),
-    //     Status::SecondPlayerWin => term.write_line("Check mate. Game over! Second player wins").unwrap(),
-    //     Status::Draw => term.write_line("It is a draw!").unwrap(),
-    //     Status::Ongoing => ()
-    // };
+    match game {
+        Game::Draw { .. } => term.write_line("It is a draw!").unwrap(),
+        Game::Win { is_first_player_win: true, .. } => term.write_line("Check mate. Game over! First player wins").unwrap(),
+        Game::Win { is_first_player_win: false, .. } => term.write_line("Check mate. Game over! Second player wins").unwrap(),
+        Game::Ongoing { .. } | Game::IllegalMove { .. } => panic!("Cannot end game, game is not finished")
+    };
 }
 
 fn render(term: &Term, game: &Game, inner_game: &GameInner) {
