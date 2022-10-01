@@ -60,6 +60,6 @@ fn render(term: &Term, game: &Game, inner_game: &GameInner) {
 
     term.write_line("").unwrap();
     term.write_line(game.generate_pgn().unwrap().as_str()).unwrap();
-    term.write_line(fen.as_str());
+    term.write_line(fen.as_str()).unwrap();
     term.write_line("").unwrap();
 }
