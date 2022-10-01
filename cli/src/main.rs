@@ -14,17 +14,17 @@ fn main() {
 
     loop {
         match &game {
-            Game::Ongoing {game: inner_game} => {
+            Game::Ongoing { state: inner_game} => {
                 render(&term, &game, inner_game);
                 ask_for_next_move(&mut term, &mut input);
                 game = inner_game.make_move(&*input);
             }
-            Game::IllegalMove { game: inner_game} => {
+            Game::IllegalMove { state: inner_game} => {
                 term.write_line(&*format!("Sorry, {} is not a legal move.", input)).unwrap();
                 ask_for_next_move(&mut term, &mut input);
                 game = inner_game.make_move(&*input);
             }
-            Game::Draw { game: inner_game } | Game::Win { state: inner_game, .. } => {
+            Game::Draw { state: inner_game } | Game::Win { state: inner_game, .. } => {
                 end_game(&mut term, &game, inner_game);
                 break;
             }

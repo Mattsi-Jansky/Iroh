@@ -4,15 +4,15 @@ use crate::state::GameState;
 
 #[derive(Clone,PartialEq,Eq)]
 pub enum Game {
-    Ongoing { game: GameState },
-    IllegalMove{ game: GameState },
-    Draw{ game: GameState },
+    Ongoing { state: GameState },
+    IllegalMove{ state: GameState },
+    Draw{ state: GameState },
     Win{ is_first_player_win: bool, state: GameState }
 }
 
 impl Game {
     pub fn new() -> Game {
-        Game::Ongoing {game: GameState::new()}
+        Game::Ongoing { state: GameState::new()}
     }
 
     pub fn from_fen(fen: &str) -> Game {
@@ -22,15 +22,15 @@ impl Game {
 
     pub fn unwrap(self) -> GameState {
         match self {
-            Game::Ongoing {game} => { game },
+            Game::Ongoing { state } => { state }
             _ => panic!("Game is not ongoing, cannot unwrap")
         }
     }
 
     pub fn make_move(&self, san: &str) -> Game {
         match self {
-            Game::Ongoing { game } => { game.make_move(san) }
-            Game::IllegalMove { game } => { game.make_move(san) }
+            Game::Ongoing { state } => { state.make_move(san) }
+            Game::IllegalMove { state } => { state.make_move(san) }
             Game::Draw { .. } | Game::Win { .. } => { panic!("Cannot make move on a finished game") }
         }
     }
@@ -41,11 +41,11 @@ impl Game {
 
     pub fn generate_pgn(&self) -> Result<String,String> {
         match self {
-            Game::Ongoing {game} | Game::Draw {game} => {
-                Ok(generate_pgn(&game.sans, self))
+            Game::Ongoing { state } | Game::Draw { state } => {
+                Ok(generate_pgn(&state.sans, self))
             }
-            Game::Win{ state: game, ..} => {
-                Ok(generate_pgn(&game.sans, self))
+            Game::Win{ state, ..} => {
+                Ok(generate_pgn(&state.sans, self))
             }
             Game::IllegalMove {..} => { Err(String::from("An illegal move cannot generate a PGN")) }
         }
@@ -53,8 +53,8 @@ impl Game {
 
     pub fn generate_fen(&self) -> Result<String,String> {
         match self {
-            Game::Ongoing {game} | Game::Draw {game} => {
-                Ok(game.generate_fen())
+            Game::Ongoing { state } | Game::Draw { state } => {
+                Ok(state.generate_fen())
             },
             _ => { Err(String::from("Cannot generate a FEN from an illegal move")) }
         }
@@ -62,9 +62,9 @@ impl Game {
 
     pub fn captured_pieces(&self) -> Result<&CapturedPieces,String> {
         match self {
-            Game::Ongoing {game} | Game::Draw{game} => {
-                Ok(game.captured_pieces())
-            },
+            Game::Ongoing { state } | Game::Draw{ state } => {
+                Ok(state.captured_pieces())
+            }
             _ => { Err(String::from("Cannot get captured pieces from illegal move")) }
         }
     }
@@ -79,7 +79,7 @@ mod tests {
     fn given_ongoing_game_unwrap_should_return_game() {
         let game = Game::new().unwrap();
         let expected = game.clone();
-        let result = Ongoing {game};
+        let result = Ongoing { state: game };
 
         let result = result.unwrap();
 
@@ -90,7 +90,7 @@ mod tests {
     #[should_panic(expected = "Game is not ongoing, cannot unwrap")]
     fn given_illegal_move_unwrap_should_panic() {
         let game = Game::new().unwrap();
-        let result = IllegalMove { game };
+        let result = IllegalMove { state: game };
 
         result.unwrap();
     }
@@ -99,7 +99,7 @@ mod tests {
     #[should_panic(expected = "Game is not ongoing, cannot unwrap")]
     fn given_draw_unwrap_should_panic() {
         let game = Game::new().unwrap();
-        let result = Draw {game};
+        let result = Draw { state: game };
 
         result.unwrap();
     }
@@ -116,7 +116,7 @@ mod tests {
     #[test]
     fn given_illegal_move_is_err_should_return_true() {
         let game = Game::new().unwrap();
-        let move_result = IllegalMove { game };
+        let move_result = IllegalMove { state: game };
 
         assert!(move_result.is_err());
     }
@@ -124,7 +124,7 @@ mod tests {
     #[test]
     fn given_ongoing_game_is_err_should_return_false() {
         let game = Game::new().unwrap();
-        let move_result = Ongoing {game};
+        let move_result = Ongoing { state: game };
 
         assert_eq!(false,move_result.is_err());
     }

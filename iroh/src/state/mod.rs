@@ -91,7 +91,7 @@ impl GameState {
                 ..game_state
             }.determine_status()
         } else {
-            Game::IllegalMove { game: self.clone() }
+            Game::IllegalMove { state: self.clone() }
         }
     }
 
@@ -100,8 +100,8 @@ impl GameState {
             if self.is_check(self.is_first_player_turn) {
                 Game::Win{ is_first_player_win: !self.is_first_player_turn(), state: self }
             }
-            else { Game::Draw{game: self} }
-        } else { Game::Ongoing {game: self} }
+            else { Game::Draw{ state: self} }
+        } else { Game::Ongoing { state: self} }
     }
 
     pub fn captured_pieces(&self) -> &CapturedPieces {
