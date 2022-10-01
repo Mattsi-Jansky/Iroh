@@ -9,7 +9,7 @@ macro_rules! chess_test_inner {
     ($name:ident @ $fen:expr,[$($san:literal),+],$pgn:expr,$expected_fen:expr) => {
         #[test]
         fn $name() {
-            let mut game = if $fen.is_empty() {Game::new()} else {GameInner::from_fen($fen)};
+            let mut game = if $fen.is_empty() {Game::new()} else {Game::from_fen($fen)};
 
             $(game = game.unwrap().make_move($san);)+
             let result_pgn = game.generate_pgn().unwrap();

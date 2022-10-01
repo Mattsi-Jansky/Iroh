@@ -1,22 +1,25 @@
-use crate::game_inner::GameInner;
-use crate::moves::move_generation::generate_moves;
 use crate::serialisers::pgn::generate_pgn;
 use crate::state::GameState;
 
 #[derive(Clone,PartialEq,Eq)]
 pub enum Game {
-    Ongoing { game: GameInner },
-    IllegalMove{ game: GameInner },
-    Draw{ game: GameInner },
-    Win{ is_first_player_win: bool, game: GameInner }
+    Ongoing { game: GameState },
+    IllegalMove{ game: GameState },
+    Draw{ game: GameState },
+    Win{ is_first_player_win: bool, game: GameState }
 }
 
 impl Game {
     pub fn new() -> Game {
-        Game::Ongoing {game: GameInner::new()}
+        Game::Ongoing {game: GameState::new()}
     }
 
-    pub fn unwrap(self) -> GameInner {
+    pub fn from_fen(fen: &str) -> Game {
+        let game_state = GameState::from_fen(fen);
+        game_state.determine_status()
+    }
+
+    pub fn unwrap(self) -> GameState {
         match self {
             Game::Ongoing {game} => { game },
             _ => panic!("Game is not ongoing, cannot unwrap")

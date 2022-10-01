@@ -4,7 +4,6 @@ extern crate core;
 
 use galvanic_assert::matchers::collection::*;
 use test_case::test_case;
-use iroh::game_inner::GameInner;
 use iroh::state::piece::PieceType;
 use iroh::game::Game;
 
@@ -28,7 +27,7 @@ fn new_game_pgn_has_asterisk_only() {
 #[test_case("g3")]
 #[test_case("h3")]
 fn first_pawn_move(san: &str) {
-    let mut game = Game::new().unwrap();
+    let game = Game::new().unwrap();
 
     let game = game.make_move(san);
     let result = game.generate_pgn().unwrap();
@@ -89,7 +88,7 @@ chess_test! {
 
 #[test]
 fn attack_move_from_dynamic_movement_piece() {
-    let mut game = GameInner::from_fen("8/8/8/3Rr3/3Rr3/8/8/8 w KQkq - 0 1").unwrap();
+    let mut game = Game::from_fen("8/8/8/3Rr3/3Rr3/8/8/8 w KQkq - 0 1").unwrap();
 
     game = game.make_move("Rxe5").unwrap();
     game = game.make_move("Rxd4").unwrap();
@@ -108,7 +107,7 @@ fn attack_move_from_dynamic_movement_piece() {
 
 #[test]
 fn attack_move_from_static_movement_piece() {
-    let mut game = GameInner::from_fen("8/1n4N1/8/2N2n2/8/8/8/8 w - - 0 1").unwrap();
+    let mut game = Game::from_fen("8/1n4N1/8/2N2n2/8/8/8/8 w - - 0 1").unwrap();
 
     game = game.make_move("Nxb7").unwrap();
     game = game.make_move("Nxg7").unwrap();
@@ -127,7 +126,7 @@ fn attack_move_from_static_movement_piece() {
 
 #[test]
 fn attack_move_from_pawn() {
-    let mut game = GameInner::from_fen("8/8/3p2p1/2P2P2/8/8/8/8 w - - 0 1").unwrap();
+    let mut game = Game::from_fen("8/8/3p2p1/2P2P2/8/8/8/8 w - - 0 1").unwrap();
 
     game = game.make_move("cxd6").unwrap();
     game = game.make_move("gxf5").unwrap();
@@ -156,14 +155,14 @@ fn generate_fen_from_game() {
 
 #[test]
 fn given_current_player_can_move_game_is_ongoing() {
-    let game = GameInner::from_fen("5k2/R7/8/8/8/8/8/1R2K3 w - - 0 1");
+    let game = Game::from_fen("5k2/R7/8/8/8/8/8/1R2K3 w - - 0 1");
 
     assert!(matches!(game, Game::Ongoing {..}));
 }
 
 #[test]
 fn checkmate_second_player() {
-    let mut game = GameInner::from_fen("5k2/R7/8/8/8/8/8/1R2K3 w - - 0 1");
+    let game = Game::from_fen("5k2/R7/8/8/8/8/8/1R2K3 w - - 0 1");
     assert!(matches!(game, Game::Ongoing {..}));
 
     let result = game.unwrap().make_move("Rb8");
@@ -174,7 +173,7 @@ fn checkmate_second_player() {
 
 #[test]
 fn checkmate_first_player() {
-    let mut game = GameInner::from_fen("1r3k2/8/8/8/8/8/r7/4K3 b - - 0 1");
+    let game = Game::from_fen("1r3k2/8/8/8/8/8/r7/4K3 b - - 0 1");
     assert!(matches!(game, Game::Ongoing {..}));
 
     let game = game.unwrap().make_move("Rb1");
@@ -185,7 +184,7 @@ fn checkmate_first_player() {
 
 #[test]
 fn given_stalemate_should_automatically_draw() {
-    let game = GameInner::from_fen("1N6/8/2R5/3k4/4R3/8/5N2/3K4 b - - 0 1");
+    let game = Game::from_fen("1N6/8/2R5/3k4/4R3/8/5N2/3K4 b - - 0 1");
 
     assert!(matches!(game, Game::Draw {..}));
     assert_eq!("1/2-1/2", game.generate_pgn().unwrap());

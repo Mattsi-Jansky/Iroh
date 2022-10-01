@@ -3,7 +3,7 @@ mod fen_display;
 use std::io::Write;
 use console::Term;
 use iroh::game::Game;
-use iroh::game_inner::GameInner;
+use iroh::state::GameState;
 use crate::fen_display::generate_display_from_fen;
 
 fn main() {
@@ -37,9 +37,9 @@ fn ask_for_next_move(term: &mut Term, input: &mut String) {
     *input = term.read_line().unwrap();
 }
 
-fn end_game(term: &mut Term, game: &Game, inner_game: &GameInner) {
+fn end_game(term: &mut Term, game: &Game, game_state: &GameState) {
     term.write_line("").unwrap();
-    render(term, game, inner_game);
+    render(term, game, game_state);
     term.write_line("----------------------").unwrap();
     match game {
         Game::Draw { .. } => term.write_line("It is a draw!").unwrap(),
@@ -49,9 +49,9 @@ fn end_game(term: &mut Term, game: &Game, inner_game: &GameInner) {
     };
 }
 
-fn render(term: &Term, game: &Game, inner_game: &GameInner) {
+fn render(term: &Term, game: &Game, game_state: &GameState) {
     term.clear_screen().unwrap();
-    let fen = inner_game.generate_fen();
+    let fen = game_state.generate_fen();
     let display = generate_display_from_fen(&fen[..]);
 
     for line in display {

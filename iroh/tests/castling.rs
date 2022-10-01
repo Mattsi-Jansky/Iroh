@@ -1,9 +1,9 @@
 use test_case::test_case;
-use iroh::game_inner::GameInner;
+use iroh::game::Game;
 
 #[test]
 fn given_first_player_should_castle_kingside() {
-    let mut game = GameInner::from_fen("rnbqk1nr/ppp1bppp/3p4/4p3/4P3/3B1N2/PPPP1PPP/RNBQK2R w KQkq - 0 1").unwrap();
+    let game = Game::from_fen("rnbqk1nr/ppp1bppp/3p4/4p3/4P3/3B1N2/PPPP1PPP/RNBQK2R w KQkq - 0 1").unwrap();
 
     let game = game.make_move("O-O");
     assert_eq!("1. O-O *", game.generate_pgn().unwrap());
@@ -12,7 +12,7 @@ fn given_first_player_should_castle_kingside() {
 
 #[test]
 fn given_first_player_without_clear_path_cannot_castle_kingside() {
-    let game = GameInner::from_fen("rnbqk1nr/ppp1bppp/3p4/4p3/4P3/2NB4/PPPP1PPP/R1BQK1NR w KQkq - 0 1").unwrap();
+    let game = Game::from_fen("rnbqk1nr/ppp1bppp/3p4/4p3/4P3/2NB4/PPPP1PPP/R1BQK1NR w KQkq - 0 1").unwrap();
 
     let result = game.make_move("O-O");
 
@@ -21,7 +21,7 @@ fn given_first_player_without_clear_path_cannot_castle_kingside() {
 
 #[test]
 fn given_first_player_and_rook_not_in_place_cannot_castle_kingside() {
-    let mut game = GameInner::from_fen("rnbqk1nr/ppp1bppp/3p4/4p3/4P3/3B1N2/PPPP1PPP/RNBQK2R w KQkq - 0 1").unwrap();
+    let mut game = Game::from_fen("rnbqk1nr/ppp1bppp/3p4/4p3/4P3/3B1N2/PPPP1PPP/RNBQK2R w KQkq - 0 1").unwrap();
 
     game = game.make_move("Rg1").unwrap();
     game = game.make_move("h6").unwrap();
@@ -32,7 +32,7 @@ fn given_first_player_and_rook_not_in_place_cannot_castle_kingside() {
 
 #[test]
 fn given_first_player_and_rook_has_moved_cannot_castle_kingside() {
-    let mut game = GameInner::from_fen("rnbqk1nr/ppp1bppp/3p4/4p3/4P3/3B1N2/PPPP1PPP/RNBQK2R w KQkq - 0 1").unwrap();
+    let mut game = Game::from_fen("rnbqk1nr/ppp1bppp/3p4/4p3/4P3/3B1N2/PPPP1PPP/RNBQK2R w KQkq - 0 1").unwrap();
 
     game = game.make_move("Rg1").unwrap();
     game = game.make_move("a6").unwrap();
@@ -45,7 +45,7 @@ fn given_first_player_and_rook_has_moved_cannot_castle_kingside() {
 
 #[test]
 fn given_first_player_and_king_has_moved_cannot_castle_kingside() {
-    let mut game = GameInner::from_fen("rnbqk1nr/ppp1bppp/3p4/4p3/4P3/3B1N2/PPPP1PPP/RNBQK2R w KQkq - 0 1").unwrap();
+    let mut game = Game::from_fen("rnbqk1nr/ppp1bppp/3p4/4p3/4P3/3B1N2/PPPP1PPP/RNBQK2R w KQkq - 0 1").unwrap();
 
     game = game.make_move("Kf1").unwrap();
     game = game.make_move("a6").unwrap();
@@ -58,7 +58,7 @@ fn given_first_player_and_king_has_moved_cannot_castle_kingside() {
 
 #[test]
 fn given_first_player_and_fen_says_they_cant_castle_kingside_cannot_castle_kingside() {
-    let game = GameInner::from_fen("rnbqk1nr/ppp1bppp/3p4/4p3/4P3/3B1N2/PPPP1PPP/RNBQK2R w Qkq - 0 1").unwrap();
+    let game = Game::from_fen("rnbqk1nr/ppp1bppp/3p4/4p3/4P3/3B1N2/PPPP1PPP/RNBQK2R w Qkq - 0 1").unwrap();
 
     let result = game.make_move("O-O");
 
@@ -67,7 +67,7 @@ fn given_first_player_and_fen_says_they_cant_castle_kingside_cannot_castle_kings
 
 #[test]
 fn given_first_player_should_castle_queenside() {
-    let mut game = GameInner::from_fen("r1bqk2r/ppp2ppp/2nb1n2/3pp3/8/1PN1PQ2/PBPP1PPP/R3KBNR w KQkq - 0 1").unwrap();
+    let game = Game::from_fen("r1bqk2r/ppp2ppp/2nb1n2/3pp3/8/1PN1PQ2/PBPP1PPP/R3KBNR w KQkq - 0 1").unwrap();
 
     let game = game.make_move("O-O-O");
     assert_eq!("1. O-O-O *", game.generate_pgn().unwrap());
@@ -76,7 +76,7 @@ fn given_first_player_should_castle_queenside() {
 
 #[test]
 fn given_first_player_without_clear_path_cannot_castle_queenside() {
-    let game = GameInner::from_fen("r1bqk2r/ppp2ppp/2nb1n2/3pp3/8/1PN1PQ2/P1PP1PPP/R1B1KBNR b KQkq - 0 1").unwrap();
+    let game = Game::from_fen("r1bqk2r/ppp2ppp/2nb1n2/3pp3/8/1PN1PQ2/P1PP1PPP/R1B1KBNR b KQkq - 0 1").unwrap();
 
     let result = game.make_move("O-O-O");
 
@@ -85,7 +85,7 @@ fn given_first_player_without_clear_path_cannot_castle_queenside() {
 
 #[test]
 fn given_first_player_and_rook_not_in_place_cannot_castle_queenside() {
-    let mut game = GameInner::from_fen("r1bqk2r/ppp2ppp/2nb1n2/3pp3/8/1PN1PQ2/PBPP1PPP/R3KBNR w KQkq - 0 1").unwrap();
+    let mut game = Game::from_fen("r1bqk2r/ppp2ppp/2nb1n2/3pp3/8/1PN1PQ2/PBPP1PPP/R3KBNR w KQkq - 0 1").unwrap();
 
     game = game.make_move("Rb1").unwrap();
     game = game.make_move("h6").unwrap();
@@ -96,7 +96,7 @@ fn given_first_player_and_rook_not_in_place_cannot_castle_queenside() {
 
 #[test]
 fn given_first_player_and_rook_has_moved_cannot_castle_queenside() {
-    let mut game = GameInner::from_fen("r1bqk2r/ppp2ppp/2nb1n2/3pp3/8/1PN1PQ2/PBPP1PPP/R3KBNR w KQkq - 0 1").unwrap();
+    let mut game = Game::from_fen("r1bqk2r/ppp2ppp/2nb1n2/3pp3/8/1PN1PQ2/PBPP1PPP/R3KBNR w KQkq - 0 1").unwrap();
 
     game = game.make_move("Rb1").unwrap();
     game = game.make_move("a6").unwrap();
@@ -109,7 +109,7 @@ fn given_first_player_and_rook_has_moved_cannot_castle_queenside() {
 
 #[test]
 fn given_first_player_and_fen_says_they_cant_castle_queenside_cannot_castle_queenside() {
-    let game = GameInner::from_fen("r1bqk2r/ppp2ppp/2nb1n2/3pp3/8/1PN1PQ2/PBPP1PPP/R3KBNR w Kkq - 0 1").unwrap();
+    let game = Game::from_fen("r1bqk2r/ppp2ppp/2nb1n2/3pp3/8/1PN1PQ2/PBPP1PPP/R3KBNR w Kkq - 0 1").unwrap();
 
     let result = game.make_move("O-O-O");
 
@@ -118,7 +118,7 @@ fn given_first_player_and_fen_says_they_cant_castle_queenside_cannot_castle_quee
 
 #[test]
 fn given_second_player_should_castle_kingside() {
-    let mut game = GameInner::from_fen("rnbqk2r/ppppbppp/4pn2/8/3P4/2N2N2/PPP1PPPP/R1BQKB1R w KQkq - 0 1").unwrap();
+    let mut game = Game::from_fen("rnbqk2r/ppppbppp/4pn2/8/3P4/2N2N2/PPP1PPPP/R1BQKB1R w KQkq - 0 1").unwrap();
 
     game = game.make_move("e4").unwrap();
     let game = game.make_move("O-O");
@@ -129,7 +129,7 @@ fn given_second_player_should_castle_kingside() {
 
 #[test]
 fn given_second_player_without_clear_path_cannot_castle_kingside() {
-    let mut game = GameInner::from_fen("rnbqkb1r/pppp1ppp/4pn2/8/3P4/2N1PN2/PPP2PPP/R1BQKB1R w KQkq - 1 2").unwrap();
+    let mut game = Game::from_fen("rnbqkb1r/pppp1ppp/4pn2/8/3P4/2N1PN2/PPP2PPP/R1BQKB1R w KQkq - 1 2").unwrap();
 
     game = game.make_move("e4").unwrap();
     let result = game.make_move("O-O");
@@ -139,7 +139,7 @@ fn given_second_player_without_clear_path_cannot_castle_kingside() {
 
 #[test]
 fn given_second_player_and_rook_not_in_place_cannot_castle_kingside() {
-    let mut game = GameInner::from_fen("rnbqk2r/ppppbppp/4pn2/8/3P4/2N2N2/PPP1PPPP/R1BQKB1R w KQkq - 0 1").unwrap();
+    let mut game = Game::from_fen("rnbqk2r/ppppbppp/4pn2/8/3P4/2N2N2/PPP1PPPP/R1BQKB1R w KQkq - 0 1").unwrap();
 
     game = game.make_move("e4").unwrap();
     game = game.make_move("Rg8").unwrap();
@@ -152,7 +152,7 @@ fn given_second_player_and_rook_not_in_place_cannot_castle_kingside() {
 
 #[test]
 fn given_second_player_and_rook_has_moved_cannot_castle_kingside() {
-    let mut game = GameInner::from_fen("rnbqk2r/ppppbppp/4pn2/8/3P4/2N2N2/PPP1PPPP/R1BQKB1R w KQkq - 0 1").unwrap();
+    let mut game = Game::from_fen("rnbqk2r/ppppbppp/4pn2/8/3P4/2N2N2/PPP1PPPP/R1BQKB1R w KQkq - 0 1").unwrap();
 
     game = game.make_move("e4").unwrap();
     game = game.make_move("Rg8").unwrap();
@@ -166,7 +166,7 @@ fn given_second_player_and_rook_has_moved_cannot_castle_kingside() {
 
 #[test]
 fn given_second_player_and_king_has_moved_cannot_castle_kingside() {
-    let mut game = GameInner::from_fen("rnbqk2r/ppppbppp/4pn2/8/3P4/2N2N2/PPP1PPPP/R1BQKB1R w KQkq - 0 1").unwrap();
+    let mut game = Game::from_fen("rnbqk2r/ppppbppp/4pn2/8/3P4/2N2N2/PPP1PPPP/R1BQKB1R w KQkq - 0 1").unwrap();
 
     game = game.make_move("e4").unwrap();
     game = game.make_move("Kf8").unwrap();
@@ -180,7 +180,7 @@ fn given_second_player_and_king_has_moved_cannot_castle_kingside() {
 
 #[test]
 fn given_second_player_and_fen_says_they_cant_castle_kingside_cannot_castle_kingside() {
-    let mut game = GameInner::from_fen("rnbqk2r/ppppbppp/4pn2/8/3P4/2N2N2/PPP1PPPP/R1BQKB1R w KQq - 0 1").unwrap();
+    let mut game = Game::from_fen("rnbqk2r/ppppbppp/4pn2/8/3P4/2N2N2/PPP1PPPP/R1BQKB1R w KQq - 0 1").unwrap();
 
     game = game.make_move("e4").unwrap();
     let result = game.make_move("O-O");
@@ -190,7 +190,7 @@ fn given_second_player_and_fen_says_they_cant_castle_kingside_cannot_castle_king
 
 #[test]
 fn given_second_player_should_castle_queenside() {
-    let mut game = GameInner::from_fen("r3kbnr/pbpp1ppp/1pn1pq2/8/3PP3/2NB1N2/PPP2PPP/R1BQK2R w KQkq - 0 1").unwrap();
+    let mut game = Game::from_fen("r3kbnr/pbpp1ppp/1pn1pq2/8/3PP3/2NB1N2/PPP2PPP/R1BQK2R w KQkq - 0 1").unwrap();
 
     game = game.make_move("a3").unwrap();
     let game = game.make_move("O-O-O");
@@ -201,7 +201,7 @@ fn given_second_player_should_castle_queenside() {
 
 #[test]
 fn given_second_player_without_clear_path_cannot_castle_queenside() {
-    let mut game = GameInner::from_fen("r1b1kbnr/p1pp1ppp/1pn1pq2/8/3PP3/P1NB1N2/1PP2PPP/R1BQK2R w KQkq - 1 2").unwrap();
+    let mut game = Game::from_fen("r1b1kbnr/p1pp1ppp/1pn1pq2/8/3PP3/P1NB1N2/1PP2PPP/R1BQK2R w KQkq - 1 2").unwrap();
 
     game = game.make_move("a4").unwrap();
     let result = game.make_move("O-O-O");
@@ -211,7 +211,7 @@ fn given_second_player_without_clear_path_cannot_castle_queenside() {
 
 #[test]
 fn given_second_player_and_rook_not_in_place_cannot_castle_queenside() {
-    let mut game = GameInner::from_fen("r3kbnr/pbpp1ppp/1pn1pq2/8/3PP3/2NB1N2/PPP2PPP/R1BQK2R w KQkq - 0 1").unwrap();
+    let mut game = Game::from_fen("r3kbnr/pbpp1ppp/1pn1pq2/8/3PP3/2NB1N2/PPP2PPP/R1BQK2R w KQkq - 0 1").unwrap();
 
     game = game.make_move("a3").unwrap();
     game = game.make_move("Rb8").unwrap();
@@ -224,7 +224,7 @@ fn given_second_player_and_rook_not_in_place_cannot_castle_queenside() {
 
 #[test]
 fn given_second_player_and_rook_has_moved_cannot_castle_queenside() {
-    let mut game = GameInner::from_fen("r3kbnr/pbpp1ppp/1pn1pq2/8/3PP3/2NB1N2/PPP2PPP/R1BQK2R w KQkq - 0 1").unwrap();
+    let mut game = Game::from_fen("r3kbnr/pbpp1ppp/1pn1pq2/8/3PP3/2NB1N2/PPP2PPP/R1BQK2R w KQkq - 0 1").unwrap();
 
     game = game.make_move("a3").unwrap();
     game = game.make_move("Rb8").unwrap();
@@ -238,7 +238,7 @@ fn given_second_player_and_rook_has_moved_cannot_castle_queenside() {
 
 #[test]
 fn given_second_player_and_fen_says_they_cant_castle_queenside_cannot_castle_queenside() {
-    let mut game = GameInner::from_fen("r3kbnr/pbpp1ppp/1pn1pq2/8/3PP3/2NB1N2/PPP2PPP/R1BQK2R w KQk - 0 1").unwrap();
+    let mut game = Game::from_fen("r3kbnr/pbpp1ppp/1pn1pq2/8/3PP3/2NB1N2/PPP2PPP/R1BQK2R w KQk - 0 1").unwrap();
 
     game = game.make_move("a3").unwrap();
     let result = game.make_move("O-O-O");
@@ -255,7 +255,7 @@ fn given_second_player_and_fen_says_they_cant_castle_queenside_cannot_castle_que
 #[test_case("r3kbnr/p3pppp/8/8/8/3Q4/PPPPPPPP/RNB1KBNR b KQkq - 0 1", "O-O-O")]
 #[test_case("r3kbnr/p3pppp/8/8/8/2Q5/PPPPPPPP/RNB1KBNR b KQkq - 0 1", "O-O-O")]
 fn given_king_would_go_through_attacked_tile_cannot_castle(fen: &str, sen: &str) {
-    let game = GameInner::from_fen(fen).unwrap();
+    let game = Game::from_fen(fen).unwrap();
 
     let result = game.make_move(sen);
 

@@ -1,4 +1,9 @@
-use crate::serialisers::fen::parse_fen;
+use std::collections::HashMap;
+use crate::game::Game;
+use crate::moves::Move;
+use crate::moves::move_generation::generate_moves;
+use crate::moves::resolve_move::resolve_move;
+use crate::serialisers::fen::{generate_fen, parse_fen};
 use crate::state::board::Board;
 use crate::state::captured_pieces::CapturedPieces;
 use crate::state::check::is_check;
@@ -13,6 +18,8 @@ const STARTING_POSITION_FEN: &str = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct GameState {
+    pub(crate) sans: Vec<String>,
+    possible_moves: Vec<Move>,
     turn_number: u16,
     pub is_first_player_turn: bool,
     pub board: Board,
@@ -38,9 +45,11 @@ impl GameState {
             first_player_can_castle_queenside: false,
             second_player_can_castle_kingside: false,
             second_player_can_castle_queenside: false,
+            possible_moves: vec![],
+            sans: vec![]
         };
-
         parse_fen(fen, &mut state);
+        state.possible_moves = generate_moves(&state);
 
         state
     }
@@ -52,6 +61,51 @@ impl GameState {
 
     pub(crate) fn is_check(&self, first_player : bool) -> bool {
         is_check(first_player, self)
+    }
+
+    pub fn generate_fen(&self) -> String {
+        generate_fen(&self)
+    }
+
+    pub fn get_available_moves(&self) -> Vec<Move> {
+        self.possible_moves.clone()
+    }
+
+    pub fn is_first_player_turn(&self) -> bool {
+        self.is_first_player_turn
+    }
+
+    pub fn make_move(&self, san: &str) -> Game {
+        let possible_moves: HashMap<String, &Move> = self.possible_moves.iter()
+            .map(|m| (m.generate_san(), m))
+            .collect();
+
+        if let Some(requested_move) = possible_moves.get(&san.to_string()) {
+            let mut sans = self.sans.clone();
+            sans.push(String::from(san));
+            let game_state = resolve_move(requested_move, self.clone());
+            let possible_moves = generate_moves(&game_state);
+            GameState {
+                sans,
+                possible_moves,
+                ..game_state
+            }.determine_status()
+        } else {
+            Game::IllegalMove { game: self.clone() }
+        }
+    }
+
+    pub(crate) fn determine_status(self) -> Game {
+        if self.possible_moves.is_empty() {
+            if self.is_check(self.is_first_player_turn) {
+                Game::Win{ is_first_player_win: !self.is_first_player_turn(), game: self }
+            }
+            else { Game::Draw{game: self} }
+        } else { Game::Ongoing {game: self} }
+    }
+
+    pub fn get_captured_pieces(&self) -> &CapturedPieces {
+        &self.captured_pieces
     }
 }
 
