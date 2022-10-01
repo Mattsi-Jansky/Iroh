@@ -19,14 +19,15 @@ Start the CLI interface in your terminal with `cargo run`.
 ## TODO
 
 * Shouldn't `from_fen` (both of them) return `Result` / do validation?
-* Is there a better way to do `castling_moves.rs` check for whether king would be in check without cloning GameState?
 * Pawn nuance
     * En Passant
 * Draws and draw offers
   * Mutual agreement
-  * Five-fold repetition rule
   * Seventyfive-move rule
   * Three-fold and fifty-move rules (non-automatic variants of previous two)
   * Dead position
   * https://en.wikipedia.org/wiki/Draw_(chess)#Draws_in_all_games
 * Resignations
+* Performance
+  * Track two (or three?) separate SAN lists rather than filtering the one list in `GameState::determine_status`
+  * Is there a better way to do `castling_moves.rs` check for whether king would be in check without cloning GameState?

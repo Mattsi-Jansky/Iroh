@@ -115,12 +115,13 @@ impl GameState {
                 is_first_player_turn = !is_first_player_turn;
             }
 
-            println!("Second player SANs: {second_player_sans:?}");
-
-            if self.is_first_player_turn && first_player_sans.len() > 5 && first_player_sans.iter().take(5).all(|san| san == &first_player_sans[0]) {
-                Game::Draw{ state: self}
-            } else if second_player_sans.len() >= 5 &&
-                   second_player_sans[0] == second_player_sans[2]
+            if !self.is_first_player_turn && first_player_sans.len() >= 5
+                && first_player_sans[0] == first_player_sans[2]
+                && first_player_sans[2] == first_player_sans[4]
+                && first_player_sans[1] == first_player_sans[3] {
+                Game::Draw{ state: self }
+            } else if second_player_sans.len() >= 5
+                && second_player_sans[0] == second_player_sans[2]
                 && second_player_sans[2] == second_player_sans[4]
                 && second_player_sans[1] == second_player_sans[3] {
                 Game::Draw{ state: self}
