@@ -1,5 +1,7 @@
 use crate::game_inner::GameInner;
+use crate::moves::move_generation::generate_moves;
 use crate::serialisers::pgn::generate_pgn;
+use crate::state::GameState;
 
 #[derive(Clone,PartialEq,Eq)]
 pub enum Game {
@@ -10,6 +12,10 @@ pub enum Game {
 }
 
 impl Game {
+    pub fn new() -> Game {
+        Game::Ongoing {game: GameInner::new()}
+    }
+
     pub fn unwrap(self) -> GameInner {
         match self {
             Game::Ongoing {game} => { game },
@@ -58,7 +64,7 @@ mod tests {
 
     #[test]
     fn given_ongoing_game_unwrap_should_return_game() {
-        let game = GameInner::new().unwrap();
+        let game = Game::new().unwrap();
         let expected = game.clone();
         let result = Ongoing {game};
 
@@ -70,7 +76,7 @@ mod tests {
     #[test]
     #[should_panic(expected = "Game is not ongoing, cannot unwrap")]
     fn given_illegal_move_unwrap_should_panic() {
-        let game = GameInner::new().unwrap();
+        let game = Game::new().unwrap();
         let result = IllegalMove { game };
 
         result.unwrap();
@@ -79,7 +85,7 @@ mod tests {
     #[test]
     #[should_panic(expected = "Game is not ongoing, cannot unwrap")]
     fn given_draw_unwrap_should_panic() {
-        let game = GameInner::new().unwrap();
+        let game = Game::new().unwrap();
         let result = Draw {game};
 
         result.unwrap();
@@ -88,7 +94,7 @@ mod tests {
     #[test]
     #[should_panic(expected = "Game is not ongoing, cannot unwrap")]
     fn given_win_unwrap_should_panic() {
-        let game = GameInner::new().unwrap();
+        let game = Game::new().unwrap();
         let result = Win { is_first_player_win: true, game };
 
         result.unwrap();
@@ -96,7 +102,7 @@ mod tests {
 
     #[test]
     fn given_illegal_move_is_err_should_return_true() {
-        let game = GameInner::new().unwrap();
+        let game = Game::new().unwrap();
         let move_result = IllegalMove { game };
 
         assert!(move_result.is_err());
@@ -104,7 +110,7 @@ mod tests {
 
     #[test]
     fn given_ongoing_game_is_err_should_return_false() {
-        let game = GameInner::new().unwrap();
+        let game = Game::new().unwrap();
         let move_result = Ongoing {game};
 
         assert_eq!(false,move_result.is_err());

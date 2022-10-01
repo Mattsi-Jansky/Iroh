@@ -8,7 +8,7 @@ use iroh::game_inner::GameInner;
 #[test_case("qe3")]
 #[test_case("banana")]
 fn cannot_make_illegal_move(illegal_move: &str) {
-    let game = GameInner::new().unwrap();
+    let game = Game::new().unwrap();
 
     let result = game.make_move(illegal_move);
 
@@ -54,7 +54,7 @@ fn pawn_cannot_capture_forwards() {
 
 #[test]
 fn pawns_only_move_two_if_they_have_not_moved_yet() {
-    let mut game = GameInner::new().unwrap();
+    let mut game = Game::new().unwrap();
 
     game = game.make_move("d4").unwrap();
     game = game.make_move("e5").unwrap();
@@ -68,7 +68,7 @@ fn pawns_only_move_two_if_they_have_not_moved_yet() {
 
 #[test]
 fn rooks_cannot_jump() {
-    let game = GameInner::new().unwrap();
+    let game = Game::new().unwrap();
 
     let result = game.make_move("Rh3");
 
@@ -77,7 +77,7 @@ fn rooks_cannot_jump() {
 
 #[test]
 fn queens_cannot_jump() {
-    let game = GameInner::new().unwrap();
+    let game = Game::new().unwrap();
 
     let result = game.make_move("Qd3");
 
@@ -86,7 +86,7 @@ fn queens_cannot_jump() {
 
 #[test]
 fn bishops_cannot_jump() {
-    let game = GameInner::new().unwrap();
+    let game = Game::new().unwrap();
 
     let result = game.make_move("Be3");
 

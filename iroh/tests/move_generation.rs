@@ -18,7 +18,7 @@ use iroh::state::coordinates::{Rank, File};
 #[test_case(7)]
 fn generate_first_turn_pawn_moves(file: usize) {
     let file = File::new(file);
-    let game = GameInner::new().unwrap();
+    let game = Game::new().unwrap();
 
     let available_moves = game.get_available_moves();
 

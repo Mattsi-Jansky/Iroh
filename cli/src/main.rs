@@ -9,7 +9,7 @@ use crate::fen_display::generate_display_from_fen;
 fn main() {
     let mut term = Term::stdout();
     term.clear_screen().unwrap();
-    let mut game = GameInner::new();
+    let mut game = Game::new();
     let mut input = String::new();
 
     loop {

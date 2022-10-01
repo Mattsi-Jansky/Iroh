@@ -12,7 +12,7 @@ mod generators;
 
 #[test]
 fn new_game_pgn_has_asterisk_only() {
-    let game = GameInner::new();
+    let game = Game::new();
 
     let result = game.generate_pgn().unwrap();
 
@@ -28,7 +28,7 @@ fn new_game_pgn_has_asterisk_only() {
 #[test_case("g3")]
 #[test_case("h3")]
 fn first_pawn_move(san: &str) {
-    let mut game = GameInner::new().unwrap();
+    let mut game = Game::new().unwrap();
 
     let game = game.make_move(san);
     let result = game.generate_pgn().unwrap();
@@ -53,7 +53,7 @@ fn first_pawn_move(san: &str) {
 #[test_case("g6")]
 #[test_case("h6")]
 fn second_pawn_move(san: &str) {
-    let mut game = GameInner::new().unwrap();
+    let mut game = Game::new().unwrap();
 
     game = game.make_move("e4").unwrap();
     let game = game.make_move(san);
@@ -147,7 +147,7 @@ fn attack_move_from_pawn() {
 
 #[test]
 fn generate_fen_from_game() {
-    let game = GameInner::new().unwrap();
+    let game = Game::new().unwrap();
 
     let result = game.generate_fen();
 

@@ -15,14 +15,14 @@ pub struct GameInner {
 }
 
 impl GameInner {
-    pub fn new() -> Game {
+    pub(crate) fn new() -> GameInner {
         let state = GameState::new();
         let moves = generate_moves(&state);
-        Game::Ongoing {game: GameInner {
+        GameInner {
             sans: vec![],
             game_state: state,
             possible_moves: moves
-        }}
+        }
     }
 
     pub fn from_fen(fen: &str) -> Game {
