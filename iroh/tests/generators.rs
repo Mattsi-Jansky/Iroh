@@ -11,7 +11,7 @@ macro_rules! chess_test_inner {
         fn $name() {
             let mut game = if $fen.is_empty() {Game::new()} else {Game::from_fen($fen)};
 
-            $(game = game.unwrap().make_move($san);)+
+            $(game = game.make_move($san);)+
             let result_pgn = game.generate_pgn().unwrap();
             let result_fen = game.generate_fen().unwrap();
 

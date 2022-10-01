@@ -16,7 +16,7 @@ fn cannot_make_illegal_move(illegal_move: &str) {
 
 #[test]
 fn cannot_move_off_board() {
-    let game = Game::from_fen("8/8/8/8/8/8/8/3Q4 w - - 0 1").unwrap();
+    let game = Game::from_fen("8/8/8/8/8/8/8/3Q4 w - - 0 1");
 
     let result = game.make_move("qd9");
     let result2 = game.make_move("qd-1");
@@ -42,7 +42,7 @@ fn cannot_take_friendly_piece(fen: &str, illegal_move: &str) {
 
 #[test]
 fn pawn_cannot_capture_forwards() {
-    let game = Game::from_fen("1k6/8/8/3p4/3P4/8/8/1K6 w - - 0 1").unwrap();
+    let game = Game::from_fen("1k6/8/8/3p4/3P4/8/8/1K6 w - - 0 1");
 
     let result = game.make_move("d5");
     let result2 = game.make_move("dxd5");
@@ -94,7 +94,7 @@ fn bishops_cannot_jump() {
 
 #[test]
 fn pawns_cannot_jump() {
-    let game = Game::from_fen("k7/8/8/8/8/3p4/3P4/7K w - - 0 1").unwrap();
+    let game = Game::from_fen("k7/8/8/8/8/3p4/3P4/7K w - - 0 1");
 
     let result = game.make_move("d4");
 
