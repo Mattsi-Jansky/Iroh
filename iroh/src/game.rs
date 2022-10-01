@@ -6,7 +6,7 @@ pub enum Game {
     Ongoing { game: GameState },
     IllegalMove{ game: GameState },
     Draw{ game: GameState },
-    Win{ is_first_player_win: bool, game: GameState }
+    Win{ is_first_player_win: bool, state: GameState }
 }
 
 impl Game {
@@ -43,7 +43,7 @@ impl Game {
             Game::Ongoing {game} | Game::Draw {game} => {
                 Ok(generate_pgn(&game.sans, self))
             }
-            Game::Win{game, ..} => {
+            Game::Win{ state: game, ..} => {
                 Ok(generate_pgn(&game.sans, self))
             }
             Game::IllegalMove {..} => { Err(String::from("An illegal move cannot generate a PGN")) }
@@ -98,7 +98,7 @@ mod tests {
     #[should_panic(expected = "Game is not ongoing, cannot unwrap")]
     fn given_win_unwrap_should_panic() {
         let game = Game::new().unwrap();
-        let result = Win { is_first_player_win: true, game };
+        let result = Win { is_first_player_win: true, state: game };
 
         result.unwrap();
     }

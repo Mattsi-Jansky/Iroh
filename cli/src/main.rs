@@ -24,7 +24,7 @@ fn main() {
                 ask_for_next_move(&mut term, &mut input);
                 game = inner_game.make_move(&*input);
             }
-            Game::Draw { game: inner_game } | Game::Win { game: inner_game, .. } => {
+            Game::Draw { game: inner_game } | Game::Win { state: inner_game, .. } => {
                 end_game(&mut term, &game, inner_game);
                 break;
             }

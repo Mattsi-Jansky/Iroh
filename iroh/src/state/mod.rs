@@ -98,7 +98,7 @@ impl GameState {
     pub(crate) fn determine_status(self) -> Game {
         if self.possible_moves.is_empty() {
             if self.is_check(self.is_first_player_turn) {
-                Game::Win{ is_first_player_win: !self.is_first_player_turn(), game: self }
+                Game::Win{ is_first_player_win: !self.is_first_player_turn(), state: self }
             }
             else { Game::Draw{game: self} }
         } else { Game::Ongoing {game: self} }
