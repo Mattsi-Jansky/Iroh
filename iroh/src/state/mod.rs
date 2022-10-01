@@ -115,18 +115,19 @@ impl GameState {
                 is_first_player_turn = !is_first_player_turn;
             }
 
-            if !self.is_first_player_turn && first_player_sans.len() >= 5
-                && first_player_sans[0] == first_player_sans[2]
-                && first_player_sans[2] == first_player_sans[4]
-                && first_player_sans[1] == first_player_sans[3] {
+            if !self.is_first_player_turn && self.is_fivefold_repetition(&first_player_sans) {
                 Game::Draw{ state: self }
-            } else if second_player_sans.len() >= 5
-                && second_player_sans[0] == second_player_sans[2]
-                && second_player_sans[2] == second_player_sans[4]
-                && second_player_sans[1] == second_player_sans[3] {
+            } else if self.is_fivefold_repetition(&second_player_sans) {
                 Game::Draw{ state: self}
             } else { Game::Ongoing { state: self} }
         }
+    }
+
+    fn is_fivefold_repetition(&self, first_player_sans: &Vec<String>) -> bool {
+        first_player_sans.len() >= 5
+            && first_player_sans[0] == first_player_sans[2]
+            && first_player_sans[2] == first_player_sans[4]
+            && first_player_sans[1] == first_player_sans[3]
     }
 
     pub fn captured_pieces(&self) -> &CapturedPieces {
