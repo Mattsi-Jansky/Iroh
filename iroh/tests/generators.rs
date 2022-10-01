@@ -27,4 +27,3 @@ macro_rules! chess_test {
         $(chess_test_inner! $myblock)*
     };
 }
-

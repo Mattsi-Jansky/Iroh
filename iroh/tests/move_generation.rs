@@ -5,7 +5,7 @@ use test_case::test_case;
 
 use iroh::state::piece::PieceType;
 use iroh::moves::Move;
-use iroh::game::GameInner;
+use iroh::game_inner::GameInner;
 use iroh::state::coordinates::{Rank, File};
 
 #[test_case(0)]

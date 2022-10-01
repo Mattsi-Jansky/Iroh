@@ -1,82 +1,112 @@
-use std::collections::HashMap;
-use crate::state::captured_pieces::CapturedPieces;
-use crate::move_result::Game;
-use crate::moves::move_generation::generate_moves;
-use crate::moves::{Move};
-use crate::moves::resolve_move::resolve_move;
-use crate::serialisers::fen::generate_fen;
-use crate::state::GameState;
+use crate::game_inner::GameInner;
+use crate::serialisers::pgn::generate_pgn;
 
-#[derive(PartialEq,Debug,Clone)]
-pub struct GameInner {
-    pub(crate) sans: Vec<String>,
-    game_state: GameState,
-    possible_moves: Vec<Move>
+#[derive(Clone,PartialEq)]
+pub enum Game {
+    Ongoing { game: GameInner },
+    IllegalMove{ game: GameInner },
+    Draw{ game: GameInner },
+    Win{ is_first_player_win: bool, game: GameInner }
 }
 
-impl GameInner {
-    pub fn new() -> Game {
-        let state = GameState::new();
-        let moves = generate_moves(&state);
-        Game::Ongoing {game: GameInner {
-            sans: vec![],
-            game_state: state,
-            possible_moves: moves
-        }}
-    }
-
-    pub fn from_fen(fen: &str) -> Game {
-        let game_state = GameState::from_fen(fen);
-        let possible_moves = generate_moves(&game_state);
-        Self::determine_status(GameInner {
-            sans: vec![],
-            game_state,
-            possible_moves
-        })
-    }
-
-    pub fn generate_fen(&self) -> String {
-        generate_fen(&self.game_state)
-    }
-
-    pub fn get_available_moves(&self) -> Vec<Move> {
-        self.possible_moves.clone()
-    }
-
-    pub fn is_first_player_turn(&self) -> bool {
-        self.game_state.is_first_player_turn
-    }
-
-    pub fn make_move(&self, san: &str) -> Game {
-        let possible_moves: HashMap<String, &Move> = self.possible_moves.iter()
-            .map(|m| (m.generate_san(), m))
-            .collect();
-
-        if let Some(requested_move) = possible_moves.get(&san.to_string()) {
-            let mut sans = self.sans.clone();
-            sans.push(String::from(san));
-            let game_state = resolve_move(requested_move, self.game_state.clone());
-            let possible_moves = generate_moves(&game_state);
-            Self::determine_status(GameInner {
-                sans,
-                game_state,
-                possible_moves
-            })
-        } else {
-            Game::IllegalMove { game: self.clone() }
+impl Game {
+    pub fn unwrap(self) -> GameInner {
+        match self {
+            Game::Ongoing {game} => { game },
+            _ => panic!("Game is not ongoing, cannot unwrap")
         }
     }
 
-    fn determine_status(game: GameInner) -> Game {
-        if game.possible_moves.is_empty() {
-            if game.game_state.is_check(game.game_state.is_first_player_turn) {
-                Game::Win{ is_first_player_win: !game.is_first_player_turn(), game }
-            }
-            else { Game::Draw{game} }
-        } else { Game::Ongoing {game} }
+    pub fn make_move(&self, san: &str) -> Game {
+        match self {
+            Game::Ongoing { game } => { game.make_move(san) }
+            Game::IllegalMove { game } => { game.make_move(san) }
+            Game::Draw { .. } | Game::Win { .. } => { panic!("Cannot make move on a finished game") }
+        }
     }
 
-    pub fn get_captured_pieces(&self) -> &CapturedPieces {
-        &self.game_state.captured_pieces
+    pub fn is_err(&self) -> bool {
+        matches!(self, Game::IllegalMove {..})
+    }
+
+    pub fn generate_pgn(&self) -> Result<String,String> {
+        match self {
+            Game::Ongoing {game} | Game::Draw {game} => {
+                Ok(generate_pgn(&game.sans, self))
+            }
+            Game::Win{game, ..} => {
+                Ok(generate_pgn(&game.sans, self))
+            }
+            Game::IllegalMove {..} => { Err(String::from("An illegal move cannot generate a PGN")) }
+        }
+    }
+
+    pub fn generate_fen(&self) -> Result<String,String> {
+        match self {
+            Game::Ongoing {game} | Game::Draw {game} => {
+                Ok(game.generate_fen())
+            },
+            _ => { Err(String::from("Cannot generate a FEN from an illegal move")) }
+        }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::Game::*;
+    use super::*;
+
+    #[test]
+    fn given_ongoing_game_unwrap_should_return_game() {
+        let game = GameInner::new().unwrap();
+        let expected = game.clone();
+        let result = Ongoing {game};
+
+        let result = result.unwrap();
+
+        assert_eq!(expected,result);
+    }
+
+    #[test]
+    #[should_panic(expected = "Game is not ongoing, cannot unwrap")]
+    fn given_illegal_move_unwrap_should_panic() {
+        let game = GameInner::new().unwrap();
+        let result = IllegalMove { game };
+
+        result.unwrap();
+    }
+
+    #[test]
+    #[should_panic(expected = "Game is not ongoing, cannot unwrap")]
+    fn given_draw_unwrap_should_panic() {
+        let game = GameInner::new().unwrap();
+        let result = Draw {game};
+
+        result.unwrap();
+    }
+
+    #[test]
+    #[should_panic(expected = "Game is not ongoing, cannot unwrap")]
+    fn given_win_unwrap_should_panic() {
+        let game = GameInner::new().unwrap();
+        let result = Win { is_first_player_win: true, game };
+
+        result.unwrap();
+    }
+
+    #[test]
+    fn given_illegal_move_is_err_should_return_true() {
+        let game = GameInner::new().unwrap();
+        let move_result = IllegalMove { game };
+
+        assert!(move_result.is_err());
+    }
+
+    #[test]
+    fn given_ongoing_game_is_err_should_return_false() {
+        let game = GameInner::new().unwrap();
+        let move_result = Ongoing {game};
+
+        assert_eq!(false,move_result.is_err());
     }
 }

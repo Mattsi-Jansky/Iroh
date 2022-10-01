@@ -1,5 +1,5 @@
 use test_case::test_case;
-use iroh::game::GameInner;
+use iroh::game_inner::GameInner;
 
 #[test]
 fn given_first_player_should_castle_kingside() {

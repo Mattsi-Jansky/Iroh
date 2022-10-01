@@ -2,8 +2,8 @@ mod fen_display;
 
 use std::io::Write;
 use console::Term;
-use iroh::game::GameInner;
-use iroh::move_result::Game;
+use iroh::game::Game;
+use iroh::game_inner::GameInner;
 use crate::fen_display::generate_display_from_fen;
 
 fn main() {

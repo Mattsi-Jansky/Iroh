@@ -1,6 +1,6 @@
 use test_case::test_case;
 
-use iroh::game::GameInner;
+use iroh::game_inner::GameInner;
 
 #[test_case("e7")]
 #[test_case("ng3")]

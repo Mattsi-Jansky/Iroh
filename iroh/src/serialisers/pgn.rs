@@ -1,4 +1,4 @@
-use crate::move_result::Game;
+use crate::game::Game;
 
 pub fn generate_pgn(sans: &[String], game: &Game) -> String {
     let mut result = String::new();

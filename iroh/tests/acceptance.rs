@@ -4,11 +4,11 @@ extern crate core;
 
 use galvanic_assert::matchers::collection::*;
 use test_case::test_case;
-mod generators;
-
+use iroh::game_inner::GameInner;
 use iroh::state::piece::PieceType;
-use iroh::game::GameInner;
-use iroh::move_result::Game;
+use iroh::game::Game;
+
+mod generators;
 
 #[test]
 fn new_game_pgn_has_asterisk_only() {
