@@ -1,4 +1,5 @@
 use crate::serialisers::pgn::generate_pgn;
+use crate::state::captured_pieces::CapturedPieces;
 use crate::state::GameState;
 
 #[derive(Clone,PartialEq,Eq)]
@@ -56,6 +57,15 @@ impl Game {
                 Ok(game.generate_fen())
             },
             _ => { Err(String::from("Cannot generate a FEN from an illegal move")) }
+        }
+    }
+
+    pub fn captured_pieces(&self) -> Result<&CapturedPieces,String> {
+        match self {
+            Game::Ongoing {game} | Game::Draw{game} => {
+                Ok(game.captured_pieces())
+            },
+            _ => { Err(String::from("Cannot get captured pieces from illegal move")) }
         }
     }
 }
