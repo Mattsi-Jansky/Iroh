@@ -14,7 +14,7 @@ mod static_moves;
 mod dynamic_moves;
 mod castling_moves;
 
-#[derive(PartialEq, Debug, Clone)]
+#[derive(PartialEq, Eq, Debug, Clone)]
 pub enum Move {
     RegularMove((File, Rank), (File, Rank), PieceType),
     AttackMove((File, Rank), (File, Rank), PieceType),

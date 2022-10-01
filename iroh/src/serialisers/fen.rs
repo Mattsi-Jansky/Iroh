@@ -13,7 +13,7 @@ pub fn parse_fen(fen: &str, game_state: &mut GameState) {
             file = File::new(0);
             continue;
         }
-        if char.is_digit(10) {
+        if char.is_ascii_digit() {
             file += char as usize - 0x30;
             continue;
         }

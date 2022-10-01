@@ -1,7 +1,7 @@
 use crate::game_inner::GameInner;
 use crate::serialisers::pgn::generate_pgn;
 
-#[derive(Clone,PartialEq)]
+#[derive(Clone,PartialEq,Eq)]
 pub enum Game {
     Ongoing { game: GameInner },
     IllegalMove{ game: GameInner },

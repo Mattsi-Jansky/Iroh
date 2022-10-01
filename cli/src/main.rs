@@ -15,7 +15,7 @@ fn main() {
     loop {
         match &game {
             Game::Ongoing {game: inner_game} => {
-                render(&term, &game, &inner_game);
+                render(&term, &game, inner_game);
                 ask_for_next_move(&mut term, &mut input);
                 game = inner_game.make_move(&*input);
             }

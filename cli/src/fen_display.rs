@@ -19,7 +19,7 @@ pub fn generate_display_from_fen(fen: &str) -> [String; 10] {
 
         let mut file_index = 0;
         for c in part.chars() {
-            if !c.is_digit(10) {
+            if !c.is_ascii_digit() {
                 line.push(glyph_for(c));
                 if file_index != 7 {
                     line.push(' ');

@@ -1,4 +1,4 @@
-#[derive(Debug, Copy, Clone, PartialEq)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq)]
 pub enum PieceType {
     Pawn,
     Bishop,
@@ -8,7 +8,7 @@ pub enum PieceType {
     Queen
 }
 
-#[derive(Debug, Copy, Clone, PartialEq)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq)]
 pub struct Piece {
     pub is_owned_by_first_player: bool,
     pub piece_type: PieceType,

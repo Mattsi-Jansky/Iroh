@@ -7,7 +7,7 @@ use crate::moves::resolve_move::resolve_move;
 use crate::serialisers::fen::generate_fen;
 use crate::state::GameState;
 
-#[derive(PartialEq,Debug,Clone)]
+#[derive(PartialEq, Eq, Debug,Clone)]
 pub struct GameInner {
     pub(crate) sans: Vec<String>,
     game_state: GameState,

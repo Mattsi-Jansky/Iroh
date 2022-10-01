@@ -2,7 +2,7 @@ use std::ops::{Index, IndexMut};
 use crate::state::coordinates::{File, Rank};
 use crate::state::piece::{Piece, PieceType};
 
-#[derive(Debug, Copy, Clone, PartialEq)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq)]
 pub struct Board {
     state: [Option<Piece>; 8*8]
 }
