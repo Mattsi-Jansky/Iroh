@@ -97,10 +97,10 @@ fn attack_move_from_dynamic_movement_piece() {
     let result_game = game.unwrap();
 
     assert_eq!("1. Rxe5 Rxd4 2. Rd5 *", result_pgn);
-    assert_that!(&result_game.get_captured_pieces().second_player, contains_in_any_order(vec![
+    assert_that!(&result_game.captured_pieces().second_player, contains_in_any_order(vec![
         PieceType::Rook
     ]));
-    assert_that!(&result_game.get_captured_pieces().first_player, contains_in_any_order(vec![
+    assert_that!(&result_game.captured_pieces().first_player, contains_in_any_order(vec![
         PieceType::Rook
     ]));
 }
@@ -116,10 +116,10 @@ fn attack_move_from_static_movement_piece() {
     let result_game = game.unwrap();
 
     assert_eq!("1. Nxb7 Nxg7 2. Nc5 *", result);
-    assert_that!(&result_game.get_captured_pieces().second_player, contains_in_any_order(vec![
+    assert_that!(&result_game.captured_pieces().second_player, contains_in_any_order(vec![
         PieceType::Knight
     ]));
-    assert_that!(&result_game.get_captured_pieces().first_player, contains_in_any_order(vec![
+    assert_that!(&result_game.captured_pieces().first_player, contains_in_any_order(vec![
         PieceType::Knight
     ]));
 }
@@ -136,10 +136,10 @@ fn attack_move_from_pawn() {
     let result_game = game.unwrap();
 
     assert_eq!("1. cxd6 gxf5 2. d7 f4 *", result);
-    assert_that!(&result_game.get_captured_pieces().second_player, contains_in_any_order(vec![
+    assert_that!(&result_game.captured_pieces().second_player, contains_in_any_order(vec![
         PieceType::Pawn
     ]));
-    assert_that!(&result_game.get_captured_pieces().first_player, contains_in_any_order(vec![
+    assert_that!(&result_game.captured_pieces().first_player, contains_in_any_order(vec![
         PieceType::Pawn
     ]));
 }

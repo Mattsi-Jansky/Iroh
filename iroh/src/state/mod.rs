@@ -104,7 +104,7 @@ impl GameState {
         } else { Game::Ongoing {game: self} }
     }
 
-    pub fn get_captured_pieces(&self) -> &CapturedPieces {
+    pub fn captured_pieces(&self) -> &CapturedPieces {
         &self.captured_pieces
     }
 }
