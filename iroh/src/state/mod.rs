@@ -101,7 +101,31 @@ impl GameState {
                 Game::Win{ is_first_player_win: !self.is_first_player_turn(), state: self }
             }
             else { Game::Draw{ state: self} }
-        } else { Game::Ongoing { state: self} }
+        }
+        else {
+            let mut is_first_player_turn = !self.is_first_player_turn;
+            let mut first_player_sans = vec![];
+            let mut second_player_sans = vec![];
+            for san in self.sans.clone().into_iter().rev() {
+                if is_first_player_turn {
+                    first_player_sans.push(san);
+                } else {
+                    second_player_sans.push(san);
+                }
+                is_first_player_turn = !is_first_player_turn;
+            }
+
+            println!("Second player SANs: {second_player_sans:?}");
+
+            if self.is_first_player_turn && first_player_sans.len() > 5 && first_player_sans.iter().take(5).all(|san| san == &first_player_sans[0]) {
+                Game::Draw{ state: self}
+            } else if second_player_sans.len() >= 5 &&
+                   second_player_sans[0] == second_player_sans[2]
+                && second_player_sans[2] == second_player_sans[4]
+                && second_player_sans[1] == second_player_sans[3] {
+                Game::Draw{ state: self}
+            } else { Game::Ongoing { state: self} }
+        }
     }
 
     pub fn captured_pieces(&self) -> &CapturedPieces {

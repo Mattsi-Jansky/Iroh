@@ -189,3 +189,21 @@ fn given_stalemate_should_automatically_draw() {
     assert!(matches!(game, Game::Draw {..}));
     assert_eq!("1/2-1/2", game.generate_pgn().unwrap());
 }
+
+#[test]
+fn given_five_fold_repetition_should_automatically_draw() {
+    let mut game = Game::from_fen("6Q1/pp6/8/8/1kp2N2/1n2R1P1/3r4/1K6 b - - 21 12");
+
+    game = game.make_move("Rd1");
+    game = game.make_move("Kb2");
+    game = game.make_move("Rd2");
+    game = game.make_move("Kb1");
+    game = game.make_move("Rd1");
+    game = game.make_move("Kc2");
+    game = game.make_move("Rd2");
+    game = game.make_move("Kb1");
+    game = game.make_move("Rd1");
+
+    assert!(matches!(game, Game::Draw {..}));
+    assert_eq!("1. Rd1 Kb2 2. Rd2 Kb1 3. Rd1 Kc2 4. Rd2 Kb1 5. Rd1 1/2-1/2", game.generate_pgn().unwrap());
+}
