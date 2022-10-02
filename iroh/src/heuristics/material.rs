@@ -1,5 +1,4 @@
 use crate::heuristics::Heuristic;
-use crate::state::coordinates::{File, Rank};
 use crate::state::GameState;
 use crate::state::piece::PieceType;
 

@@ -1,36 +1,38 @@
+use std::rc::Rc;
+use crate::heuristics::{Heuristics};
 use crate::serialisers::pgn::generate_pgn;
 use crate::state::captured_pieces::CapturedPieces;
 use crate::state::GameState;
 
-#[derive(Clone,PartialEq,Eq)]
+#[derive(Clone)]
 pub enum Game {
-    Ongoing { state: GameState },
-    IllegalMove{ state: GameState },
+    Ongoing { state: GameState, heuristics: Rc<Heuristics> },
+    IllegalMove{ state: GameState, heuristics: Rc<Heuristics> },
     Draw{ state: GameState },
     Win{ is_first_player_win: bool, state: GameState }
 }
 
 impl Game {
     pub fn new() -> Game {
-        Game::Ongoing { state: GameState::new()}
+        Game::Ongoing { state: GameState::new(), heuristics: Default::default() }
     }
 
     pub fn from_fen(fen: &str) -> Game {
         let game_state = GameState::from_fen(fen);
-        game_state.determine_status()
+        game_state.determine_status(&Rc::new(Default::default()))
     }
 
     pub fn unwrap(self) -> GameState {
         match self {
-            Game::Ongoing { state } => { state }
+            Game::Ongoing { state, .. } => { state }
             _ => panic!("Game is not ongoing, cannot unwrap")
         }
     }
 
     pub fn make_move(&self, san: &str) -> Game {
         match self {
-            Game::Ongoing { state } => { state.make_move(san) }
-            Game::IllegalMove { state } => { state.make_move(san) }
+            Game::Ongoing { state, heuristics } => { state.make_move(san, Rc::clone(heuristics)) }
+            Game::IllegalMove { state, heuristics } => { state.make_move(san, Rc::clone(heuristics)) }
             Game::Draw { .. } | Game::Win { .. } => { panic!("Cannot make move on a finished game") }
         }
     }
@@ -41,7 +43,7 @@ impl Game {
 
     pub fn generate_pgn(&self) -> Result<String,String> {
         match self {
-            Game::Ongoing { state } | Game::Draw { state } => {
+            Game::Ongoing { state, .. } | Game::Draw { state } => {
                 Ok(generate_pgn(&state.sans, self))
             }
             Game::Win{ state, ..} => {
@@ -53,7 +55,7 @@ impl Game {
 
     pub fn generate_fen(&self) -> Result<String,String> {
         match self {
-            Game::Ongoing { state } | Game::Draw { state } => {
+            Game::Ongoing { state, .. } | Game::Draw { state } => {
                 Ok(state.generate_fen())
             },
             _ => { Err(String::from("Cannot generate a FEN from an illegal move")) }
@@ -62,7 +64,7 @@ impl Game {
 
     pub fn captured_pieces(&self) -> Result<&CapturedPieces,String> {
         match self {
-            Game::Ongoing { state } | Game::Draw{ state } => {
+            Game::Ongoing { state, .. } | Game::Draw{ state } => {
                 Ok(state.captured_pieces())
             }
             _ => { Err(String::from("Cannot get captured pieces from illegal move")) }
@@ -79,7 +81,7 @@ mod tests {
     fn given_ongoing_game_unwrap_should_return_game() {
         let game = Game::new().unwrap();
         let expected = game.clone();
-        let result = Ongoing { state: game };
+        let result = Ongoing { state: game, heuristics: Default::default() };
 
         let result = result.unwrap();
 
@@ -90,7 +92,7 @@ mod tests {
     #[should_panic(expected = "Game is not ongoing, cannot unwrap")]
     fn given_illegal_move_unwrap_should_panic() {
         let game = Game::new().unwrap();
-        let result = IllegalMove { state: game };
+        let result = IllegalMove { state: game, heuristics: Default::default() };
 
         result.unwrap();
     }
@@ -116,7 +118,7 @@ mod tests {
     #[test]
     fn given_illegal_move_is_err_should_return_true() {
         let game = Game::new().unwrap();
-        let move_result = IllegalMove { state: game };
+        let move_result = IllegalMove { state: game, heuristics: Default::default() };
 
         assert!(move_result.is_err());
     }
@@ -124,7 +126,7 @@ mod tests {
     #[test]
     fn given_ongoing_game_is_err_should_return_false() {
         let game = Game::new().unwrap();
-        let move_result = Ongoing { state: game };
+        let move_result = Ongoing { state: game, heuristics: Default::default() };
 
         assert_eq!(false,move_result.is_err());
     }

@@ -1,6 +1,7 @@
 mod fen_display;
 
 use std::io::Write;
+use std::rc::Rc;
 use console::Term;
 use iroh::game::Game;
 use iroh::state::GameState;
@@ -14,15 +15,15 @@ fn main() {
 
     loop {
         match &game {
-            Game::Ongoing { state: inner_game} => {
+            Game::Ongoing { state: inner_game, heuristics} => {
                 render(&term, &game, inner_game);
                 ask_for_next_move(&mut term, &mut input);
-                game = inner_game.make_move(&*input);
+                game = inner_game.make_move(&*input, Rc::clone(heuristics));
             }
-            Game::IllegalMove { state: inner_game} => {
+            Game::IllegalMove { state: inner_game, heuristics} => {
                 term.write_line(&*format!("Sorry, {} is not a legal move.", input)).unwrap();
                 ask_for_next_move(&mut term, &mut input);
-                game = inner_game.make_move(&*input);
+                game = inner_game.make_move(&*input, Rc::clone(heuristics));
             }
             Game::Draw { state: inner_game } | Game::Win { state: inner_game, .. } => {
                 end_game(&mut term, &game, inner_game);

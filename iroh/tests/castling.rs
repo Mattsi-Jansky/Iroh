@@ -221,7 +221,6 @@ fn given_second_player_and_rook_not_in_place_cannot_castle_queenside() {
     assert!(result.is_err());
 }
 
-
 #[test]
 fn given_second_player_and_rook_has_moved_cannot_castle_queenside() {
     let mut game = Game::from_fen("r3kbnr/pbpp1ppp/1pn1pq2/8/3PP3/2NB1N2/PPP2PPP/R1BQK2R w KQkq - 0 1");
@@ -257,7 +256,7 @@ fn given_second_player_and_fen_says_they_cant_castle_queenside_cannot_castle_que
 fn given_king_would_go_through_attacked_tile_cannot_castle(fen: &str, sen: &str) {
     let game = Game::from_fen(fen).unwrap();
 
-    let result = game.make_move(sen);
+    let result = game.make_move(sen, Default::default());
 
     assert!(result.is_err());
 }

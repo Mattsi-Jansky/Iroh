@@ -1,5 +1,7 @@
 use std::collections::HashMap;
+use std::rc::Rc;
 use crate::game::Game;
+use crate::heuristics::{Heuristics};
 use crate::moves::Move;
 use crate::moves::move_generation::generate_moves;
 use crate::moves::resolve_move::resolve_move;
@@ -27,7 +29,7 @@ pub struct GameState {
     pub first_player_can_castle_kingside: bool,
     pub first_player_can_castle_queenside: bool,
     pub second_player_can_castle_kingside: bool,
-    pub second_player_can_castle_queenside: bool,
+    pub second_player_can_castle_queenside: bool
 }
 
 impl GameState {
@@ -75,7 +77,7 @@ impl GameState {
         self.is_first_player_turn
     }
 
-    pub fn make_move(&self, san: &str) -> Game {
+    pub fn make_move(&self, san: &str, heuristics: Rc<Heuristics>) -> Game {
         let possible_moves: HashMap<String, &Move> = self.possible_moves.iter()
             .map(|m| (m.generate_san(), m))
             .collect();
@@ -89,13 +91,17 @@ impl GameState {
                 sans,
                 possible_moves,
                 ..game_state
-            }.determine_status()
+            }.determine_status(&heuristics)
         } else {
-            Game::IllegalMove { state: self.clone() }
+            Game::IllegalMove { state: self.clone(), heuristics }
         }
     }
 
-    pub(crate) fn determine_status(self) -> Game {
+    fn calculate_heuristics() {
+
+    }
+
+    pub(crate) fn determine_status(self, heuristics: &Rc<Heuristics>) -> Game {
         if self.possible_moves.is_empty() {
             if self.is_check(self.is_first_player_turn) {
                 Game::Win{ is_first_player_win: !self.is_first_player_turn(), state: self }
@@ -123,7 +129,7 @@ impl GameState {
             else if self.turn_number - self.captured_pieces.last_capture_turn >= 75 {
                 Game::Draw { state: self }
             }
-            else { Game::Ongoing { state: self} }
+            else { Game::Ongoing { state: self, heuristics: Rc::clone(heuristics) } }
         }
     }
 
