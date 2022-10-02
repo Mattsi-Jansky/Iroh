@@ -15,8 +15,8 @@ pub fn resolve_move(requested_move: &Move, mut game_state: GameState) -> GameSta
             let piece = game_state.board[(to_file,to_rank)]
                 .expect("Illegal move, no target to attack")
                 .piece_type;
-            if game_state.is_first_player_turn {game_state.captured_pieces.second_player.push(piece);}
-            else {game_state.captured_pieces.first_player.push(piece);}
+            if game_state.is_first_player_turn {game_state.captured_pieces.captured_second_player(piece, game_state.turn_number);}
+            else {game_state.captured_pieces.captured_first_player(piece, game_state.turn_number);}
             
             move_piece(&mut game_state, from_file, from_rank, to_file, to_rank);
         }
@@ -24,8 +24,8 @@ pub fn resolve_move(requested_move: &Move, mut game_state: GameState) -> GameSta
             let piece = game_state.board[(to_file,to_rank)]
                 .expect("Illegal move, no target to attack")
                 .piece_type;
-            if game_state.is_first_player_turn {game_state.captured_pieces.second_player.push(piece);}
-            else {game_state.captured_pieces.first_player.push(piece);}
+            if game_state.is_first_player_turn {game_state.captured_pieces.captured_second_player(piece, game_state.turn_number);}
+            else {game_state.captured_pieces.captured_first_player(piece, game_state.turn_number);}
 
             let direction = if game_state.is_first_player_turn {-1} else {1};
             move_piece(&mut game_state,

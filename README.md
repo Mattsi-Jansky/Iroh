@@ -23,8 +23,7 @@ Start the CLI interface in your terminal with `cargo run`.
     * En Passant
 * Draws and draw offers
   * Mutual agreement
-  * Seventyfive-move rule
-  * Three-fold and fifty-move rules (non-automatic variants of previous two)
+  * Three-fold and fifty-move rules (non-automatic variants of five and seventyfive-move rules)
   * Dead position
   * https://en.wikipedia.org/wiki/Draw_(chess)#Draws_in_all_games
 * Resignations

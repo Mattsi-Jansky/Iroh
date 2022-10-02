@@ -20,7 +20,7 @@ const STARTING_POSITION_FEN: &str = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR
 pub struct GameState {
     pub(crate) sans: Vec<String>,
     possible_moves: Vec<Move>,
-    turn_number: u16,
+    pub turn_number: u16,
     pub is_first_player_turn: bool,
     pub board: Board,
     pub captured_pieces: CapturedPieces,
@@ -64,7 +64,7 @@ impl GameState {
     }
 
     pub fn generate_fen(&self) -> String {
-        generate_fen(&self)
+        generate_fen(self)
     }
 
     pub fn get_available_moves(&self) -> Vec<Move> {
@@ -118,8 +118,12 @@ impl GameState {
             if !self.is_first_player_turn && self.is_fivefold_repetition(&first_player_sans) {
                 Game::Draw{ state: self }
             } else if self.is_fivefold_repetition(&second_player_sans) {
-                Game::Draw{ state: self}
-            } else { Game::Ongoing { state: self} }
+                Game::Draw { state: self }
+            }
+            else if self.turn_number - self.captured_pieces.last_capture_turn >= 75 {
+                Game::Draw { state: self }
+            }
+            else { Game::Ongoing { state: self} }
         }
     }
 

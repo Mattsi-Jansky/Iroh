@@ -226,3 +226,19 @@ fn given_five_fold_repetition_from_first_player_should_automatically_draw() {
     assert!(matches!(game, Game::Draw {..}));
     assert_eq!("1. Rd1 Kb2 2. Rd2 Kb1 3. Rd1 Kc2 4. Rd2 Kb1 5. Rd1 1/2-1/2", game.generate_pgn().unwrap());
 }
+
+#[test]
+fn given_seventy_five_turns_without_pawn_move_or_capture_should_automatically_draw() {
+    let mut game = Game::from_fen("4k3/3rr3/8/8/8/8/3RR3/4K3 w - - 0 1");
+
+    let moves = vec!["Rc2", "Rc7", "Rb2","Rb7","Ra2","Ra7"];
+    let mut index = 0;
+
+    for i in 0..74 {
+        if index == moves.len() { index = 0; }
+        game = game.make_move(moves[index]);
+        index += 1;
+    }
+
+    assert!(matches!(game, Game::Draw {..}));
+}
