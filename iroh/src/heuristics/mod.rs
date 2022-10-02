@@ -1,5 +1,7 @@
 mod material;
 
+use std::rc::Rc;
+use crate::heuristics::material::MaterialHeuristic;
 use crate::state::GameState;
 
 pub trait Heuristic {
@@ -7,11 +9,26 @@ pub trait Heuristic {
 }
 
 pub struct Heuristics {
-    heuristics: Vec<Box<dyn Heuristic>>
+    heuristics: Rc<Vec<Box<dyn Heuristic>>>,
+    pub value: u32
 }
 
 impl Default for Heuristics {
     fn default() -> Self {
-        Heuristics { heuristics: vec![] }
+        let mut heuristics: Vec<Box<dyn Heuristic>> = vec![];
+        heuristics.push(Box::new(MaterialHeuristic {}));
+        Heuristics { heuristics: Rc::from(heuristics), value: 0 }
+    }
+}
+
+impl Clone for Heuristics {
+    fn clone(&self) -> Self {
+        Heuristics { heuristics: Rc::clone(&self.heuristics), value: self.value}
+    }
+}
+
+impl Heuristics {
+    fn calculate(&mut self, state: GameState) {
+        todo!()
     }
 }

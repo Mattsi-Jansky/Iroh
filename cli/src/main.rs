@@ -18,12 +18,12 @@ fn main() {
             Game::Ongoing { state: inner_game, heuristics} => {
                 render(&term, &game, inner_game);
                 ask_for_next_move(&mut term, &mut input);
-                game = inner_game.make_move(&*input, Rc::clone(heuristics));
+                game = inner_game.make_move(&*input, heuristics.clone());
             }
             Game::IllegalMove { state: inner_game, heuristics} => {
                 term.write_line(&*format!("Sorry, {} is not a legal move.", input)).unwrap();
                 ask_for_next_move(&mut term, &mut input);
-                game = inner_game.make_move(&*input, Rc::clone(heuristics));
+                game = inner_game.make_move(&*input, heuristics.clone());
             }
             Game::Draw { state: inner_game } | Game::Win { state: inner_game, .. } => {
                 end_game(&mut term, &game, inner_game);

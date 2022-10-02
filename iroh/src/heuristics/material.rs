@@ -2,7 +2,7 @@ use crate::heuristics::Heuristic;
 use crate::state::GameState;
 use crate::state::piece::PieceType;
 
-struct MaterialHeuristic {}
+pub struct MaterialHeuristic {}
 
 impl Heuristic for MaterialHeuristic {
     fn evaluate(&self, state: GameState, is_first_player: bool) -> u32 {

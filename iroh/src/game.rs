@@ -6,8 +6,8 @@ use crate::state::GameState;
 
 #[derive(Clone)]
 pub enum Game {
-    Ongoing { state: GameState, heuristics: Rc<Heuristics> },
-    IllegalMove{ state: GameState, heuristics: Rc<Heuristics> },
+    Ongoing { state: GameState, heuristics: Heuristics },
+    IllegalMove{ state: GameState, heuristics: Heuristics },
     Draw{ state: GameState },
     Win{ is_first_player_win: bool, state: GameState }
 }
@@ -31,8 +31,8 @@ impl Game {
 
     pub fn make_move(&self, san: &str) -> Game {
         match self {
-            Game::Ongoing { state, heuristics } => { state.make_move(san, Rc::clone(heuristics)) }
-            Game::IllegalMove { state, heuristics } => { state.make_move(san, Rc::clone(heuristics)) }
+            Game::Ongoing { state, heuristics } => { state.make_move(san, heuristics.clone()) }
+            Game::IllegalMove { state, heuristics } => { state.make_move(san, heuristics.clone()) }
             Game::Draw { .. } | Game::Win { .. } => { panic!("Cannot make move on a finished game") }
         }
     }

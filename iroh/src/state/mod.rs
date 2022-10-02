@@ -77,7 +77,7 @@ impl GameState {
         self.is_first_player_turn
     }
 
-    pub fn make_move(&self, san: &str, heuristics: Rc<Heuristics>) -> Game {
+    pub fn make_move(&self, san: &str, heuristics: Heuristics) -> Game {
         let possible_moves: HashMap<String, &Move> = self.possible_moves.iter()
             .map(|m| (m.generate_san(), m))
             .collect();
@@ -87,21 +87,19 @@ impl GameState {
             sans.push(String::from(san));
             let game_state = resolve_move(requested_move, self.clone());
             let possible_moves = generate_moves(&game_state);
-            GameState {
+            let state = GameState {
                 sans,
                 possible_moves,
                 ..game_state
-            }.determine_status(&heuristics)
+            };
+
+            state.determine_status(&heuristics)
         } else {
-            Game::IllegalMove { state: self.clone(), heuristics }
+            Game::IllegalMove { state: self.clone(), heuristics: heuristics.clone() }
         }
     }
 
-    fn calculate_heuristics() {
-
-    }
-
-    pub(crate) fn determine_status(self, heuristics: &Rc<Heuristics>) -> Game {
+    pub(crate) fn determine_status(self, heuristics: &Heuristics) -> Game {
         if self.possible_moves.is_empty() {
             if self.is_check(self.is_first_player_turn) {
                 Game::Win{ is_first_player_win: !self.is_first_player_turn(), state: self }
@@ -129,7 +127,7 @@ impl GameState {
             else if self.turn_number - self.captured_pieces.last_capture_turn >= 75 {
                 Game::Draw { state: self }
             }
-            else { Game::Ongoing { state: self, heuristics: Rc::clone(heuristics) } }
+            else { Game::Ongoing { state: self, heuristics: heuristics.clone() } }
         }
     }
 
