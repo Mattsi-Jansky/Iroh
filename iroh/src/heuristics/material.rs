@@ -14,9 +14,9 @@ impl Heuristic for MaterialHeuristic {
                 PieceType::Pawn => {1}
                 PieceType::Bishop => {3}
                 PieceType::Knight => {3}
-                PieceType::Rook => {0}
+                PieceType::Rook => {5}
                 PieceType::King => {0}
-                PieceType::Queen => {0}
+                PieceType::Queen => {9}
             }
         }
 
@@ -53,5 +53,23 @@ mod tests {
         let result = MaterialHeuristic{}.evaluate(state, true);
 
         assert_eq!(6, result);
+    }
+
+    #[test]
+    fn rook_is_worth_five() {
+        let state= GameState::from_fen("8/8/8/3R4/8/8/8/8 w - - 0 1");
+
+        let result = MaterialHeuristic{}.evaluate(state, true);
+
+        assert_eq!(5, result);
+    }
+
+    #[test]
+    fn queen_is_worth_nine() {
+        let state= GameState::from_fen("8/8/8/3Q4/8/8/8/8 w - - 0 1");
+
+        let result = MaterialHeuristic{}.evaluate(state, true);
+
+        assert_eq!(9, result);
     }
 }
