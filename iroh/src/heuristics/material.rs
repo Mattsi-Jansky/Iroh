@@ -1,12 +1,26 @@
 use crate::heuristics::Heuristic;
+use crate::state::coordinates::{File, Rank};
 use crate::state::GameState;
+use crate::state::piece::PieceType;
 
 struct MaterialHeuristic {}
 
 impl Heuristic for MaterialHeuristic {
     fn evaluate(&self, state: GameState, is_first_player: bool) -> u32 {
-        state.board.get_all_pieces_belonging_to_player(is_first_player)
-            .len() as u32
+        let mut result = 0;
+
+        for piece in state.board.get_all_pieces_belonging_to_player(is_first_player) {
+            result += match piece.0 {
+                PieceType::Pawn => {1}
+                PieceType::Bishop => {3}
+                PieceType::Knight => {3}
+                PieceType::Rook => {0}
+                PieceType::King => {0}
+                PieceType::Queen => {0}
+            }
+        }
+
+        result
     }
 }
 
@@ -30,5 +44,14 @@ mod tests {
         let result = MaterialHeuristic{}.evaluate(state, true);
 
         assert_eq!(2, result);
+    }
+
+    #[test]
+    fn knight_and_bishop_worth_three_each() {
+        let state= GameState::from_fen("8/8/8/3NB3/8/8/8/8 w - - 0 1");
+
+        let result = MaterialHeuristic{}.evaluate(state, true);
+
+        assert_eq!(6, result);
     }
 }

@@ -32,3 +32,4 @@ Start the CLI interface in your terminal with `cargo run`.
   * Track two (or three?) separate SAN lists rather than filtering the one list in `GameState::determine_status`
   * Is there a better way to do `castling_moves.rs` check for whether king would be in check without cloning GameState?
   * Shouldn't `from_fen` (both of them) return `Result` / do validation?
+  * Replace some of these tuples with types, particularly in `board.rs`
