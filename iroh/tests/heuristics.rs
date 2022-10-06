@@ -8,7 +8,7 @@ fn should_get_heuristic() {
     let heuristics = Heuristics::new();
 
     if let Game::Ongoing{ state, ..} = game {
-        let value = heuristics.calculate(&state, true);
+        let value = heuristics.evaluate(&state, true);
         assert_that!(value > 0, otherwise "Unusual heuristic value")
     } else { panic!("Game should be ongoing") }
 }

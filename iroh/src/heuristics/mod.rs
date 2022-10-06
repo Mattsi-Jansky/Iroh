@@ -25,7 +25,7 @@ impl Heuristics {
         Default::default()
     }
 
-    pub fn calculate(self, state: &GameState, is_first_player: bool) -> u32 {
+    pub fn evaluate(self, state: &GameState, is_first_player: bool) -> u32 {
         let mut result = 0;
         for heuristic in self.heuristics {
             result += heuristic.evaluate(state, is_first_player);
