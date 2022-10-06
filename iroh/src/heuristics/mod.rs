@@ -9,26 +9,23 @@ pub trait Heuristic {
 }
 
 pub struct Heuristics {
-    heuristics: Rc<Vec<Box<dyn Heuristic>>>,
-    pub value: u32
+    heuristics: Vec<Box<dyn Heuristic>>
 }
 
 impl Default for Heuristics {
     fn default() -> Self {
         let mut heuristics: Vec<Box<dyn Heuristic>> = vec![];
         heuristics.push(Box::new(MaterialHeuristic {}));
-        Heuristics { heuristics: Rc::from(heuristics), value: 0 }
-    }
-}
-
-impl Clone for Heuristics {
-    fn clone(&self) -> Self {
-        Heuristics { heuristics: Rc::clone(&self.heuristics), value: self.value}
+        Heuristics { heuristics}
     }
 }
 
 impl Heuristics {
-    fn calculate(&mut self, state: GameState) {
+    pub fn new() -> Heuristics {
+        Default::default()
+    }
+
+    pub fn calculate(self, state: GameState) -> u32 {
         todo!()
     }
 }

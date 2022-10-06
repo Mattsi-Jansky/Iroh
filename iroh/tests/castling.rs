@@ -256,7 +256,7 @@ fn given_second_player_and_fen_says_they_cant_castle_queenside_cannot_castle_que
 fn given_king_would_go_through_attacked_tile_cannot_castle(fen: &str, sen: &str) {
     let game = Game::from_fen(fen).unwrap();
 
-    let result = game.make_move(sen, Default::default());
+    let result = game.make_move(sen);
 
     assert!(result.is_err());
 }
