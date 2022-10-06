@@ -20,7 +20,7 @@ const STARTING_POSITION_FEN: &str = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct GameState {
     pub(crate) sans: Vec<String>,
-    possible_moves: Vec<Move>,
+    pub possible_moves: Vec<Move>,
     pub turn_number: u16,
     pub is_first_player_turn: bool,
     pub board: Board,

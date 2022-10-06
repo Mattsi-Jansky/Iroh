@@ -1,7 +1,9 @@
 mod material;
+mod moves;
 
 use std::rc::Rc;
 use crate::heuristics::material::MaterialHeuristic;
+use crate::heuristics::moves::MovesHeuristic;
 use crate::state::GameState;
 
 pub trait Heuristic {
@@ -16,6 +18,7 @@ impl Default for Heuristics {
     fn default() -> Self {
         let mut heuristics: Vec<Box<dyn Heuristic>> = vec![];
         heuristics.push(Box::new(MaterialHeuristic {}));
+        heuristics.push(Box::new(MovesHeuristic {}));
         Heuristics { heuristics }
     }
 }
