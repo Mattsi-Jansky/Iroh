@@ -1,7 +1,6 @@
-mod material;
-mod moves;
+pub mod material;
+pub mod moves;
 
-use std::rc::Rc;
 use crate::heuristics::material::MaterialHeuristic;
 use crate::heuristics::moves::MovesHeuristic;
 use crate::state::GameState;
@@ -28,11 +27,19 @@ impl Heuristics {
         Default::default()
     }
 
-    pub fn evaluate(self, state: &GameState, is_first_player: bool) -> u32 {
+    pub fn blank() -> Heuristics {
+        Heuristics { heuristics: vec![] }
+    }
+
+    pub fn evaluate(&self, state: &GameState, is_first_player: bool) -> u32 {
         let mut result = 0;
-        for heuristic in self.heuristics {
+        for heuristic in self.heuristics.iter() {
             result += heuristic.evaluate(state, is_first_player);
         }
         result
+    }
+
+    pub fn push<T : Heuristic + 'static>(&mut self, heuristic: T) {
+        self.heuristics.push(Box::new(heuristic));
     }
 }

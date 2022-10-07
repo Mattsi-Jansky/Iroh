@@ -32,7 +32,7 @@ pub struct GameState {
 }
 
 impl GameState {
-    pub(crate) fn new() -> GameState {
+    pub fn new() -> GameState {
         GameState::from_fen(STARTING_POSITION_FEN)
     }
 
