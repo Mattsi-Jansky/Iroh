@@ -5,7 +5,7 @@ use crate::state::piece::PieceType;
 pub struct MaterialHeuristic {}
 
 impl Heuristic for MaterialHeuristic {
-    fn evaluate(&self, state: &GameState, is_first_player: bool) -> u32 {
+    fn evaluate(&self, state: &GameState, is_first_player: bool) -> i32 {
         let mut result = 0;
 
         for piece in state.board.get_all_pieces_belonging_to_player(is_first_player) {

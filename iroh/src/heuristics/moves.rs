@@ -7,9 +7,10 @@ use crate::heuristics::{Heuristic, HeuristicType};
 pub struct MovesHeuristic {}
 
 impl Heuristic for MovesHeuristic {
-  fn evaluate(&self, state: &GameState, is_first_player: bool) -> u32 {
-    state.possible_moves.len() as u32
-  }
+    fn evaluate(&self, state: &GameState, is_first_player: bool) -> i32 {
+        let moves = state.possible_moves.len() as i32;
+        if state.is_first_player_turn == is_first_player { moves } else { -moves }
+    }
 
     fn get_type(&self) -> HeuristicType {
         HeuristicType::Moves
@@ -27,5 +28,14 @@ mod tests {
       let result = MovesHeuristic{}.evaluate(&state, true);
 
       assert_eq!(20, result)
+    }
+
+    #[test]
+    fn when_evaluating_position_for_player_not_making_move_returns_inverted_heuristic() {
+        let state = GameState::new();
+
+        let result = MovesHeuristic{}.evaluate(&state, false);
+
+        assert_eq!(-20, result)
     }
 }

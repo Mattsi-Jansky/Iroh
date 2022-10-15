@@ -14,7 +14,7 @@ pub enum HeuristicType {
 }
 
 pub trait Heuristic {
-    fn evaluate(&self, state: &GameState, is_first_player: bool) -> u32;
+    fn evaluate(&self, state: &GameState, is_first_player: bool) -> i32;
     fn get_type(&self) -> HeuristicType;
 }
 
@@ -47,7 +47,7 @@ impl Heuristics {
         result
     }
 
-    pub fn evaluate(&self, state: &GameState, is_first_player: bool) -> u32 {
+    pub fn evaluate(&self, state: &GameState, is_first_player: bool) -> i32 {
         let mut result = 0;
         for heuristic in self.heuristics.iter() {
             let heuristic_value = heuristic.evaluate(state, is_first_player);
