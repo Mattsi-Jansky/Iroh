@@ -1,4 +1,4 @@
-use crate::heuristics::Heuristic;
+use crate::heuristics::{Heuristic, HeuristicType};
 use crate::state::GameState;
 use crate::state::piece::PieceType;
 
@@ -20,6 +20,10 @@ impl Heuristic for MaterialHeuristic {
         }
 
         result
+    }
+
+    fn get_type(&self) -> HeuristicType {
+        HeuristicType::Material
     }
 }
 
