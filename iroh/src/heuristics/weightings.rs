@@ -15,7 +15,7 @@ impl Weightings {
         self
     }
 
-    pub fn get(&self, heuristic_type: &HeuristicType) -> Option<&u32> {
-        self.weights.get(heuristic_type)
+    pub fn get(&self, heuristic_type: HeuristicType) -> Option<u32> {
+        self.weights.get(&heuristic_type).map(|weight| weight.to_owned())
     }
 }
