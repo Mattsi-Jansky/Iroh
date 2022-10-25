@@ -2,6 +2,7 @@ use galvanic_assert::assert_that;
 use iroh::game::Game;
 use iroh::heuristics::{Heuristics, HeuristicType};
 use iroh::heuristics::material::MaterialHeuristic;
+use iroh::heuristics::moves::MovesHeuristic;
 use iroh::heuristics::weightings::Weightings;
 use iroh::state::GameState;
 
@@ -21,9 +22,9 @@ fn given_blank_heuristics_push_should_add_specified_heuristic() {
 
     assert_eq!(0, heuristics.evaluate(&state, true));
 
-    heuristics.push(MaterialHeuristic{});
+    heuristics.push(MovesHeuristic{});
 
-    assert_eq!(39, heuristics.evaluate(&state, true))
+    assert_eq!(20, heuristics.evaluate(&state, true))
 }
 
 #[test]
