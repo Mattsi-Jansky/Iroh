@@ -1,16 +1,16 @@
 pub mod material;
-pub mod moves;
+pub mod mobility;
 pub mod weightings;
 
 use crate::heuristics::material::MaterialHeuristic;
-use crate::heuristics::moves::MovesHeuristic;
+use crate::heuristics::mobility::MobilityHeuristic;
 use crate::heuristics::weightings::Weightings;
 use crate::state::GameState;
 
 #[derive(Hash,PartialEq,Eq)]
 pub enum HeuristicType {
     Material,
-    Moves
+    Mobility
 }
 
 pub trait Heuristic {
@@ -27,7 +27,7 @@ impl Default for Heuristics {
     fn default() -> Self {
         let mut heuristics: Vec<Box<dyn Heuristic>> = vec![];
         heuristics.push(Box::new(MaterialHeuristic {}));
-        heuristics.push(Box::new(MovesHeuristic {}));
+        heuristics.push(Box::new(MobilityHeuristic {}));
         Heuristics { heuristics, weightings: Weightings::new() }
     }
 }

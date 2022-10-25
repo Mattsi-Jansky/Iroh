@@ -2,7 +2,7 @@ use galvanic_assert::assert_that;
 use iroh::game::Game;
 use iroh::heuristics::{Heuristics, HeuristicType};
 use iroh::heuristics::material::MaterialHeuristic;
-use iroh::heuristics::moves::MovesHeuristic;
+use iroh::heuristics::mobility::MobilityHeuristic;
 use iroh::heuristics::weightings::Weightings;
 use iroh::state::GameState;
 
@@ -22,7 +22,7 @@ fn given_blank_heuristics_push_should_add_specified_heuristic() {
 
     assert_eq!(0, heuristics.evaluate(&state, true));
 
-    heuristics.push(MovesHeuristic{});
+    heuristics.push(MobilityHeuristic {});
 
     assert_eq!(20, heuristics.evaluate(&state, true))
 }
@@ -32,10 +32,10 @@ fn given_weighting_configuration_should_multiply_results_by_weights() {
     let state = GameState::new();
     let weightings = Weightings::new()
         .push(HeuristicType::Material,0)
-        .push(HeuristicType::Moves, 1);
+        .push(HeuristicType::Mobility, 1);
     let weightings_double_move_weight = Weightings::new()
         .push(HeuristicType::Material,0)
-        .push(HeuristicType::Moves, 2);
+        .push(HeuristicType::Mobility, 2);
     let mut heuristics = Heuristics::with_weighting(weightings);
     let mut heuristics_double_move_weight = Heuristics::with_weighting(weightings_double_move_weight);
 
