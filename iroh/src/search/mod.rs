@@ -5,7 +5,7 @@ pub struct Evaluation {
     pub best_move: String
 }
 
-pub fn evaluate(state: &GameState) -> Evaluation {
+pub fn search(state: &GameState) -> Evaluation {
     let heuristics = Heuristics::new();
     let mut best = (i32::MIN, String::new());
 

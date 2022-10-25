@@ -1,26 +1,26 @@
-use iroh::evaluations::evaluate;
+use iroh::search::search;
 use iroh::state::GameState;
 
-macro_rules! evaluation_test_inner {
+macro_rules! search_test_inner {
     ($name:ident,$fen:expr,$expected_san:expr) => {
         #[test]
         fn $name() {
             let state = GameState::from_fen($fen);
 
-            let result = evaluate(&state);
+            let result = search(&state);
 
             assert_eq!(String::from($expected_san), result.best_move);
         }
     }
 }
 
-macro_rules! evaluation_tests {
+macro_rules! search_tests {
     ($($myblock:tt)*) => {
-        $(evaluation_test_inner! $myblock)*
+        $(search_test_inner! $myblock)*
     };
 }
 
-evaluation_tests! {
+search_tests! {
     {gain_1_material,"3k4/8/8/3p4/4P3/8/8/3K4 w - - 0 1","exd5"}
     {gain_3_material_knight,"3k4/8/3n4/8/4N3/8/8/3K4 w - - 0 1","Nxd6"}
     {gain_3_material_bishop,"3k4/8/2b5/8/4B3/8/8/3K4 w - - 0 1","Bxc6"}
