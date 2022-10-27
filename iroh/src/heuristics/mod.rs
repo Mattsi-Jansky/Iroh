@@ -1,6 +1,7 @@
 pub mod material;
 pub mod mobility;
 pub mod weightings;
+pub mod attacks;
 
 use crate::heuristics::material::MaterialHeuristic;
 use crate::heuristics::mobility::MobilityHeuristic;
@@ -10,7 +11,8 @@ use crate::state::GameState;
 #[derive(Hash,PartialEq,Eq)]
 pub enum HeuristicType {
     Material,
-    Mobility
+    Mobility,
+    Attacks
 }
 
 pub trait Heuristic {
