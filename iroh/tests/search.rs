@@ -26,5 +26,7 @@ search_tests! {
     {gain_3_material_bishop,"3k4/8/2b5/8/4B3/8/8/3K4 w - - 0 1","Bxc6"}
     {gain_5_material,"3k4/8/3r4/8/8/3R4/8/3K4 w - - 0 1","Rxd6"}
     {gain_9_material,"3k4/8/3q4/8/8/3Q4/8/3K4 w - - 0 1","Qxd6"}
-    {gain_9_material_better_than_gaining_1,"k7/8/1r6/4q3/3Q4/3R4/K7/8 w - - 0 1","Qxe5"}
+    {gain_9_material_better_than_gaining_1,"8/k7/3q4/5p2/6P1/3Q4/K7/8 w - - 0 1","Qxd6"}
+    {gain_9_material_better_than_gaining_5,"k7/8/1r6/4q3/3Q4/3R4/K7/8 w - - 0 1","Qxe5"}
+    {gain_3_material_better_than_gaining_1,"8/8/k2b2p1/8/8/K5Q1/8/8 w - - 0 1","Qxd6"}
 }
