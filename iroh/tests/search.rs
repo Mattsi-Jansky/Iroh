@@ -29,4 +29,5 @@ search_tests! {
     {gain_9_material_better_than_gaining_1,"8/k7/3q4/5p2/6P1/3Q4/K7/8 w - - 0 1","Qxd6"}
     {gain_9_material_better_than_gaining_5,"k7/8/1r6/4q3/3Q4/3R4/K7/8 w - - 0 1","Qxe5"}
     {gain_3_material_better_than_gaining_1,"8/8/k2b2p1/8/8/K5Q1/8/8 w - - 0 1","Qxd6"}
+    {second_player_gain_9_material_better_than_gaining_5,"k7/8/8/3q4/2Q5/5R2/K7/8 b - - 0 1","Qxc4"}
 }
