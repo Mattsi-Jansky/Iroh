@@ -31,11 +31,11 @@ fn given_blank_heuristics_push_should_add_specified_heuristic() {
 fn given_weighting_configuration_should_multiply_results_by_weights() {
     let state = GameState::new();
     let weightings = Weightings::new()
-        .push(HeuristicType::Material,0)
-        .push(HeuristicType::Mobility, 1);
+        .push(HeuristicType::Material,0.0)
+        .push(HeuristicType::Mobility, 1.0);
     let weightings_double_move_weight = Weightings::new()
-        .push(HeuristicType::Material,0)
-        .push(HeuristicType::Mobility, 2);
+        .push(HeuristicType::Material,0.0)
+        .push(HeuristicType::Mobility, 2.0);
     let mut heuristics = Heuristics::with_weighting(weightings);
     let mut heuristics_double_move_weight = Heuristics::with_weighting(weightings_double_move_weight);
 
