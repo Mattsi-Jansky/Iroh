@@ -27,6 +27,27 @@ Start the CLI interface in your terminal with `cargo run`.
   * https://en.wikipedia.org/wiki/Draw_(chess)#Draws_in_all_games
 * Resignations
 * Heuristics
+  * Penalties for undefended pieces
+  * Number of possible attacks
+  * Doubled, blocked, isolated pawns
+  * Castling rights (penalty if king can't castle)
+  * Centre control
+  * King defense
+  * Separate weightings of piece material and mobility
+  * Checking & checkmate
+  * Pieces
+    * Knights 
+      * Decrease in value as pawns decrease
+      * Trapped knight (A8/H8/A7/H7 or A1/H1/A2/H2)
+    * Bishops
+      * Small bonus for having both (covering both colours)
+      * Trapped?
+    * Rooks
+      * Increasing value as pawns reduce
+      * Open file
+    * Queen
+      * Penalty for moving too soon
+
 * Search
 * Performance, readability, etc refactorings
   * Track two (or three?) separate SAN lists rather than filtering the one list in `GameState::determine_status`
