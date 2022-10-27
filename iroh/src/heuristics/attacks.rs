@@ -6,9 +6,14 @@ pub struct AttacksHeuristic {}
 
 impl Heuristic for AttacksHeuristic {
     fn evaluate(&self, state: &GameState, is_first_player: bool) -> i32 {
-        state.possible_moves.iter()
+        let result = state.possible_moves.iter()
             .filter(|m| matches!(m, Move::AttackMove(..)))
-            .count() as i32
+            .count() as i32;
+        if is_first_player == state.is_first_player_turn {
+            result
+        } else {
+            -result
+        }
     }
 
     fn get_type(&self) -> HeuristicType {
@@ -24,7 +29,7 @@ mod tests {
     fn counts_number_of_attacks_zero() {
         let state = GameState::new();
 
-        let result = AttacksHeuristic {}.evaluate(&state, false);
+        let result = AttacksHeuristic {}.evaluate(&state, true);
 
         assert_eq!(0, result)
     }
@@ -33,8 +38,17 @@ mod tests {
     fn counts_number_of_attacks_two_pawns() {
         let state = GameState::from_fen("3k4/8/8/8/2pKp3/8/8/8 w - - 0 1");
 
-        let result = AttacksHeuristic {}.evaluate(&state, false);
+        let result = AttacksHeuristic {}.evaluate(&state, true);
 
         assert_eq!(2, result)
+    }
+
+    #[test]
+    fn invert_if_evaluated_for_opposite_player() {
+        let state = GameState::from_fen("3k4/8/8/8/2pKp3/8/8/8 w - - 0 1");
+
+        let result = AttacksHeuristic {}.evaluate(&state, false);
+
+        assert_eq!(-2, result)
     }
 }
