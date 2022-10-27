@@ -2,6 +2,7 @@ pub mod material;
 pub mod mobility;
 pub mod weightings;
 pub mod attacks;
+pub mod opponent_attacks;
 
 use crate::heuristics::material::MaterialHeuristic;
 use crate::heuristics::mobility::MobilityHeuristic;
@@ -12,7 +13,8 @@ use crate::state::GameState;
 pub enum HeuristicType {
     Material,
     Mobility,
-    Attacks
+    Attacks,
+    OpponentAttacks
 }
 
 pub trait Heuristic {
