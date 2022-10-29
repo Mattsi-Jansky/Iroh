@@ -1,4 +1,3 @@
-use std::rc::Rc;
 use crate::serialisers::pgn::generate_pgn;
 use crate::state::captured_pieces::CapturedPieces;
 use crate::state::GameState;

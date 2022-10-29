@@ -59,7 +59,7 @@ impl Heuristics {
 
     pub fn evaluate(&self, state: &GameState, is_first_player: bool) -> i32 {
         let mut result = 0;
-        let heuristics_cache = HeuristicsCache::from(state, is_first_player);
+        let heuristics_cache = HeuristicsCache::from(state);
         for heuristic in self.heuristics.iter() {
             let heuristic_value = heuristic.evaluate(state, is_first_player, &heuristics_cache);
             let heuristic_weight = self.weightings.get(heuristic.get_type()).unwrap_or(1.0);

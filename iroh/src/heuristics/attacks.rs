@@ -6,8 +6,8 @@ use crate::state::GameState;
 pub struct CurrentPlayersAttacksHeuristic {}
 
 impl Heuristic for CurrentPlayersAttacksHeuristic {
-    fn evaluate(&self, state: &GameState, is_first_player: bool, heuristics_cache: &HeuristicsCache) -> i32 {
-        let result = evaluate_attacks(state, is_first_player, &state.possible_moves);
+    fn evaluate(&self, state: &GameState, is_first_player: bool, _: &HeuristicsCache) -> i32 {
+        let result = evaluate_attacks(&state.possible_moves);
         if state.is_first_player_turn == is_first_player {
             result
         } else {
@@ -24,7 +24,7 @@ pub struct OpponentPlayersAttacksHeuristic {}
 
 impl Heuristic for OpponentPlayersAttacksHeuristic {
     fn evaluate(&self, state: &GameState, is_first_player: bool, heuristics_cache: &HeuristicsCache) -> i32 {
-        let result = evaluate_attacks(state, is_first_player, &heuristics_cache.opponents_possible_moves);
+        let result = evaluate_attacks(&heuristics_cache.opponents_possible_moves);
         if state.is_first_player_turn == is_first_player {
             -result
         } else {
@@ -37,7 +37,7 @@ impl Heuristic for OpponentPlayersAttacksHeuristic {
     }
 }
 
-fn evaluate_attacks(state: &GameState, is_first_player: bool, possible_moves: &Vec<Move>) -> i32 {
+fn evaluate_attacks(possible_moves: &Vec<Move>) -> i32 {
     possible_moves.iter()
         .filter(|m| matches!(m, Move::AttackMove(..)))
         .count() as i32
@@ -52,7 +52,7 @@ mod tests {
     fn counts_number_of_attacks_zero() {
         let state = GameState::new();
 
-        let result = CurrentPlayersAttacksHeuristic {}.evaluate(&state, true, &HeuristicsCache::from(&state, true));
+        let result = CurrentPlayersAttacksHeuristic {}.evaluate(&state, true, &HeuristicsCache::from(&state));
 
         assert_eq!(0, result)
     }
@@ -61,7 +61,7 @@ mod tests {
     fn counts_number_of_attacks_two_pawns() {
         let state = GameState::from_fen("3k4/8/8/8/2pKp3/8/8/8 w - - 0 1");
 
-        let result = CurrentPlayersAttacksHeuristic {}.evaluate(&state, true, &HeuristicsCache::from(&state, true));
+        let result = CurrentPlayersAttacksHeuristic {}.evaluate(&state, true, &HeuristicsCache::from(&state));
 
         assert_eq!(2, result)
     }
@@ -70,7 +70,7 @@ mod tests {
     fn invert_if_evaluated_for_opposite_player() {
         let state = GameState::from_fen("3k4/8/8/8/2pKp3/8/8/8 w - - 0 1");
 
-        let result = CurrentPlayersAttacksHeuristic {}.evaluate(&state, false, &HeuristicsCache::from(&state, false));
+        let result = CurrentPlayersAttacksHeuristic {}.evaluate(&state, false, &HeuristicsCache::from(&state));
 
         assert_eq!(-2, result)
     }
@@ -79,7 +79,7 @@ mod tests {
     fn counts_zero_opponent_attacks_at_starting_positions() {
         let state = GameState::new();
 
-        let result = OpponentPlayersAttacksHeuristic {}.evaluate(&state, true, &HeuristicsCache::from(&state, true));
+        let result = OpponentPlayersAttacksHeuristic {}.evaluate(&state, true, &HeuristicsCache::from(&state));
 
         assert_eq!(0, result)
     }
@@ -88,7 +88,7 @@ mod tests {
     fn counts_opponents_number_of_attacks_two_pawns() {
         let state = GameState::from_fen("8/2PkP3/8/8/3K4/8/8/8 w - - 0 1");
 
-        let result = OpponentPlayersAttacksHeuristic {}.evaluate(&state, true, &HeuristicsCache::from(&state, true));
+        let result = OpponentPlayersAttacksHeuristic {}.evaluate(&state, true, &HeuristicsCache::from(&state));
 
         assert_eq!(-2, result)
     }
@@ -97,7 +97,7 @@ mod tests {
     fn given_evaluating_first_player_and_is_first_players_turn_current_players_attacks_positive_value() {
         let state = GameState::from_fen("8/2PkP3/8/8/8/8/2pKp3/8 w - - 0 1");
 
-        let result = CurrentPlayersAttacksHeuristic {}.evaluate(&state, true, &HeuristicsCache::from(&state, true));
+        let result = CurrentPlayersAttacksHeuristic {}.evaluate(&state, true, &HeuristicsCache::from(&state));
 
         assert_that!(result > 0);
     }
@@ -106,7 +106,7 @@ mod tests {
     fn given_evaluating_first_player_and_is_second_players_turn_current_players_attacks_negative_value() {
         let state = GameState::from_fen("8/2PkP3/8/8/8/8/2pKp3/8 b - - 0 1");
 
-        let result = CurrentPlayersAttacksHeuristic {}.evaluate(&state, true, &HeuristicsCache::from(&state, true));
+        let result = CurrentPlayersAttacksHeuristic {}.evaluate(&state, true, &HeuristicsCache::from(&state));
 
         assert_that!(result < 0);
     }
@@ -115,7 +115,7 @@ mod tests {
     fn given_evaluating_second_player_and_is_second_players_turn_current_players_attacks_positive_value() {
         let state = GameState::from_fen("8/2PkP3/8/8/8/8/2pKp3/8 b - - 0 1");
 
-        let result = CurrentPlayersAttacksHeuristic {}.evaluate(&state, false, &HeuristicsCache::from(&state, false));
+        let result = CurrentPlayersAttacksHeuristic {}.evaluate(&state, false, &HeuristicsCache::from(&state));
 
         assert_that!(result > 0);
     }
@@ -124,7 +124,7 @@ mod tests {
     fn given_evaluating_second_player_and_is_first_players_turn_current_players_attacks_negative_value() {
         let state = GameState::from_fen("8/2PkP3/8/8/8/8/2pKp3/8 w - - 0 1");
 
-        let result = CurrentPlayersAttacksHeuristic {}.evaluate(&state, false, &HeuristicsCache::from(&state, false));
+        let result = CurrentPlayersAttacksHeuristic {}.evaluate(&state, false, &HeuristicsCache::from(&state));
 
         assert_that!(result < 0);
     }
@@ -133,7 +133,7 @@ mod tests {
     fn given_evaluating_first_player_and_is_first_players_turn_opponent_players_attacks_negative_value() {
         let state = GameState::from_fen("8/2PkP3/8/8/8/8/2pKp3/8 w - - 0 1");
 
-        let result = OpponentPlayersAttacksHeuristic {}.evaluate(&state, true, &HeuristicsCache::from(&state, true));
+        let result = OpponentPlayersAttacksHeuristic {}.evaluate(&state, true, &HeuristicsCache::from(&state));
 
         assert_that!(result < 0);
     }
@@ -142,7 +142,7 @@ mod tests {
     fn given_evaluating_first_player_and_is_second_players_turn_opponent_players_attacks_positive_value() {
         let state = GameState::from_fen("8/2PkP3/8/8/8/8/2pKp3/8 b - - 0 1");
 
-        let result = OpponentPlayersAttacksHeuristic {}.evaluate(&state, true, &HeuristicsCache::from(&state, true));
+        let result = OpponentPlayersAttacksHeuristic {}.evaluate(&state, true, &HeuristicsCache::from(&state));
 
         assert_that!(result > 0);
     }
@@ -151,7 +151,7 @@ mod tests {
     fn given_evaluating_second_player_and_is_second_players_turn_opponent_players_attacks_negative_value() {
         let state = GameState::from_fen("8/2PkP3/8/8/8/8/2pKp3/8 b - - 0 1");
 
-        let result = OpponentPlayersAttacksHeuristic {}.evaluate(&state, false, &HeuristicsCache::from(&state, false));
+        let result = OpponentPlayersAttacksHeuristic {}.evaluate(&state, false, &HeuristicsCache::from(&state));
 
         assert_that!(result < 0);
     }
@@ -160,7 +160,7 @@ mod tests {
     fn given_evaluating_second_player_and_is_first_players_turn_opponent_players_attacks_positive_value() {
         let state = GameState::from_fen("8/2PkP3/8/8/8/8/2pKp3/8 w - - 0 1");
 
-        let result = OpponentPlayersAttacksHeuristic {}.evaluate(&state, false, &HeuristicsCache::from(&state, false));
+        let result = OpponentPlayersAttacksHeuristic {}.evaluate(&state, false, &HeuristicsCache::from(&state));
 
         assert_that!(result > 0);
     }

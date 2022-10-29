@@ -3,7 +3,7 @@ use crate::moves::Move;
 use crate::state::GameState;
 use crate::state::piece::{Piece, PieceType};
 
-pub fn resolve_move(requested_move: &Move, mut game_state: GameState) -> GameState {
+pub fn resolve_move(requested_move: &Move, game_state: GameState) -> GameState {
     let is_first_player_turn = game_state.is_first_player_turn;
     resolve_move_for(requested_move, game_state, is_first_player_turn)
 }

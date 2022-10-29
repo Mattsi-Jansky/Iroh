@@ -7,7 +7,7 @@ pub struct HeuristicsCache {
 }
 
 impl HeuristicsCache {
-    pub fn from(state: &GameState, is_for_first_player: bool) -> HeuristicsCache {
+    pub fn from(state: &GameState) -> HeuristicsCache {
         HeuristicsCache{
             opponents_possible_moves: generate_moves(state, !state.is_first_player_turn)
         }

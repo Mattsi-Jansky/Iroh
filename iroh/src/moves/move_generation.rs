@@ -1,6 +1,6 @@
 use crate::moves::{dynamic_moves, Move, pawn_moves, static_moves};
 use crate::moves::castling_moves::generate_castling_moves;
-use crate::moves::resolve_move::{resolve_move, resolve_move_for};
+use crate::moves::resolve_move::{resolve_move_for};
 use crate::state::GameState;
 use crate::state::piece::PieceType;
 

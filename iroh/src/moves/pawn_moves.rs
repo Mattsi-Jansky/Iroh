@@ -11,7 +11,7 @@ pub fn generate_pawn_moves(game_state: &GameState, available_moves: &mut Vec<Mov
 
     if game_state.board[(pawn.1, ahead_rank)].is_none() {
         if ahead_rank_is_last_rank {
-            generate_promotion_moves(game_state, available_moves, pawn, is_for_first_player);
+            generate_promotion_moves(available_moves, pawn, is_for_first_player);
         } else {
             available_moves.push(Move::PawnMove((pawn.1, pawn.2), ahead_rank));
         }
@@ -49,7 +49,7 @@ fn generate_attack_move(game_state: &GameState, available_moves: &mut Vec<Move>,
     }
 }
 
-fn generate_promotion_moves(game_state: &GameState, available_moves: &mut Vec<Move>, pawn: (PieceType, File, Rank), is_for_first_player: bool) {
+fn generate_promotion_moves(available_moves: &mut Vec<Move>, pawn: (PieceType, File, Rank), is_for_first_player: bool) {
     available_moves.push(Move::PawnPromotion (
         pawn.1,
         is_for_first_player,

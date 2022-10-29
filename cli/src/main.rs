@@ -1,7 +1,7 @@
 mod fen_display;
 
 use std::io::Write;
-use std::rc::Rc;
+
 use console::Term;
 use iroh::game::Game;
 use iroh::state::GameState;
