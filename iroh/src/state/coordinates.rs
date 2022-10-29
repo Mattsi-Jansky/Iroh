@@ -1,7 +1,7 @@
 use std::ops::{Add, AddAssign, Mul, Sub, SubAssign};
 use derive_more::{Deref, Display};
 
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Deref, Display)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Deref, Display, Hash)]
 pub struct File {
     inner: usize
 }
@@ -28,7 +28,7 @@ impl File {
     }
 }
 
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Deref, Display)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Deref, Display, Hash)]
 pub struct Rank {
     inner: usize
 }
