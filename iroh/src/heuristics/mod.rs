@@ -7,6 +7,7 @@ pub mod checks;
 
 use cache::HeuristicsCache;
 use crate::heuristics::attacks::{CurrentPlayersAttacksHeuristic, OpponentPlayersAttacksHeuristic};
+use crate::heuristics::checks::{EnemyInCheckHeuristic, SelfInCheckHeuristic};
 use crate::heuristics::material::MaterialHeuristic;
 use crate::heuristics::mobility::MobilityHeuristic;
 use crate::heuristics::weightings::Weightings;
@@ -18,7 +19,8 @@ pub enum HeuristicType {
     Mobility,
     Attacks,
     OpponentAttacks,
-    EnemyInCheck
+    EnemyInCheck,
+    SelfInCheck
 }
 
 pub trait Heuristic {
@@ -37,7 +39,9 @@ impl Default for Heuristics {
             Box::new(MaterialHeuristic {}),
             Box::new(MobilityHeuristic {}),
             Box::new(CurrentPlayersAttacksHeuristic {}),
-            Box::new(OpponentPlayersAttacksHeuristic {})
+            Box::new(OpponentPlayersAttacksHeuristic {}),
+            Box::new(EnemyInCheckHeuristic {}),
+            Box::new(SelfInCheckHeuristic {}),
         ];
         Heuristics { heuristics, weightings: Weightings::new() }
     }

@@ -69,6 +69,5 @@ fn more_opponents_attacks_are_better() {
     let result_hidden_queen = heuristics.evaluate(&state_hidden_queen, true);
     let result_developed_queen = heuristics.evaluate(&state_developed_queen, true);
 
-    println!("Hidden {result_hidden_queen}, developed {result_developed_queen}");
     assert_that!(result_developed_queen > result_hidden_queen);
 }
