@@ -46,7 +46,7 @@ mod tests {
 
         let result = EnemyInCheckHeuristic {}.evaluate(&state, false, &HeuristicsCache::from(&state, false));
 
-        assert_eq!(0, result);
+        assert_eq!(10, result);
     }
 
     // #[test]
