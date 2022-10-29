@@ -1,3 +1,4 @@
+use std::fmt::{Display, Formatter};
 use crate::state::coordinates::{File, Rank};
 use crate::state::piece::PieceType;
 use crate::serialisers::san::{generate_attack_san, generate_castling_san, generate_pawn_attack_san, generate_pawn_promotion_san, generate_pawn_san, generate_san};
@@ -22,6 +23,12 @@ pub enum Move {
     PawnAttackMove(File,(File,Rank)),
     PawnPromotion(File,bool,PieceType),
     Castle(bool)
+}
+
+impl Display for Move {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", self.generate_san())
+    }
 }
 
 impl Move {
