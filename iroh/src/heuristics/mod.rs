@@ -2,16 +2,16 @@ pub mod material;
 pub mod mobility;
 pub mod weightings;
 pub mod attacks;
-pub mod opponent_attacks;
 mod cache;
 
 use cache::HeuristicsCache;
+use crate::heuristics::attacks::{CurrentPlayersAttacksHeuristic, OpponentPlayersAttacksHeuristic};
 use crate::heuristics::material::MaterialHeuristic;
 use crate::heuristics::mobility::MobilityHeuristic;
 use crate::heuristics::weightings::Weightings;
 use crate::state::GameState;
 
-#[derive(Hash,PartialEq,Eq)]
+#[derive(Hash,PartialEq,Eq,Debug)]
 pub enum HeuristicType {
     Material,
     Mobility,
@@ -34,6 +34,8 @@ impl Default for Heuristics {
         let mut heuristics: Vec<Box<dyn Heuristic>> = vec![];
         heuristics.push(Box::new(MaterialHeuristic {}));
         heuristics.push(Box::new(MobilityHeuristic {}));
+        heuristics.push(Box::new(CurrentPlayersAttacksHeuristic {}));
+        heuristics.push(Box::new(OpponentPlayersAttacksHeuristic {}));
         Heuristics { heuristics, weightings: Weightings::new() }
     }
 }
@@ -59,6 +61,7 @@ impl Heuristics {
         for heuristic in self.heuristics.iter() {
             let heuristic_value = heuristic.evaluate(state, is_first_player, &heuristics_cache);
             let heuristic_weight = self.weightings.get(heuristic.get_type()).unwrap_or(1.0);
+            
             result += (heuristic_value as f32 * heuristic_weight).round() as i32;
         }
         result
