@@ -75,26 +75,38 @@ impl GameState {
         self.is_first_player_turn
     }
 
-    pub fn make_move(&self, san: &str) -> Game {
-        let possible_moves: HashMap<String, &Move> = self.possible_moves.iter()
-            .map(|m| (m.generate_san(), m))
-            .collect();
-
-        if let Some(requested_move) = possible_moves.get(&san.to_string()) {
-            let mut sans = self.sans.clone();
-            sans.push(String::from(san));
-            let game_state = resolve_move(requested_move, self.clone());
-            let possible_moves = generate_moves(&game_state, game_state.is_first_player_turn);
-            let state = GameState {
-                sans,
-                possible_moves,
-                ..game_state
-            };
-
-            state.determine_status()
+    pub fn make_move(&self, requested_move: &Move) -> Game {
+        if self.possible_moves.contains(requested_move) {
+            self.make_move_inner(requested_move)
         } else {
             Game::IllegalMove { state: self.clone() }
         }
+    }
+
+    pub fn make_move_san(&self, san: &str) -> Game {
+        let mut possible_moves: HashMap<String, &Move> = self.possible_moves.iter()
+            .map(|m| (m.generate_san(), m))
+            .collect();
+
+        if let Some(requested_move) = possible_moves.remove(&san.to_string()) {
+            self.make_move_inner(requested_move)
+        } else {
+            Game::IllegalMove { state: self.clone() }
+        }
+    }
+
+    fn make_move_inner(&self, requested_move: &Move) -> Game {
+        let mut sans = self.sans.clone();
+        sans.push(String::from(requested_move.generate_san()));
+        let game_state = resolve_move(&requested_move, self.clone());
+        let possible_moves = generate_moves(&game_state, game_state.is_first_player_turn);
+        let state = GameState {
+            sans,
+            possible_moves,
+            ..game_state
+        };
+
+        state.determine_status()
     }
 
     pub(crate) fn determine_status(self) -> Game {
@@ -147,6 +159,7 @@ impl Default for GameState {
 mod tests {
     use galvanic_assert::assert_that;
     use galvanic_assert::matchers::*;
+    use crate::moves::Move::PawnMove;
 
     use crate::state::coordinates::{File, Rank};
     use crate::state::piece::{Piece, PieceType};
@@ -243,5 +256,25 @@ mod tests {
         assert_that!(&result[(File::new(5),Rank::new(7))].unwrap(), eq(Piece::new(false, PieceType::Bishop)));
         assert_that!(&result[(File::new(6),Rank::new(7))].unwrap(), eq(Piece::new(false, PieceType::Knight)));
         assert_that!(&result[(File::new(7),Rank::new(7))].unwrap(), eq(Piece::new(false, PieceType::Rook)));
+    }
+
+    #[test]
+    fn make_move_from_struct_not_san() {
+        let state = GameState::new();
+        let legal_move = PawnMove((File::E, Rank::TWO), Rank::FOUR);
+
+        let result = state.make_move(&legal_move);
+
+        assert_that!(matches!(result, Game::Ongoing {..}))
+    }
+
+    #[test]
+    fn given_move_not_in_possible_moves_returns_illegal_move() {
+        let state = GameState::new();
+        let illegal_move = PawnMove((File::A, Rank::EIGHT), Rank::SIX);
+
+        let result = state.make_move(&illegal_move);
+
+        assert_that!(matches!(result, Game::IllegalMove {..}))
     }
 }
