@@ -5,8 +5,9 @@ use crate::state::GameState;
 pub struct OpponentInCheckHeuristic {}
 
 impl Heuristic for OpponentInCheckHeuristic {
-    fn evaluate(&self, state: &GameState, is_first_player: bool, _: &HeuristicsCache) -> i32 {
-        if state.is_check(!is_first_player) {
+    fn evaluate(&self, state: &GameState, is_first_player: bool, cache: &HeuristicsCache) -> i32 {
+        if is_first_player && cache.is_check_second_player
+            || !is_first_player && cache.is_check_first_player {
             10
         } else {
             0
@@ -22,8 +23,9 @@ pub struct SelfInCheckHeuristic {}
 
 impl Heuristic for SelfInCheckHeuristic {
 
-    fn evaluate(&self, state: &GameState, is_first_player: bool, _: &HeuristicsCache) -> i32 {
-        if state.is_check(is_first_player) {
+    fn evaluate(&self, state: &GameState, is_first_player: bool, cache: &HeuristicsCache) -> i32 {
+        if is_first_player && cache.is_check_first_player
+            || !is_first_player && cache.is_check_first_player {
             -10
         } else {
             0

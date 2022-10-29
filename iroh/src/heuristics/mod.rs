@@ -4,6 +4,7 @@ pub mod mobility;
 pub mod weightings;
 pub mod attacks;
 pub mod checks;
+pub mod checkmates;
 
 use cache::HeuristicsCache;
 use crate::heuristics::attacks::{CurrentPlayersAttacksHeuristic, OpponentPlayersAttacksHeuristic};
@@ -20,7 +21,9 @@ pub enum HeuristicType {
     Attacks,
     OpponentAttacks,
     EnemyInCheck,
-    SelfInCheck
+    SelfInCheck,
+    OpponentInCheckMate,
+    SelfInCheckMate
 }
 
 pub trait Heuristic {
