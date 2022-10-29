@@ -11,9 +11,9 @@ impl Heuristic for MaterialHeuristic {
         let mut result = 0;
 
         result += state.board.get_all_pieces_belonging_to_player(is_first_player)
-            .into_iter().map(|p| material_for(p)).sum::<i32>();
+            .into_iter().map(material_for).sum::<i32>();
         result -= state.board.get_all_pieces_belonging_to_player(!is_first_player)
-            .into_iter().map(|p| material_for(p)).sum::<i32>();
+            .into_iter().map(material_for).sum::<i32>();
 
         result
     }

@@ -33,11 +33,12 @@ pub struct Heuristics {
 
 impl Default for Heuristics {
     fn default() -> Self {
-        let mut heuristics: Vec<Box<dyn Heuristic>> = vec![];
-        heuristics.push(Box::new(MaterialHeuristic {}));
-        heuristics.push(Box::new(MobilityHeuristic {}));
-        heuristics.push(Box::new(CurrentPlayersAttacksHeuristic {}));
-        heuristics.push(Box::new(OpponentPlayersAttacksHeuristic {}));
+        let heuristics: Vec<Box<dyn Heuristic>> = vec![
+            Box::new(MaterialHeuristic {}),
+            Box::new(MobilityHeuristic {}),
+            Box::new(CurrentPlayersAttacksHeuristic {}),
+            Box::new(OpponentPlayersAttacksHeuristic {})
+        ];
         Heuristics { heuristics, weightings: Weightings::new() }
     }
 }
@@ -52,9 +53,7 @@ impl Heuristics {
     }
 
     pub fn with_weighting(weightings: Weightings) -> Self {
-        let mut result: Heuristics = Default::default();
-        result.weightings = weightings;
-        result
+        Heuristics { weightings, ..Default::default() }
     }
 
     pub fn evaluate(&self, state: &GameState, is_first_player: bool) -> i32 {

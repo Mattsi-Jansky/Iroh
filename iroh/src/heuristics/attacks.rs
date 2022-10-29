@@ -37,7 +37,7 @@ impl Heuristic for OpponentPlayersAttacksHeuristic {
     }
 }
 
-fn evaluate_attacks(possible_moves: &Vec<Move>) -> i32 {
+fn evaluate_attacks(possible_moves: &[Move]) -> i32 {
     possible_moves.iter()
         .filter(|m| matches!(m, Move::AttackMove(..)))
         .count() as i32

@@ -117,15 +117,11 @@ impl GameState {
                 is_first_player_turn = !is_first_player_turn;
             }
 
-            if !self.is_first_player_turn && self.is_fivefold_repetition(&first_player_sans) {
+            if (!self.is_first_player_turn && self.is_fivefold_repetition(&first_player_sans))
+                || self.is_fivefold_repetition(&second_player_sans)
+                || self.turn_number - self.captured_pieces.last_capture_turn >= 75{
                 Game::Draw{ state: self }
-            } else if self.is_fivefold_repetition(&second_player_sans) {
-                Game::Draw { state: self }
-            }
-            else if self.turn_number - self.captured_pieces.last_capture_turn >= 75 {
-                Game::Draw { state: self }
-            }
-            else { Game::Ongoing { state: self } }
+            } else { Game::Ongoing { state: self } }
         }
     }
 

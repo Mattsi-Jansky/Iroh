@@ -20,3 +20,9 @@ impl Weightings {
         self.weights.get(&heuristic_type).map(|weight| weight.to_owned())
     }
 }
+
+impl Default for Weightings {
+    fn default() -> Self {
+        Self::new()
+    }
+}
