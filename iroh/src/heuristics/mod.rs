@@ -8,7 +8,9 @@ pub mod checkmates;
 
 use cache::HeuristicsCache;
 use crate::heuristics::attacks::{CurrentPlayersAttacksHeuristic, OpponentPlayersAttacksHeuristic};
+use crate::heuristics::checkmates::{OpponentInCheckmateHeuristic, SelfInCheckmateHeuristic};
 use crate::heuristics::checks::{OpponentInCheckHeuristic, SelfInCheckHeuristic};
+use crate::heuristics::HeuristicType::OpponentInCheckMate;
 use crate::heuristics::material::MaterialHeuristic;
 use crate::heuristics::mobility::MobilityHeuristic;
 use crate::heuristics::weightings::Weightings;
@@ -45,6 +47,8 @@ impl Default for Heuristics {
             Box::new(OpponentPlayersAttacksHeuristic {}),
             Box::new(OpponentInCheckHeuristic {}),
             Box::new(SelfInCheckHeuristic {}),
+            Box::new(OpponentInCheckmateHeuristic {}),
+            Box::new(SelfInCheckmateHeuristic {})
         ];
         Heuristics { heuristics, weightings: Weightings::new() }
     }
