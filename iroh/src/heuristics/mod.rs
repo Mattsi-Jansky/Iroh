@@ -3,7 +3,7 @@ pub mod material;
 pub mod mobility;
 pub mod weightings;
 pub mod attacks;
-pub mod checking;
+pub mod checks;
 
 use cache::HeuristicsCache;
 use crate::heuristics::attacks::{CurrentPlayersAttacksHeuristic, OpponentPlayersAttacksHeuristic};
