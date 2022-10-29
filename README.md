@@ -28,7 +28,6 @@ Start the CLI interface in your terminal with `cargo run`.
 * Resignations
 * Heuristics
   * Penalties for undefended pieces
-  * Number of possible attacks
   * Doubled, blocked, isolated pawns
   * Castling rights (penalty if king can't castle)
   * Centre control
