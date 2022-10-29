@@ -61,7 +61,7 @@ impl Heuristics {
         for heuristic in self.heuristics.iter() {
             let heuristic_value = heuristic.evaluate(state, is_first_player, &heuristics_cache);
             let heuristic_weight = self.weightings.get(heuristic.get_type()).unwrap_or(1.0);
-            
+
             result += (heuristic_value as f32 * heuristic_weight).round() as i32;
         }
         result

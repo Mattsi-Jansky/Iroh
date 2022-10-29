@@ -4,6 +4,11 @@ use crate::state::GameState;
 use crate::state::piece::{Piece, PieceType};
 
 pub fn resolve_move(requested_move: &Move, mut game_state: GameState) -> GameState {
+    let is_first_player_turn = game_state.is_first_player_turn;
+    resolve_move_for(requested_move, game_state, is_first_player_turn)
+}
+
+pub fn resolve_move_for(requested_move: &Move, mut game_state: GameState, is_first_player: bool) -> GameState {
     match requested_move {
         Move::PawnMove(from, to_rank) => {
             move_piece(&mut game_state, &from.0, &from.1, &from.0, to_rank);
@@ -15,7 +20,7 @@ pub fn resolve_move(requested_move: &Move, mut game_state: GameState) -> GameSta
             let piece = game_state.board[(to_file,to_rank)]
                 .expect("Illegal move, no target to attack")
                 .piece_type;
-            if game_state.is_first_player_turn {game_state.captured_pieces.captured_second_player(piece, game_state.turn_number);}
+            if is_first_player {game_state.captured_pieces.captured_second_player(piece, game_state.turn_number);}
             else {game_state.captured_pieces.captured_first_player(piece, game_state.turn_number);}
             
             move_piece(&mut game_state, from_file, from_rank, to_file, to_rank);
@@ -24,10 +29,10 @@ pub fn resolve_move(requested_move: &Move, mut game_state: GameState) -> GameSta
             let piece = game_state.board[(to_file,to_rank)]
                 .expect("Illegal move, no target to attack")
                 .piece_type;
-            if game_state.is_first_player_turn {game_state.captured_pieces.captured_second_player(piece, game_state.turn_number);}
+            if is_first_player {game_state.captured_pieces.captured_second_player(piece, game_state.turn_number);}
             else {game_state.captured_pieces.captured_first_player(piece, game_state.turn_number);}
 
-            let direction = if game_state.is_first_player_turn {-1} else {1};
+            let direction = if is_first_player {-1} else {1};
             move_piece(&mut game_state,
                        starting_file,
                        &to_rank.transform(direction)
@@ -40,10 +45,10 @@ pub fn resolve_move(requested_move: &Move, mut game_state: GameState) -> GameSta
             let to_rank = &Rank::new(if *is_owned_by_first_player {7} else {0});
             game_state.board[(file,from_rank)] = None;
             game_state.board[(file,to_rank)] =
-                Some(Piece { is_owned_by_first_player: game_state.is_first_player_turn, piece_type: *piece_type })
+                Some(Piece { is_owned_by_first_player: is_first_player, piece_type: *piece_type })
         }
         Move::Castle(is_kingside) => {
-            match (game_state.is_first_player_turn, *is_kingside) {
+            match (is_first_player, *is_kingside) {
                 (true, true) => {
                     move_piece(&mut game_state, &File::E, &Rank::ONE,
                                &File::G, &Rank::ONE);
