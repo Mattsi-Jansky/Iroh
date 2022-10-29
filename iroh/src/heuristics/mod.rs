@@ -18,7 +18,7 @@ pub enum HeuristicType {
     Mobility,
     Attacks,
     OpponentAttacks,
-    Check
+    EnemyInCheck
 }
 
 pub trait Heuristic {

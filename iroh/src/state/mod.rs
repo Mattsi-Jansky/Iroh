@@ -60,8 +60,8 @@ impl GameState {
         self.is_first_player_turn = !self.is_first_player_turn;
     }
 
-    pub(crate) fn is_check(&self, first_player : bool) -> bool {
-        is_check(first_player, self)
+    pub(crate) fn is_check(&self, is_first_player: bool) -> bool {
+        is_check(is_first_player, self)
     }
 
     pub fn generate_fen(&self) -> String {

@@ -53,3 +53,5 @@ Start the CLI interface in your terminal with `cargo run`.
   * Is there a better way to do `castling_moves.rs` check for whether king would be in check without cloning GameState?
   * Shouldn't `from_fen` (both of them) return `Result` / do validation?
   * Replace some of these tuples with types, particularly in `board.rs`
+  * Searching/evaluating more than needs be in some places
+    * `check.rs` should stop further checks if result is true
