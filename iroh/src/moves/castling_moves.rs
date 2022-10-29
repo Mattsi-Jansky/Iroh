@@ -4,9 +4,9 @@ use crate::state::coordinates::{File, Rank};
 use crate::state::GameState;
 use crate::state::piece::PieceType;
 
-pub fn generate_castling_moves(available_moves: &mut Vec<Move>, game_state: &GameState) {
+pub fn generate_castling_moves(available_moves: &mut Vec<Move>, game_state: &GameState, is_for_first_player: bool) {
 
-    if game_state.is_first_player_turn {
+    if is_for_first_player {
         let e1 = game_state.board[(File::E,Rank::ONE)];
 
         if game_state.first_player_can_castle_kingside {
