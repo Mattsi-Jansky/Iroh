@@ -59,7 +59,7 @@ pub fn search(state: &GameState) -> Evaluation {
 
     for possible_move in state.possible_moves.iter() {
         let move_result = state.make_move(&possible_move);
-        let value = heuristics.evaluate(&move_result.unwrap(), state.is_first_player_turn);
+        let value = heuristics.evaluate(&move_result.unwrap());
         #[cfg(debug_assertions)]
         println!("Possible move: {possible_move}, {value}");
 

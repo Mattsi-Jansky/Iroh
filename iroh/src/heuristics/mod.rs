@@ -61,7 +61,7 @@ impl Heuristics {
         Heuristics { weightings, ..Default::default() }
     }
 
-    pub fn evaluate(&self, state: &GameState, is_first_player: bool) -> i32 {
+    pub fn evaluate(&self, state: &GameState) -> i32 {
         let mut result = 0;
         let heuristics_cache = HeuristicsCache::from(state);
         for heuristic in self.heuristics.iter() {
