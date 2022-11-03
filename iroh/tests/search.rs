@@ -4,6 +4,7 @@ use iroh::state::GameState;
 macro_rules! search_test_inner {
     ($name:ident,$fen:expr,$expected_san:expr) => {
         #[test]
+        #[ignore]
         fn $name() {
             let state = GameState::from_fen($fen);
 

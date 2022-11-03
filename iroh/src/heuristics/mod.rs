@@ -7,10 +7,10 @@ pub mod checks;
 pub mod checkmates;
 
 use cache::HeuristicsCache;
-use crate::heuristics::attacks::{CurrentPlayersAttacksHeuristic, OpponentPlayersAttacksHeuristic};
-use crate::heuristics::checkmates::{OpponentInCheckmateHeuristic, SelfInCheckmateHeuristic};
-use crate::heuristics::checks::{OpponentInCheckHeuristic, SelfInCheckHeuristic};
-use crate::heuristics::HeuristicType::OpponentInCheckMate;
+use crate::heuristics::attacks::AttacksHeuristic;
+use crate::heuristics::checkmates::InCheckmateHeuristic;
+use crate::heuristics::checks::InCheckHeuristic;
+use crate::heuristics::HeuristicType::CheckMate;
 use crate::heuristics::material::MaterialHeuristic;
 use crate::heuristics::mobility::MobilityHeuristic;
 use crate::heuristics::weightings::Weightings;
@@ -21,15 +21,12 @@ pub enum HeuristicType {
     Material,
     Mobility,
     Attacks,
-    OpponentAttacks,
-    EnemyInCheck,
-    SelfInCheck,
-    OpponentInCheckMate,
-    SelfInCheckMate
+    InCheck,
+    CheckMate
 }
 
 pub trait Heuristic {
-    fn evaluate(&self, state: &GameState, is_first_player: bool, heuristics_cache: &HeuristicsCache) -> i32;
+    fn evaluate(&self, state: &GameState, heuristics_cache: &HeuristicsCache) -> i32;
     fn get_type(&self) -> HeuristicType;
 }
 
@@ -43,12 +40,9 @@ impl Default for Heuristics {
         let heuristics: Vec<Box<dyn Heuristic>> = vec![
             Box::new(MaterialHeuristic {}),
             Box::new(MobilityHeuristic {}),
-            Box::new(CurrentPlayersAttacksHeuristic {}),
-            Box::new(OpponentPlayersAttacksHeuristic {}),
-            Box::new(OpponentInCheckHeuristic {}),
-            Box::new(SelfInCheckHeuristic {}),
-            Box::new(OpponentInCheckmateHeuristic {}),
-            Box::new(SelfInCheckmateHeuristic {})
+            Box::new(AttacksHeuristic {}),
+            Box::new(InCheckHeuristic {}),
+            Box::new(InCheckmateHeuristic {})
         ];
         Heuristics { heuristics, weightings: Weightings::new() }
     }
@@ -71,7 +65,7 @@ impl Heuristics {
         let mut result = 0;
         let heuristics_cache = HeuristicsCache::from(state);
         for heuristic in self.heuristics.iter() {
-            let heuristic_value = heuristic.evaluate(state, is_first_player, &heuristics_cache);
+            let heuristic_value = heuristic.evaluate(state, &heuristics_cache);
             let heuristic_weight = self.weightings.get(heuristic.get_type()).unwrap_or(1.0);
 
             result += (heuristic_value as f32 * heuristic_weight).round() as i32;
