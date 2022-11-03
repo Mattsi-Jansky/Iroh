@@ -27,7 +27,7 @@ impl Game {
         }
     }
 
-    pub fn unwrap(self) -> GameState {
+    pub fn unwrap(&self) -> &GameState {
         match self {
             Game::Ongoing { state, .. } => { state }
             Game::IllegalMove { state } => { state }

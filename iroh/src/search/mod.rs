@@ -1,5 +1,6 @@
 use std::cmp::Ordering;
 use std::collections::{BinaryHeap, BTreeMap};
+use crate::game::Game;
 use crate::heuristics::Heuristics;
 use crate::moves::Move;
 use crate::state::GameState;
@@ -50,32 +51,39 @@ impl<'a> Ord for Node<'a> {
     }
 }
 
-const DEPTH: usize = 1;
-const BREADTH: usize = 5;
+const MAX_DEPTH: u8 = 2;
 
-pub fn search(state: &GameState) -> Evaluation {
+pub fn search(game: &Game) -> Evaluation {
     let heuristics = Heuristics::new();
     let mut results: BinaryHeap<Node> = BinaryHeap::new();
+    let state = game.unwrap();
+    let is_first_player = state.is_first_player_turn;
 
     for possible_move in state.possible_moves.iter() {
         let move_result = state.make_move(&possible_move);
-        let value = heuristics.evaluate(&move_result.unwrap());
-        #[cfg(debug_assertions)]
-        println!("Possible move: {possible_move}, {value}");
+        let value = minmax(&move_result, 0, is_first_player, &heuristics);
 
         results.push(Node {value, possible_move});
     }
 
-    results = top_five(results);
-    println!("Result top: {results:?}");
-
     Evaluation { best_move: results.pop().unwrap().possible_move.generate_san() }
 }
 
-fn top_five(mut input: BinaryHeap<Node>) -> BinaryHeap<Node> {
-    let mut result: BinaryHeap<Node> = BinaryHeap::new();
-    for i in 0..BREADTH {
-        result.push(input.pop().unwrap());
+fn minmax(game:&Game, depth: u8, is_maximising: bool, heuristics: &Heuristics) -> i32 {
+    let is_ongoing = !matches!(game, Game::Ongoing {..});
+    let state = &game.unwrap();
+    if depth == MAX_DEPTH || is_ongoing {
+        heuristics.evaluate(&game.unwrap())
+    } else {
+        let mut best_value = if is_maximising { i32::MIN } else { i32::MAX };
+        for possible_move in state.possible_moves.iter() {
+            let move_result = state.make_move(&possible_move);
+            let value = minmax(&move_result, depth + 1, !is_maximising, heuristics);
+            if (is_maximising && value > best_value)
+                || (!is_maximising && value < best_value) {
+                best_value = value;
+            }
+        }
+        best_value
     }
-    result
 }

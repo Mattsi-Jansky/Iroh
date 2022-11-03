@@ -8,7 +8,7 @@ pub struct Weightings {
 impl Weightings {
     pub fn new() -> Weightings {
         let weightings = Weightings { weights: HashMap::new() };
-        weightings.push(HeuristicType::Material, 2.0)
+        weightings.push(HeuristicType::Material, 3.0)
     }
 
     pub fn push(mut self, heuristic_type: HeuristicType, weight: f32) -> Self {
