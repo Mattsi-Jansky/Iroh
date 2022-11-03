@@ -61,7 +61,9 @@ pub fn search(game: &Game) -> Evaluation {
 
     for possible_move in state.possible_moves.iter() {
         let move_result = state.make_move(&possible_move);
-        let value = minmax(&move_result, 0, is_first_player, &heuristics);
+        let value = minmax(&move_result, 0, !is_first_player, &heuristics, i32::MIN, i32::MAX);
+        #[cfg(debug_assertions)]
+        println!("Possible move: {possible_move}, {value}");
 
         results.push(Node {value, possible_move});
     }
@@ -69,16 +71,24 @@ pub fn search(game: &Game) -> Evaluation {
     Evaluation { best_move: results.pop().unwrap().possible_move.generate_san() }
 }
 
-fn minmax(game:&Game, depth: u8, is_maximising: bool, heuristics: &Heuristics) -> i32 {
+fn minmax(game:&Game, depth: u8, is_maximising: bool, heuristics: &Heuristics, mut alpha: i32, mut beta: i32) -> i32 {
     let is_ongoing = !matches!(game, Game::Ongoing {..});
     let state = &game.unwrap();
     if depth == MAX_DEPTH || is_ongoing {
-        heuristics.evaluate(&game.unwrap())
+        if matches!(game, Game::Win {..}) {
+            if is_maximising { i32::MIN } else {i32::MAX}
+        } else { heuristics.evaluate(state) }
     } else {
         let mut best_value = if is_maximising { i32::MIN } else { i32::MAX };
         for possible_move in state.possible_moves.iter() {
             let move_result = state.make_move(&possible_move);
-            let value = minmax(&move_result, depth + 1, !is_maximising, heuristics);
+            let value = minmax(&move_result, depth + 1, !is_maximising, heuristics, alpha, beta);
+            if is_maximising {
+                alpha = if value > alpha { value } else { alpha };
+            }else {
+                beta = if value < beta { value } else { beta };
+            }
+            if beta <= alpha { break; }
             if (is_maximising && value > best_value)
                 || (!is_maximising && value < best_value) {
                 best_value = value;

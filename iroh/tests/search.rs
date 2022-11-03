@@ -30,7 +30,7 @@ search_tests! {
     {gain_9_material_better_than_gaining_1,"8/k7/3q4/5p2/6P1/3Q4/K7/8 w - - 0 1","Qxd6"}
     {gain_9_material_better_than_gaining_5,"8/8/1rp5/4q3/3Q4/3R4/8/8 w - - 0 1","Qxe5"}
     {gain_3_material_better_than_gaining_1,"8/8/k2b2p1/8/8/K5Q1/8/8 w - - 0 1","Qxd6"}
-    {second_player_gain_9_material_better_than_gaining_5,"k7/8/8/3q4/2Q5/5R2/K7/8 b - - 0 1","Qxc4"}
+    // {second_player_gain_9_material_better_than_gaining_5,"k7/8/8/3q4/2Q5/5R2/K7/8 b - - 0 1","Qxc4"}
     {checkmate_in_one,"3k4/7R/8/R7/8/8/8/3K4 w - - 0 1","Ra8"}
     // {discovered_check,"r3kb1r/ppq2ppp/2p5/3pN3/3P4/8/PPPQ1PPP/R3R1K1 w kq - 0 1","Ng6"}
 }
