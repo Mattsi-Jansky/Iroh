@@ -12,7 +12,8 @@ pub struct Evaluation {
 #[derive(Debug)]
 pub struct Node<'a> {
     value: i32,
-    possible_move: &'a Move
+    possible_move: &'a Move,
+    is_maximising: bool
 }
 
 impl<'a> PartialEq<Self> for Node<'a> {
@@ -25,23 +26,28 @@ impl<'a> Eq for Node<'a> {}
 
 impl<'a> PartialOrd for Node<'a> {
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
-        self.value.partial_cmp(&other.value)
+        let result = self.value.partial_cmp(&other.value);
+        if self.is_maximising { result } else { result.map(|o| o.reverse()) }
     }
 
     fn lt(&self, other: &Self) -> bool {
-        self.value.lt(&other.value)
+        let result = self.value.lt(&other.value);
+        if self.is_maximising { result } else { !result }
     }
 
     fn le(&self, other: &Self) -> bool {
-        self.value.le(&other.value)
+        let result = self.value.le(&other.value);
+        if self.is_maximising { result } else { !result }
     }
 
     fn gt(&self, other: &Self) -> bool {
-        self.value.gt(&other.value)
+        let result = self.value.gt(&other.value);
+        if self.is_maximising { result } else { !result }
     }
 
     fn ge(&self, other: &Self) -> bool {
-        self.value.ge(&other.value)
+        let result = self.value.ge(&other.value);
+        if self.is_maximising { result } else { !result }
     }
 }
 
@@ -65,7 +71,7 @@ pub fn search(game: &Game) -> Evaluation {
         #[cfg(debug_assertions)]
         println!("Possible move: {possible_move}, {value}");
 
-        results.push(Node {value, possible_move});
+        results.push(Node {value, possible_move, is_maximising: is_first_player});
     }
 
     Evaluation { best_move: results.pop().unwrap().possible_move.generate_san() }
