@@ -151,8 +151,6 @@ mod tests {
 
     #[test]
     fn generate_complex_fen() {
-        //Technically this FEN is illegal because the kings shouldn't be able to castle,
-        //but we haven't implemented castling at time of writing
         let test_fen = "rnBNkQn1/ppppNRpp/1PP2p2/2B1p3/2q2Kb1/5r2/2PPPPPP/R7 w KQkq - 0 1";
         let state = GameState::from_fen(test_fen);
 

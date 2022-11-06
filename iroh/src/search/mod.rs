@@ -86,9 +86,7 @@ fn minmax(game:&Game, depth: u8, is_maximising: bool, heuristics: &Heuristics, m
     #[cfg(debug_assertions)]
     println!("minmaxing {:?} with alpha {}, beta {}, maximising {:?}, FEN {}", state.sans, alpha, beta, is_maximising, state.generate_fen());
     if depth == MAX_DEPTH || is_ongoing {
-        let value = if matches!(game, Game::Win {..}) {
-            if is_maximising { i32::MIN } else {i32::MAX}
-        } else { heuristics.evaluate(state) };
+        let value = heuristics.evaluate(state);
         #[cfg(debug_assertions)]
         println!("=== VALUE: {}, SAN: {:?}, FEN: {}", value, state.sans, state.generate_fen());
         value
@@ -106,14 +104,14 @@ fn minmax(game:&Game, depth: u8, is_maximising: bool, heuristics: &Heuristics, m
             if is_maximising {
                 if value >= beta {
                     #[cfg(debug_assertions)]
-                    println!("Breaking out from {possible_move} because {value} is greater than beta {beta}");
+                    println!("Breaking out from {possible_move} because {value} is greater or equal to beta {beta}");
                     break;
                 }
                 alpha = if value > alpha { value } else { alpha };
             }else {
                 if value <= alpha {
                     #[cfg(debug_assertions)]
-                    println!("Breaking out from {possible_move} because {value} is less than beta {alpha}");
+                    println!("Breaking out from {possible_move} because {value} is less than or equal to beta {alpha}");
                     break;
                 }
                 beta = if value < beta { value } else { beta };

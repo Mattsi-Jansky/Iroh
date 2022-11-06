@@ -8,8 +8,13 @@ pub struct InCheckmateHeuristic {}
 
 impl Heuristic for InCheckmateHeuristic {
     fn evaluate(&self, state: &GameState, cache: &HeuristicsCache) -> i32 {
-        if cache.is_check_first_player && cache.has_no_moves {-VERY_BIG_NUMBER}
-        else if cache.is_check_second_player && cache.has_no_moves {VERY_BIG_NUMBER}
+        if cache.is_check_first_player && cache.has_no_moves {
+
+            -VERY_BIG_NUMBER
+        }
+        else if cache.is_check_second_player && cache.has_no_moves {
+            VERY_BIG_NUMBER - (state.turn_number * 10) as i32
+        }
         else {0}
     }
 
@@ -37,7 +42,7 @@ mod tests {
 
         let result = InCheckmateHeuristic {}.evaluate(&state, &HeuristicsCache::from(&state));
 
-        assert_eq!(VERY_BIG_NUMBER, result);
+        assert_eq!(VERY_BIG_NUMBER - 10, result);
     }
 
     #[test]
@@ -47,5 +52,19 @@ mod tests {
         let result = InCheckmateHeuristic {}.evaluate(&state, &HeuristicsCache::from(&state));
 
         assert_eq!(-VERY_BIG_NUMBER, result);
+    }
+
+    #[test]
+    fn reduces_heuristic_by_number_of_turns_taken() {
+        let mut state_one_turn = GameState::from_fen("R2k4/7R/8/8/8/8/8/3K4 b - - 0 1");
+        state_one_turn.turn_number = 1;
+        let mut state_ten_turns = GameState::from_fen("R2k4/7R/8/8/8/8/8/3K4 b - - 0 1");
+        state_ten_turns.turn_number = 10;
+
+        let result_one_turn = InCheckmateHeuristic {}.evaluate(&state_one_turn, &HeuristicsCache::from(&state_one_turn));
+        let result_ten_turns = InCheckmateHeuristic {}.evaluate(&state_ten_turns, &HeuristicsCache::from(&state_ten_turns));
+
+        assert_eq!(VERY_BIG_NUMBER - 10, result_one_turn);
+        assert_eq!(VERY_BIG_NUMBER - 100, result_ten_turns);
     }
 }
