@@ -43,7 +43,7 @@ fn given_blank_heuristics_push_should_add_specified_heuristic() {
 
     heuristics.push(MobilityHeuristic {});
 
-    assert_eq!(13, heuristics.evaluate(&state))
+    assert_eq!(26, heuristics.evaluate(&state))
 }
 
 #[test]
