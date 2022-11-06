@@ -1,67 +1,20 @@
 use std::cmp::Ordering;
 use std::collections::{BinaryHeap, BTreeMap};
+use evaluation::Evaluation;
+use possible_move::PossibleMove;
 use crate::game::Game;
 use crate::heuristics::Heuristics;
 use crate::moves::Move;
 use crate::state::GameState;
 
-pub struct Evaluation {
-    pub best_move: String
-}
-
-#[derive(Debug)]
-pub struct Node<'a> {
-    value: i32,
-    possible_move: &'a Move,
-    is_maximising: bool
-}
-
-impl<'a> PartialEq<Self> for Node<'a> {
-    fn eq(&self, other: &Self) -> bool {
-        self.value.eq(&other.value)
-    }
-}
-
-impl<'a> Eq for Node<'a> {}
-
-impl<'a> PartialOrd for Node<'a> {
-    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
-        let result = self.value.partial_cmp(&other.value);
-        if self.is_maximising { result } else { result.map(|o| o.reverse()) }
-    }
-
-    fn lt(&self, other: &Self) -> bool {
-        let result = self.value.lt(&other.value);
-        if self.is_maximising { result } else { !result }
-    }
-
-    fn le(&self, other: &Self) -> bool {
-        let result = self.value.le(&other.value);
-        if self.is_maximising { result } else { !result || other.value.eq(&self.value) }
-    }
-
-    fn gt(&self, other: &Self) -> bool {
-        let result = self.value.gt(&other.value);
-        if self.is_maximising { result } else { !result }
-    }
-
-    fn ge(&self, other: &Self) -> bool {
-        let result = self.value.ge(&other.value);
-        if self.is_maximising { result } else { !result || other.value.eq(&self.value) }
-    }
-}
-
-impl<'a> Ord for Node<'a> {
-    fn cmp(&self, other: &Self) -> Ordering {
-        self.value.cmp(&other.value)
-    }
-}
+mod possible_move;
+pub mod evaluation;
 
 const MAX_DEPTH: u8 = 2;
 
 pub fn search(game: &Game) -> Evaluation {
     let heuristics = Heuristics::new();
-    let mut results: BinaryHeap<Node> = BinaryHeap::new();
+    let mut results: BinaryHeap<PossibleMove> = BinaryHeap::new();
     let state = game.unwrap();
     let is_first_player = state.is_first_player_turn;
 
@@ -73,14 +26,13 @@ pub fn search(game: &Game) -> Evaluation {
         #[cfg(debug_assertions)]
         println!("Possible move OUTCOME: {possible_move}, {value}");
 
-        results.push(Node {value, possible_move, is_maximising: is_first_player});
+        results.push(PossibleMove {value, possible_move, is_maximising: is_first_player});
     }
 
     Evaluation { best_move: results.pop().unwrap().possible_move.generate_san() }
 }
 
 fn minmax(game:&Game, depth: u8, is_maximising: bool, heuristics: &Heuristics, mut alpha: i32, mut beta: i32) -> i32 {
-    #[cfg(debug_assertions)]
     let is_ongoing = !matches!(game, Game::Ongoing {..});
     let state = &game.unwrap();
     #[cfg(debug_assertions)]
