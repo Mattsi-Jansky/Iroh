@@ -67,8 +67,14 @@ impl Heuristics {
         for heuristic in self.heuristics.iter() {
             let heuristic_value = heuristic.evaluate(state, &heuristics_cache);
             let heuristic_weight = self.weightings.get(heuristic.get_type()).unwrap_or(1.0);
+            let weighted_value = (heuristic_value as f32 * heuristic_weight).round() as i32;
+            #[cfg(debug_assertions)]
+            {
+                let heuristic_type = heuristic.get_type();
+                println!("Valued {heuristic_type:?} at {weighted_value}");
+            }
 
-            result += (heuristic_value as f32 * heuristic_weight).round() as i32;
+            result += weighted_value;
         }
         result
     }

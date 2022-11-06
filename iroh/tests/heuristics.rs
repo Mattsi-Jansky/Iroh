@@ -64,13 +64,19 @@ fn given_weighting_configuration_should_multiply_results_by_weights() {
     assert_eq!(15, moves_weighted_one);
     assert_eq!(30, moves_weighted_two)
 }
-//
-// #[test]
-// fn wat() {
-//     let state = GameState::from_fen("8/k7/3q4/5p2/6P1/8/K7/1Q6 b - - 1 1");
-//     let heuristics = Heuristics::new();
-//
-//     let value = heuristics.evaluate(&state);
-//
-//     assert_eq!(5,value)
-// }
+
+//This test is based on a problem with heuristics discovered while debugging a failing search test,
+//"discovered_check" in search.rs
+#[test]
+fn taking_rook_beats_returning_to_e5() {
+    let better_state = GameState::from_fen("r4b1N/ppqk1ppp/2p5/3p4/3P4/8/PPPQ1PPP/R3R1K1 b - - 0 1");
+    let worse_state = GameState::from_fen("r4b1r/ppqk1ppp/2p5/3pN3/3P4/8/PPPQ1PPP/R3R1K1 b - - 0 1");
+    let heuristics = Heuristics::new();
+
+    println!("Better value");
+    let better_value = heuristics.evaluate(&better_state);
+    println!("Worse value");
+    let worse_value = heuristics.evaluate(&worse_state);
+
+    assert_that!(better_value > worse_value, otherwise format!("Better position evaluates to {better_value}, but worse evaluated to {worse_value}"));
+}
