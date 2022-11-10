@@ -4,32 +4,32 @@ use crate::state::piece::{Piece, PieceType};
 
 #[derive(Debug, Copy, Clone, PartialEq, Eq)]
 pub struct Board {
-    state: [Option<Piece>; 8*8]
+    state: [Piece; 8*8]
 }
 
 impl Board {
     pub fn blank() -> Board {
         Board {
             state: [
-                None,None,None,None,None,None,None,None,
-                None,None,None,None,None,None,None,None,
-                None,None,None,None,None,None,None,None,
-                None,None,None,None,None,None,None,None,
-                None,None,None,None,None,None,None,None,
-                None,None,None,None,None,None,None,None,
-                None,None,None,None,None,None,None,None,
-                None,None,None,None,None,None,None,None,
+                0,0,0,0,0,0,0,0,
+                0,0,0,0,0,0,0,0,
+                0,0,0,0,0,0,0,0,
+                0,0,0,0,0,0,0,0,
+                0,0,0,0,0,0,0,0,
+                0,0,0,0,0,0,0,0,
+                0,0,0,0,0,0,0,0,
+                0,0,0,0,0,0,0,0,
             ]
         }
     }
 
-    pub(crate) fn get_all_pieces_belonging_to_player(&self, is_owned_by_first_player: bool) -> Vec<(PieceType, File, Rank)> {
+    pub(crate) fn get_all_pieces_belonging_to_player(&self, is_owned_by_first_player: bool) -> Vec<(Piece, File, Rank)> {
         let mut result = vec![];
 
         for (index, piece_or_none) in self.state.iter().enumerate() {
-            if let Some(piece) = piece_or_none {
-                if piece.is_owned_by_first_player == is_owned_by_first_player {
-                    result.push((piece.piece_type, File::new(index % 8), Rank::new(index / 8)));
+            if piece_or_none != &PieceType::NONE {
+                if (piece_or_none > &0) == is_owned_by_first_player {
+                    result.push((piece, File::new(index % 8), Rank::new(index / 8)));
                 }
             }
         }
@@ -39,27 +39,27 @@ impl Board {
 }
 
 impl Index<(File,Rank)> for Board {
-    type Output = Option<Piece>;
-    fn index(&self, s: (File,Rank)) -> &Option<Piece> {
+    type Output = Piece;
+    fn index(&self, s: (File,Rank)) -> &Piece {
         &self.state[*s.0 + *(s.1 * 8)]
     }
 }
 
 impl Index<(&File,&Rank)> for Board {
-    type Output = Option<Piece>;
-    fn index(&self, s: (&File,&Rank)) -> &Option<Piece> {
+    type Output = Piece;
+    fn index(&self, s: (&File,&Rank)) -> &Piece {
         &self.state[*(*s.0 + *(*s.1 * 8))]
     }
 }
 
 impl IndexMut<(File,Rank)> for Board {
-    fn index_mut(&mut self, s: (File,Rank)) -> &mut Option<Piece> {
+    fn index_mut(&mut self, s: (File,Rank)) -> &mut Piece {
         &mut self.state[*s.0 + *(s.1 * 8)]
     }
 }
 
 impl IndexMut<(&File,&Rank)> for Board {
-    fn index_mut(&mut self, s: (&File,&Rank)) -> &mut Option<Piece> {
+    fn index_mut(&mut self, s: (&File,&Rank)) -> &mut Piece {
         &mut self.state[*(*s.0 + *(*s.1 * 8))]
     }
 }

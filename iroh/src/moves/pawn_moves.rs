@@ -1,9 +1,9 @@
 use crate::moves::Move;
 use crate::state::coordinates::{File, Rank};
 use crate::state::GameState;
-use crate::state::piece::PieceType;
+use crate::state::piece::{Piece, PieceType};
 
-pub fn generate_pawn_moves(game_state: &GameState, available_moves: &mut Vec<Move>, pawn: (PieceType, File, Rank), is_for_first_player: bool) {
+pub fn generate_pawn_moves(game_state: &GameState, available_moves: &mut Vec<Move>, pawn: (Piece, File, Rank), is_for_first_player: bool) {
     let ahead_rank = (if is_for_first_player { pawn.2.transform(1) } else { pawn.2.transform(-1) })
         .expect("Pawn is never on back rank, because of promotion");
     let ahead_rank_is_last_rank = if is_for_first_player {ahead_rank == 7} else {ahead_rank == 0};
@@ -23,7 +23,7 @@ pub fn generate_pawn_moves(game_state: &GameState, available_moves: &mut Vec<Mov
     generate_attack_moves(game_state, available_moves, pawn, ahead_rank, is_for_first_player)
 }
 
-fn generate_double_move(game_state: &GameState, available_moves: &mut Vec<Move>, pawn: (PieceType, File, Rank), ahead_rank: Rank, is_for_first_player: bool) {
+fn generate_double_move(game_state: &GameState, available_moves: &mut Vec<Move>, pawn: (Piece, File, Rank), ahead_rank: Rank, is_for_first_player: bool) {
     let ahead_twice_rank = if is_for_first_player { pawn.2 + 2 } else { pawn.2 - 2 };
     if game_state.board[(pawn.1, ahead_rank)].is_none()
         && game_state.board[(pawn.1, ahead_twice_rank)].is_none() {
@@ -31,7 +31,7 @@ fn generate_double_move(game_state: &GameState, available_moves: &mut Vec<Move>,
     }
 }
 
-fn generate_attack_moves(game_state: &GameState, available_moves: &mut Vec<Move>, pawn: (PieceType, File, Rank), ahead_rank: Rank, is_for_first_player: bool) {
+fn generate_attack_moves(game_state: &GameState, available_moves: &mut Vec<Move>, pawn: (Piece, File, Rank), ahead_rank: Rank, is_for_first_player: bool) {
     let left_file = pawn.1.transform(-1);
     let right_file = pawn.1.transform(1);
 
@@ -39,35 +39,35 @@ fn generate_attack_moves(game_state: &GameState, available_moves: &mut Vec<Move>
     generate_attack_move(game_state, available_moves, pawn, ahead_rank, right_file, is_for_first_player);
 }
 
-fn generate_attack_move(game_state: &GameState, available_moves: &mut Vec<Move>, pawn: (PieceType, File, Rank), ahead_rank: Rank, file: Option<File>, is_for_first_player: bool) {
+fn generate_attack_move(game_state: &GameState, available_moves: &mut Vec<Move>, pawn: (Piece, File, Rank), ahead_rank: Rank, file: Option<File>, is_for_first_player: bool) {
     if let Some(file) = file {
         if let Some(target_piece) = game_state.board[(file, ahead_rank)] {
-            if target_piece.is_owned_by_first_player != is_for_first_player {
+            if (target_piece > 0) != is_for_first_player {
                 available_moves.push(Move::PawnAttackMove(pawn.1,(file, ahead_rank)))
             }
         }
     }
 }
 
-fn generate_promotion_moves(available_moves: &mut Vec<Move>, pawn: (PieceType, File, Rank), is_for_first_player: bool) {
+fn generate_promotion_moves(available_moves: &mut Vec<Move>, pawn: (Piece, File, Rank), is_for_first_player: bool) {
     available_moves.push(Move::PawnPromotion (
         pawn.1,
         is_for_first_player,
-        PieceType::Queen
+    if is_for_first_player { PieceType::FIRST_QUEEN } else { PieceType::SECOND_QUEEN }
     ));
     available_moves.push(Move::PawnPromotion (
         pawn.1,
         is_for_first_player,
-        PieceType::Knight
+        if is_for_first_player { PieceType::FIRST_ROOK } else { PieceType::SECOND_ROOK }
     ));
     available_moves.push(Move::PawnPromotion (
         pawn.1,
         is_for_first_player,
-        PieceType::Bishop
+        if is_for_first_player { PieceType::FIRST_BISHOP } else { PieceType::SECOND_BISHOP }
     ));
     available_moves.push(Move::PawnPromotion (
         pawn.1,
         is_for_first_player,
-        PieceType::Rook
+        if is_for_first_player { PieceType::FIRST_KNIGHT } else { PieceType::SECOND_KNIGHT }
     ));
 }

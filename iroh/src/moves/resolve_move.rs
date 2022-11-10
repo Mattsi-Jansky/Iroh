@@ -91,36 +91,35 @@ fn move_piece(game_state: &mut GameState, from_file: &File, from_rank: &Rank, to
     update_castling_state(game_state, from, piece)
 }
 
-fn update_castling_state(game_state: &mut GameState, from: (&File, &Rank), piece: Option<Piece>) {
-    let moving_piece_type = piece.unwrap().piece_type;
-    if moving_piece_type == PieceType::Rook
+fn update_castling_state(game_state: &mut GameState, from: (&File, &Rank), piece: Piece) {
+    if piece == PieceType::Rook
         && from.0 == &File::H
         && from.1 == &Rank::ONE {
         game_state.first_player_can_castle_kingside = false;
     }
-    else if moving_piece_type == PieceType::Rook
+    else if piece == PieceType::Rook
         && from.0 == &File::A
         && from.1 == &Rank::ONE {
         game_state.first_player_can_castle_queenside = false;
     }
-    else if moving_piece_type == PieceType::King
+    else if piece == PieceType::King
         && from.0 == &File::E
         && from.1 == &Rank::ONE {
         game_state.first_player_can_castle_kingside = false;
         game_state.first_player_can_castle_queenside = false;
     }
 
-    if moving_piece_type == PieceType::Rook
+    if piece == PieceType::Rook
         && from.0 == &File::H
         && from.1 == &Rank::EIGHT {
         game_state.second_player_can_castle_kingside = false;
     }
-    else if moving_piece_type == PieceType::Rook
+    else if piece == PieceType::Rook
         && from.0 == &File::A
         && from.1 == &Rank::EIGHT {
         game_state.second_player_can_castle_queenside = false;
     }
-    else if moving_piece_type == PieceType::King
+    else if piece == PieceType::King
         && from.0 == &File::E
         && from.1 == &Rank::EIGHT {
         game_state.second_player_can_castle_kingside = false;

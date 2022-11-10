@@ -1,6 +1,6 @@
 use std::fmt::{Display, Formatter};
 use crate::state::coordinates::{File, Rank};
-use crate::state::piece::PieceType;
+use crate::state::piece::{Piece, PieceType};
 use crate::serialisers::san::{generate_attack_san, generate_castling_san, generate_pawn_attack_san, generate_pawn_promotion_san, generate_pawn_san, generate_san};
 
 pub const KNIGHT_STATIC_TRANSFORMS: [(isize,isize);8] = [(1, 2), (2, 1), (-1, -2), (-2, -1), (1, -2), (2, -1), (-1, 2), (-2, 1)];
@@ -17,11 +17,11 @@ mod castling_moves;
 
 #[derive(PartialEq, Eq, Debug, Clone, Hash)]
 pub enum Move {
-    RegularMove((File, Rank), (File, Rank), PieceType),
-    AttackMove((File, Rank), (File, Rank), PieceType),
+    RegularMove((File, Rank), (File, Rank), Piece),
+    AttackMove((File, Rank), (File, Rank), Piece),
     PawnMove((File,Rank),Rank),
     PawnAttackMove(File,(File,Rank)),
-    PawnPromotion(File,bool,PieceType),
+    PawnPromotion(File,bool,Piece),
     Castle(bool)
 }
 

@@ -1,21 +1,20 @@
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
-pub enum PieceType {
-    Pawn,
-    Bishop,
-    Knight,
-    Rook,
-    King,
-    Queen
+pub struct PieceType {}
+
+impl PieceType {
+    pub const SECOND_PAWN: Piece = -1;
+    pub const SECOND_BISHOP: Piece = -2;
+    pub const SECOND_KNIGHT: Piece = -3;
+    pub const SECOND_ROOK: Piece = -4;
+    pub const SECOND_KING: Piece = -5;
+    pub const SECOND_QUEEN: Piece = -6;
+    pub const NONE: Piece = 0;
+    pub const FIRST_PAWN: Piece = 1;
+    pub const FIRST_BISHOP: Piece = 2;
+    pub const FIRST_KNIGHT: Piece = 3;
+    pub const FIRST_ROOK: Piece = 4;
+    pub const FIRST_KING: Piece = 5;
+    pub const FIRST_QUEEN: Piece = 6;
 }
 
-#[derive(Debug, Copy, Clone, PartialEq, Eq)]
-pub struct Piece {
-    pub is_owned_by_first_player: bool,
-    pub piece_type: PieceType,
-}
-
-impl Piece {
-    pub fn new(is_owned_by_first_player: bool, piece_type: PieceType) -> Piece {
-        Piece {is_owned_by_first_player, piece_type}
-    }
-}
+pub type Piece = i8;

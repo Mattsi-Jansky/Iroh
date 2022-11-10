@@ -1,16 +1,16 @@
 use crate::state::coordinates::{File, Rank};
-use crate::state::piece::PieceType;
+use crate::state::piece::{Piece, PieceType};
 
-pub fn generate_san(piece_type: PieceType, file: File, rank: Rank) -> String {
+pub fn generate_san(piece: Piece, file: File, rank: Rank) -> String {
     format!("{}{}{}",
-        to_piece_identifier(piece_type),
-        to_alpha_file(file),
-        rank+1)
+            to_piece_identifier(piece),
+            to_alpha_file(file),
+            rank+1)
 }
 
-pub fn generate_attack_san(piece_type: PieceType, file: File, rank: Rank) -> String {
+pub fn generate_attack_san(piece: Piece, file: File, rank: Rank) -> String {
     format!("{}x{}{}",
-            to_piece_identifier(piece_type),
+            to_piece_identifier(piece),
             to_alpha_file(file),
             rank+1)
 }
@@ -23,11 +23,11 @@ pub fn generate_pawn_attack_san(_starting_file: File,target_file: File, target_r
     format!("{}x{}{}", to_alpha_file(_starting_file), to_alpha_file(target_file), target_rank+1)
 }
 
-pub fn generate_pawn_promotion_san(file: File, is_owned_by_first_player: bool, piece_type: PieceType) -> String {
+pub fn generate_pawn_promotion_san(file: File, is_owned_by_first_player: bool, piece: Piece) -> String {
     format!("{}{}={}",
             to_alpha_file(file),
             if is_owned_by_first_player {8} else {1},
-            to_piece_identifier(piece_type)
+            to_piece_identifier(piece)
     )
 }
 
@@ -40,14 +40,14 @@ fn to_alpha_file(file: File) -> char {
     (file + 97).into()
 }
 
-fn to_piece_identifier(piece_type: PieceType) -> char {
-    match piece_type {
-        PieceType::Pawn => panic!("Pawns should not be using to_piece_identifier"),
-        PieceType::Bishop => 'B',
-        PieceType::Knight => 'N',
-        PieceType::Rook => 'R',
-        PieceType::King => 'K',
-        PieceType::Queen => 'Q'
+fn to_piece_identifier(piece: Piece) -> char {
+    match piece {
+        PieceType::FIRST_PAWN | PieceType::SECOND_PAWN | 1 => panic!("Pawns should not be using to_piece_identifier"),
+        PieceType::FIRST_BISHOP | PieceType::SECOND_BISHOP => 'B',
+        PieceType::FIRST_KNIGHT | PieceType::SECOND_KNIGHT => 'N',
+        PieceType::FIRST_ROOK | PieceType::SECOND_ROOK => 'R',
+        PieceType::FIRST_KING | PieceType::SECOND_KING => 'K',
+        PieceType::FIRST_QUEEN | PieceType::SECOND_QUEEN => 'Q'
     }
 }
 
