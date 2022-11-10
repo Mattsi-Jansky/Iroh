@@ -1,5 +1,5 @@
 use crate::state::coordinates::{File, Rank};
-use crate::state::piece::{Piece, PieceType};
+use crate::state::piece::{Piece};
 use crate::state::GameState;
 
 pub fn parse_fen(fen: &str, game_state: &mut GameState) {
@@ -18,18 +18,17 @@ pub fn parse_fen(fen: &str, game_state: &mut GameState) {
             continue;
         }
 
-        let piece_type = match char {
-            'r' | 'R' => Some(PieceType::Rook),
-            'n' | 'N' => Some(PieceType::Knight),
-            'b' | 'B' => Some(PieceType::Bishop),
-            'q' | 'Q' => Some(PieceType::Queen),
-            'k' | 'K' => Some(PieceType::King),
-            'p' | 'P' => Some(PieceType::Pawn),
-            _ => None
+        let mut tile = match char {
+            'r' | 'R' => Piece::FIRST_ROOK,
+            'n' | 'N' => Piece::FIRST_KNIGHT,
+            'b' | 'B' => Piece::FIRST_BISHOP,
+            'q' | 'Q' => Piece::FIRST_QUEEN,
+            'k' | 'K' => Piece::FIRST_KING,
+            'p' | 'P' => Piece::FIRST_PAWN,
+            _ => Piece::NONE
         };
-        let is_owned_by_first_player = char.is_uppercase();
-        game_state.board[(file, rank)] = piece_type.map(
-                     |piece_type| Piece::new(is_owned_by_first_player, piece_type));
+        if char.is_uppercase() { tile = tile.inverted_ownership() }
+        game_state.board[(file, rank)] = tile;
 
         file += 1;
     }
@@ -59,12 +58,13 @@ pub fn generate_fen(game_state: &GameState) -> String {
     for r in (0..=Rank::MAX).rev() {
         let mut blank_tiles_count = 0;
         for f in 0..=File::MAX {
-            if let Some(piece) = game_state.board[(File::new(f),Rank::new(r))] {
+            let tile = game_state.board[(File::new(f), Rank::new(r))];
+            if tile.is_occupied()  {
                 if blank_tiles_count > 0 {
                     result.push(char::from_digit(blank_tiles_count, 10).unwrap());
                     blank_tiles_count = 0;
                 };
-                let glyph = generate_fen_piece(piece);
+                let glyph = generate_fen_piece(tile);
                 result.push(glyph);
             } else { blank_tiles_count += 1; }
         }
@@ -94,15 +94,16 @@ fn generate_castling_metadata(game_state: &GameState) -> String {
 }
 
 fn generate_fen_piece(piece: Piece) -> char {
-    let piece_type = match piece.piece_type {
-        PieceType::Rook => 'r',
-        PieceType::Knight => 'n',
-        PieceType::Bishop => 'b',
-        PieceType::Queen => 'q',
-        PieceType::King => 'k',
-        PieceType::Pawn => 'p',
+    let piece_type = match piece {
+        Piece::FIRST_ROOK | Piece::SECOND_ROOK => 'r',
+        Piece::FIRST_KNIGHT | Piece::SECOND_KNIGHT => 'n',
+        Piece::FIRST_BISHOP | Piece::SECOND_BISHOP => 'b',
+        Piece::FIRST_QUEEN | Piece::SECOND_QUEEN => 'q',
+        Piece::FIRST_KING | Piece::SECOND_KING => 'k',
+        Piece::FIRST_PAWN | Piece::SECOND_PAWN => 'p',
+        _ => { panic!("This should never happen - piece is not a valid recognised chesspiece") }
     };
-    if piece.is_owned_by_first_player { piece_type.to_uppercase().next().unwrap() } else {piece_type}
+    if piece.is_owned_by_first_player() { piece_type.to_uppercase().next().unwrap() } else {piece_type}
 }
 
 #[cfg(test)]
@@ -117,7 +118,7 @@ mod tests {
         parse_fen(fen_that_forces_odd_numbered_rank_piece, &mut game_state);
 
         let result = game_state.board[(File::new(4),Rank::new(4))].unwrap();
-        assert_eq!(PieceType::Knight, result.piece_type)
+        assert_eq!(Piece::Knight, result.piece_type)
     }
 
     #[test]

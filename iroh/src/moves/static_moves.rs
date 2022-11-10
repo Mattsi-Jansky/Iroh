@@ -1,7 +1,7 @@
 use crate::moves::{KING_STATIC_TRANSFORMS, KNIGHT_STATIC_TRANSFORMS, Move};
 use crate::state::coordinates::{File, Rank};
 use crate::state::GameState;
-use crate::state::piece::{Piece, PieceType};
+use crate::state::piece::{Piece};
 
 pub fn generate_knight_moves(available_moves: &mut Vec<Move>, knight: (Piece, File, Rank), game_state: &GameState, is_for_first_player: bool) {
     KNIGHT_STATIC_TRANSFORMS.map(|transform| {
@@ -32,8 +32,9 @@ fn generate_static_move_if_legal(piece: (Piece, File, Rank), transformation: (is
     let target_rank = piece.2.transform(transformation.1);
 
     if let (Some(target_file), Some(target_rank)) = (target_file, target_rank) {
-        if let Some(target_piece) = game_state.board[(target_file, target_rank)] {
-            if (target_piece > 0) != is_for_first_player {
+        let tile = game_state.board[(target_file, target_rank)];
+        if tile.is_occupied() {
+            if tile.is_owned_by_first_player() != is_for_first_player {
                 Some(Move::AttackMove (
                     (piece.1, piece.2),
                     (target_file, target_rank),

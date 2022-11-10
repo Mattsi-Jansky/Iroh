@@ -1,7 +1,7 @@
 use crate::moves::{DIAGONAL_DYNAMIC_TRANSFORMS, Move, STRAIGHT_DYNAMIC_TRANSFORMS};
 use crate::state::coordinates::{File, Rank};
 use crate::state::GameState;
-use crate::state::piece::{Piece, PieceType};
+use crate::state::piece::{Piece};
 
 pub fn generate_queen_moves(available_moves: &mut Vec<Move>, queen: (Piece, File, Rank), game_state: &GameState, is_for_first_player: bool) {
     generate_dynamic_moves(game_state, available_moves, queen, &[STRAIGHT_DYNAMIC_TRANSFORMS, DIAGONAL_DYNAMIC_TRANSFORMS].concat(), is_for_first_player);
@@ -22,8 +22,9 @@ fn generate_dynamic_moves(game_state: &GameState, available_moves: &mut Vec<Move
             file = file.unwrap().transform(transform.0);
             rank = rank.unwrap().transform(transform.1);
             if let(Some(file), Some(rank)) = (file,rank) {
-                if let Some(target_piece) = game_state.board[(file, rank)] {
-                    if (target_piece > 0)  != is_for_first_player {
+                let tile = game_state.board[(file, rank)];
+                if tile.is_occupied() {
+                    if tile.is_owned_by_first_player()  != is_for_first_player {
                         available_moves.push(Move::AttackMove (
                             (piece.1, piece.2),
                             (file, rank),

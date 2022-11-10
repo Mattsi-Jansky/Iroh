@@ -2,20 +2,20 @@ use crate::moves::{DIAGONAL_DYNAMIC_TRANSFORMS, KING_STATIC_TRANSFORMS, KNIGHT_S
 use crate::state::board::Board;
 use crate::state::coordinates::{File, Rank};
 use crate::state::GameState;
-use crate::state::piece::{Piece, PieceType};
+use crate::state::piece::{Piece};
 
 pub fn is_check(is_first_player: bool, game_state: &GameState) -> bool{
     let mut result = false;
 
     let king = game_state.board.get_all_pieces_belonging_to_player(is_first_player)
         .into_iter()
-        .find(|piece| piece.0 == PieceType::FIRST_KING || piece.0 == PieceType::SECOND_KING);
+        .find(|piece| piece.0 == Piece::FIRST_KING || piece.0 == Piece::SECOND_KING);
 
     if let Some(king) = king {
         let mut static_check = StaticCheckTester::new(&mut result, is_first_player, &game_state.board, &king);
-        static_check.test(if is_first_player { PieceType::SECOND_KING } else { PieceType::FIRST_KING }, &KING_STATIC_TRANSFORMS);
-        static_check.test(if is_first_player { PieceType::SECOND_KNIGHT } else { PieceType::FIRST_KNIGHT }, &KNIGHT_STATIC_TRANSFORMS);
-        static_check.test(if is_first_player {PieceType::SECOND_PAWN} else {PieceType::FIRST_PAWN},
+        static_check.test(if is_first_player { Piece::SECOND_KING } else { Piece::FIRST_KING }, &KING_STATIC_TRANSFORMS);
+        static_check.test(if is_first_player { Piece::SECOND_KNIGHT } else { Piece::FIRST_KNIGHT }, &KNIGHT_STATIC_TRANSFORMS);
+        static_check.test(if is_first_player {Piece::SECOND_PAWN} else {Piece::FIRST_PAWN},
                           if is_first_player { &[(-1, 1), (1, 1)]}
                           else {&[(-1, -1), (1, -1)]});
 
@@ -33,7 +33,7 @@ struct DynamicCheckTester<'a> {
     king: &'a (Piece, File, Rank),
     enemy_queen: Piece,
     enemy_rook: Piece,
-    enemy_bishop: piece,
+    enemy_bishop: Piece,
 }
 
 impl<'a> DynamicCheckTester<'a> {
@@ -42,9 +42,9 @@ impl<'a> DynamicCheckTester<'a> {
            board: &'a Board,
            king: &'a (Piece, File, Rank)) -> DynamicCheckTester<'a> {
         DynamicCheckTester { result, board, king,
-            enemy_queen: if is_first_player { PieceType::SECOND_QUEEN } else { PieceType::FIRST_QUEEN },
-            enemy_rook: if is_first_player { PieceType::SECOND_ROOK } else { PieceType::FIRST_ROOK },
-            enemy_bishop: if is_first_player { PieceType::SECOND_BISHOP } else { PieceType::FIRST_BISHOP },
+            enemy_queen: if is_first_player { Piece::SECOND_QUEEN } else { Piece::FIRST_QUEEN },
+            enemy_rook: if is_first_player { Piece::SECOND_ROOK } else { Piece::FIRST_ROOK },
+            enemy_bishop: if is_first_player { Piece::SECOND_BISHOP } else { Piece::FIRST_BISHOP },
         }
     }
 
@@ -63,9 +63,9 @@ impl<'a> DynamicCheckTester<'a> {
                 file = file.unwrap().transform(transform.0);
                 rank = rank.unwrap().transform(transform.1);
                 if let(Some(file), Some(rank)) = (file,rank) {
-                    let piece = self.board[(file, rank)];
-                    if piece != PieceType::NONE  {
-                        if attacking_piece_types.contains(&target_piece) {
+                    let tile = self.board[(file, rank)];
+                    if tile.is_occupied()  {
+                        if attacking_piece_types.contains(&tile) {
                             *self.result = true;
                         }
                         break;
@@ -100,10 +100,10 @@ impl<'a> StaticCheckTester<'a> {
             let target_rank = self.king.2.transform(transform.1);
 
             if let (Some(target_file), Some(target_rank)) = (target_file, target_rank) {
-                let piece = self.board[(target_file, target_rank)];
-                if piece != PieceType::NONE {
-                    if (piece > 0) != self.is_first_player
-                        && piece == attacking_piece { *self.result = true; }
+                let tile = self.board[(target_file, target_rank)];
+                if tile.is_occupied() {
+                    if tile.is_occupied() != self.is_first_player
+                        && tile == attacking_piece { *self.result = true; }
                 }
             }
         }

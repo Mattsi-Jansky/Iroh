@@ -1,5 +1,5 @@
 use crate::state::coordinates::{File, Rank};
-use crate::state::piece::{Piece, PieceType};
+use crate::state::piece::{Piece};
 
 pub fn generate_san(piece: Piece, file: File, rank: Rank) -> String {
     format!("{}{}{}",
@@ -23,10 +23,10 @@ pub fn generate_pawn_attack_san(_starting_file: File,target_file: File, target_r
     format!("{}x{}{}", to_alpha_file(_starting_file), to_alpha_file(target_file), target_rank+1)
 }
 
-pub fn generate_pawn_promotion_san(file: File, is_owned_by_first_player: bool, piece: Piece) -> String {
+pub fn generate_pawn_promotion_san(file: File, piece: Piece) -> String {
     format!("{}{}={}",
             to_alpha_file(file),
-            if is_owned_by_first_player {8} else {1},
+            if piece.is_owned_by_first_player() {8} else {1},
             to_piece_identifier(piece)
     )
 }
@@ -42,12 +42,13 @@ fn to_alpha_file(file: File) -> char {
 
 fn to_piece_identifier(piece: Piece) -> char {
     match piece {
-        PieceType::FIRST_PAWN | PieceType::SECOND_PAWN | 1 => panic!("Pawns should not be using to_piece_identifier"),
-        PieceType::FIRST_BISHOP | PieceType::SECOND_BISHOP => 'B',
-        PieceType::FIRST_KNIGHT | PieceType::SECOND_KNIGHT => 'N',
-        PieceType::FIRST_ROOK | PieceType::SECOND_ROOK => 'R',
-        PieceType::FIRST_KING | PieceType::SECOND_KING => 'K',
-        PieceType::FIRST_QUEEN | PieceType::SECOND_QUEEN => 'Q'
+        Piece::FIRST_PAWN | Piece::SECOND_PAWN => panic!("Pawns should not be using to_piece_identifier"),
+        Piece::FIRST_BISHOP | Piece::SECOND_BISHOP => 'B',
+        Piece::FIRST_KNIGHT | Piece::SECOND_KNIGHT => 'N',
+        Piece::FIRST_ROOK | Piece::SECOND_ROOK => 'R',
+        Piece::FIRST_KING | Piece::SECOND_KING => 'K',
+        Piece::FIRST_QUEEN | Piece::SECOND_QUEEN => 'Q',
+        _ => { panic!("This should never happen - piece is not a valid recognised chesspiece") }
     }
 }
 
@@ -57,14 +58,14 @@ mod tests {
 
     #[test]
     fn should_generate_san() {
-        let result = generate_san(PieceType::Knight,File::new(2),Rank::new(3));
+        let result = generate_san(Piece::Knight,File::new(2),Rank::new(3));
 
         assert_eq!("Nc4", result);
     }
 
     #[test]
     fn should_generate_attack_san() {
-        let result = generate_attack_san(PieceType::Rook, File::new(2), Rank::new(3));
+        let result = generate_attack_san(Piece::Rook, File::new(2), Rank::new(3));
 
         assert_eq!("Rxc4", result);
     }
