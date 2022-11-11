@@ -101,10 +101,7 @@ impl<'a> StaticCheckTester<'a> {
 
             if let (Some(target_file), Some(target_rank)) = (target_file, target_rank) {
                 let tile = self.board[(target_file, target_rank)];
-                if tile.is_occupied() {
-                    if tile.is_occupied() != self.is_first_player
-                        && tile == attacking_piece { *self.result = true; }
-                }
+                if tile == attacking_piece { *self.result = true; }
             }
         }
     }
