@@ -27,8 +27,8 @@ impl Board {
         let mut result = vec![];
 
         for (index, tile) in self.state.iter().enumerate() {
-            if tile != &Piece::NONE {
-                if tile.is_occupied() == is_owned_by_first_player {
+            if tile.is_occupied() {
+                if tile.is_owned_by_first_player() == is_owned_by_first_player {
                     result.push((tile.clone(), File::new(index % 8), Rank::new(index / 8)));
                 }
             }
