@@ -2,7 +2,7 @@ use crate::heuristics::{Heuristic, HeuristicType};
 use crate::heuristics::cache::HeuristicsCache;
 use crate::state::coordinates::{File, Rank};
 use crate::state::GameState;
-use crate::state::piece::Piece;
+use crate::state::tile::Tile;
 
 pub struct MaterialHeuristic {}
 
@@ -25,15 +25,15 @@ impl Heuristic for MaterialHeuristic {
     }
 }
 
-fn material_for(piece: Piece) -> i32 {
-    match piece {
-        Piece::FIRST_PAWN | Piece::SECOND_PAWN => { 1 }
-        Piece::FIRST_BISHOP | Piece::SECOND_BISHOP => { 3 }
-        Piece::FIRST_KNIGHT | Piece::SECOND_KNIGHT => { 3 }
-        Piece::FIRST_ROOK | Piece::SECOND_ROOK => { 5 }
-        Piece::FIRST_KING | Piece::SECOND_KING => { 0 }
-        Piece::FIRST_QUEEN | Piece::SECOND_QUEEN => { 9 }
-        Piece::NONE => { panic!("Cannot generate material for an empty tile") }
+fn material_for(tile: Tile) -> i32 {
+    match tile {
+        Tile::FIRST_PAWN | Tile::SECOND_PAWN => { 1 }
+        Tile::FIRST_BISHOP | Tile::SECOND_BISHOP => { 3 }
+        Tile::FIRST_KNIGHT | Tile::SECOND_KNIGHT => { 3 }
+        Tile::FIRST_ROOK | Tile::SECOND_ROOK => { 5 }
+        Tile::FIRST_KING | Tile::SECOND_KING => { 0 }
+        Tile::FIRST_QUEEN | Tile::SECOND_QUEEN => { 9 }
+        Tile::EMPTY => { panic!("Cannot generate material for an empty tile") }
         _ => { panic!("This should never happen - piece is not a valid recognised chesspiece") }
     }
 }

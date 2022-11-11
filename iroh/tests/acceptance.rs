@@ -5,7 +5,7 @@ extern crate core;
 use galvanic_assert::matchers::collection::*;
 use test_case::test_case;
 use iroh::game::Game;
-use iroh::state::piece::Piece;
+use iroh::state::tile::Tile;
 
 mod generators;
 
@@ -98,10 +98,10 @@ fn attack_move_from_dynamic_movement_piece() {
 
     assert_eq!("1. Rxe5 Rxd4 2. Rd5 *", result_pgn);
     assert_that!(&result_game.captured_pieces().unwrap().second_player, contains_in_any_order(vec![
-        Piece::SECOND_ROOK
+        Tile::SECOND_ROOK
     ]));
     assert_that!(&result_game.captured_pieces().unwrap().first_player, contains_in_any_order(vec![
-        Piece::FIRST_ROOK
+        Tile::FIRST_ROOK
     ]));
 }
 
@@ -117,10 +117,10 @@ fn attack_move_from_static_movement_piece() {
 
     assert_eq!("1. Nxb7 Nxg7 2. Nc5 *", result);
     assert_that!(&result_game.captured_pieces().unwrap().second_player, contains_in_any_order(vec![
-        Piece::SECOND_KNIGHT
+        Tile::SECOND_KNIGHT
     ]));
     assert_that!(&result_game.captured_pieces().unwrap().first_player, contains_in_any_order(vec![
-        Piece::FIRST_KNIGHT
+        Tile::FIRST_KNIGHT
     ]));
 }
 
@@ -137,10 +137,10 @@ fn attack_move_from_pawn() {
 
     assert_eq!("1. cxd6 gxf5 2. d7 f4 *", result);
     assert_that!(&result_game.captured_pieces().unwrap().second_player, contains_in_any_order(vec![
-        Piece::SECOND_PAWN
+        Tile::SECOND_PAWN
     ]));
     assert_that!(&result_game.captured_pieces().unwrap().first_player, contains_in_any_order(vec![
-        Piece::FIRST_PAWN
+        Tile::FIRST_PAWN
     ]));
 }
 

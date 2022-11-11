@@ -1,5 +1,5 @@
 use crate::state::coordinates::{File, Rank};
-use crate::state::piece::{Piece};
+use crate::state::tile::{Tile};
 use crate::state::GameState;
 
 pub fn parse_fen(fen: &str, game_state: &mut GameState) {
@@ -19,13 +19,13 @@ pub fn parse_fen(fen: &str, game_state: &mut GameState) {
         }
 
         let mut tile = match char {
-            'r' | 'R' => Piece::FIRST_ROOK,
-            'n' | 'N' => Piece::FIRST_KNIGHT,
-            'b' | 'B' => Piece::FIRST_BISHOP,
-            'q' | 'Q' => Piece::FIRST_QUEEN,
-            'k' | 'K' => Piece::FIRST_KING,
-            'p' | 'P' => Piece::FIRST_PAWN,
-            _ => Piece::NONE
+            'r' | 'R' => Tile::FIRST_ROOK,
+            'n' | 'N' => Tile::FIRST_KNIGHT,
+            'b' | 'B' => Tile::FIRST_BISHOP,
+            'q' | 'Q' => Tile::FIRST_QUEEN,
+            'k' | 'K' => Tile::FIRST_KING,
+            'p' | 'P' => Tile::FIRST_PAWN,
+            _ => Tile::EMPTY
         };
         if !char.is_uppercase() { tile = tile.inverted_ownership() }
         game_state.board[(file, rank)] = tile;
@@ -93,17 +93,17 @@ fn generate_castling_metadata(game_state: &GameState) -> String {
     result
 }
 
-fn generate_fen_piece(piece: Piece) -> char {
-    let piece_type = match piece {
-        Piece::FIRST_ROOK | Piece::SECOND_ROOK => 'r',
-        Piece::FIRST_KNIGHT | Piece::SECOND_KNIGHT => 'n',
-        Piece::FIRST_BISHOP | Piece::SECOND_BISHOP => 'b',
-        Piece::FIRST_QUEEN | Piece::SECOND_QUEEN => 'q',
-        Piece::FIRST_KING | Piece::SECOND_KING => 'k',
-        Piece::FIRST_PAWN | Piece::SECOND_PAWN => 'p',
+fn generate_fen_piece(tile: Tile) -> char {
+    let piece_type = match tile {
+        Tile::FIRST_ROOK | Tile::SECOND_ROOK => 'r',
+        Tile::FIRST_KNIGHT | Tile::SECOND_KNIGHT => 'n',
+        Tile::FIRST_BISHOP | Tile::SECOND_BISHOP => 'b',
+        Tile::FIRST_QUEEN | Tile::SECOND_QUEEN => 'q',
+        Tile::FIRST_KING | Tile::SECOND_KING => 'k',
+        Tile::FIRST_PAWN | Tile::SECOND_PAWN => 'p',
         _ => { panic!("This should never happen - piece is not a valid recognised chesspiece") }
     };
-    if piece.is_owned_by_first_player() { piece_type.to_uppercase().next().unwrap() } else {piece_type}
+    if tile.is_owned_by_first_player() { piece_type.to_uppercase().next().unwrap() } else {piece_type}
 }
 
 #[cfg(test)]
@@ -118,7 +118,7 @@ mod tests {
         parse_fen(fen_that_forces_odd_numbered_rank_piece, &mut game_state);
 
         let result = game_state.board[(File::new(4),Rank::new(4))];
-        assert_eq!(Piece::SECOND_KNIGHT, result)
+        assert_eq!(Tile::SECOND_KNIGHT, result)
     }
 
     #[test]

@@ -1,7 +1,7 @@
 use crate::state::coordinates::{File, Rank};
 use crate::moves::Move;
 use crate::state::GameState;
-use crate::state::piece::{Piece};
+use crate::state::tile::{Tile};
 
 pub fn resolve_move(requested_move: &Move, game_state: GameState) -> GameState {
     let is_first_player_turn = game_state.is_first_player_turn;
@@ -17,18 +17,18 @@ pub fn resolve_move_for(requested_move: &Move, mut game_state: GameState, is_fir
             move_piece(&mut game_state, from_file, from_rank, to_file, to_rank);
         }
         Move::AttackMove((from_file, from_rank), (to_file, to_rank), _) => {
-            let piece = game_state.board[(to_file,to_rank)];
-            assert!(piece.is_occupied(), "Illegal move, no target to attack");
-            if is_first_player {game_state.captured_pieces.captured_second_player(piece, game_state.turn_number);}
-            else {game_state.captured_pieces.captured_first_player(piece, game_state.turn_number);}
+            let tile = game_state.board[(to_file, to_rank)];
+            assert!(tile.is_occupied(), "Illegal move, no target to attack");
+            if is_first_player {game_state.captured_pieces.captured_second_player(tile, game_state.turn_number);}
+            else {game_state.captured_pieces.captured_first_player(tile, game_state.turn_number);}
             
             move_piece(&mut game_state, from_file, from_rank, to_file, to_rank);
         }
         Move::PawnAttackMove(starting_file,(to_file, to_rank)) => {
-            let piece = game_state.board[(to_file,to_rank)];
-            assert!(piece.is_occupied(), "Illegal move, no target to attack");
-            if is_first_player {game_state.captured_pieces.captured_second_player(piece, game_state.turn_number);}
-            else {game_state.captured_pieces.captured_first_player(piece, game_state.turn_number);}
+            let tile = game_state.board[(to_file, to_rank)];
+            assert!(tile.is_occupied(), "Illegal move, no target to attack");
+            if is_first_player {game_state.captured_pieces.captured_second_player(tile, game_state.turn_number);}
+            else {game_state.captured_pieces.captured_first_player(tile, game_state.turn_number);}
 
             let direction = if is_first_player {-1} else {1};
             move_piece(&mut game_state,
@@ -41,7 +41,7 @@ pub fn resolve_move_for(requested_move: &Move, mut game_state: GameState, is_fir
         Move::PawnPromotion(file, piece) => {
             let from_rank = &Rank::new(if piece.is_owned_by_first_player() {6} else {1});
             let to_rank = &Rank::new(if piece.is_owned_by_first_player() {7} else {0});
-            game_state.board[(file,from_rank)] = Piece::NONE;
+            game_state.board[(file,from_rank)] = Tile::EMPTY;
             game_state.board[(file,to_rank)] = piece.clone()
         }
         Move::Castle(is_kingside) => {
@@ -81,42 +81,42 @@ pub fn resolve_move_for(requested_move: &Move, mut game_state: GameState, is_fir
 fn move_piece(game_state: &mut GameState, from_file: &File, from_rank: &Rank, to_file: &File, to_rank: &Rank) {
     let from = (from_file, from_rank);
     let to = (to_file, to_rank);
-    let piece = game_state.board[from];
-    game_state.board[from] = Piece::NONE;
-    game_state.board[to] = piece;
+    let tile = game_state.board[from];
+    game_state.board[from] = Tile::EMPTY;
+    game_state.board[to] = tile;
 
-    update_castling_state(game_state, from, piece)
+    update_castling_state(game_state, from, tile)
 }
 
-fn update_castling_state(game_state: &mut GameState, from: (&File, &Rank), piece: Piece) {
-    if piece == Piece::FIRST_ROOK
+fn update_castling_state(game_state: &mut GameState, from: (&File, &Rank), tile: Tile) {
+    if tile == Tile::FIRST_ROOK
         && from.0 == &File::H
         && from.1 == &Rank::ONE {
         game_state.first_player_can_castle_kingside = false;
     }
-    else if piece == Piece::FIRST_ROOK
+    else if tile == Tile::FIRST_ROOK
         && from.0 == &File::A
         && from.1 == &Rank::ONE {
         game_state.first_player_can_castle_queenside = false;
     }
-    else if piece == Piece::FIRST_KING
+    else if tile == Tile::FIRST_KING
         && from.0 == &File::E
         && from.1 == &Rank::ONE {
         game_state.first_player_can_castle_kingside = false;
         game_state.first_player_can_castle_queenside = false;
     }
 
-    if piece == Piece::SECOND_ROOK
+    if tile == Tile::SECOND_ROOK
         && from.0 == &File::H
         && from.1 == &Rank::EIGHT {
         game_state.second_player_can_castle_kingside = false;
     }
-    else if piece == Piece::SECOND_ROOK
+    else if tile == Tile::SECOND_ROOK
         && from.0 == &File::A
         && from.1 == &Rank::EIGHT {
         game_state.second_player_can_castle_queenside = false;
     }
-    else if piece == Piece::SECOND_KING
+    else if tile == Tile::SECOND_KING
         && from.0 == &File::E
         && from.1 == &Rank::EIGHT {
         game_state.second_player_can_castle_kingside = false;

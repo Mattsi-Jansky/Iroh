@@ -1,16 +1,16 @@
 use crate::state::coordinates::{File, Rank};
-use crate::state::piece::{Piece};
+use crate::state::tile::{Tile};
 
-pub fn generate_san(piece: Piece, file: File, rank: Rank) -> String {
+pub fn generate_san(tile: Tile, file: File, rank: Rank) -> String {
     format!("{}{}{}",
-            to_piece_identifier(piece),
+            to_piece_identifier(tile),
             to_alpha_file(file),
             rank+1)
 }
 
-pub fn generate_attack_san(piece: Piece, file: File, rank: Rank) -> String {
+pub fn generate_attack_san(tile: Tile, file: File, rank: Rank) -> String {
     format!("{}x{}{}",
-            to_piece_identifier(piece),
+            to_piece_identifier(tile),
             to_alpha_file(file),
             rank+1)
 }
@@ -23,11 +23,11 @@ pub fn generate_pawn_attack_san(_starting_file: File,target_file: File, target_r
     format!("{}x{}{}", to_alpha_file(_starting_file), to_alpha_file(target_file), target_rank+1)
 }
 
-pub fn generate_pawn_promotion_san(file: File, piece: Piece) -> String {
+pub fn generate_pawn_promotion_san(file: File, tile: Tile) -> String {
     format!("{}{}={}",
             to_alpha_file(file),
-            if piece.is_owned_by_first_player() {8} else {1},
-            to_piece_identifier(piece)
+            if tile.is_owned_by_first_player() {8} else {1},
+            to_piece_identifier(tile)
     )
 }
 
@@ -40,14 +40,14 @@ fn to_alpha_file(file: File) -> char {
     (file + 97).into()
 }
 
-fn to_piece_identifier(piece: Piece) -> char {
-    match piece {
-        Piece::FIRST_PAWN | Piece::SECOND_PAWN => panic!("Pawns should not be using to_piece_identifier"),
-        Piece::FIRST_BISHOP | Piece::SECOND_BISHOP => 'B',
-        Piece::FIRST_KNIGHT | Piece::SECOND_KNIGHT => 'N',
-        Piece::FIRST_ROOK | Piece::SECOND_ROOK => 'R',
-        Piece::FIRST_KING | Piece::SECOND_KING => 'K',
-        Piece::FIRST_QUEEN | Piece::SECOND_QUEEN => 'Q',
+fn to_piece_identifier(tile: Tile) -> char {
+    match tile {
+        Tile::FIRST_PAWN | Tile::SECOND_PAWN => panic!("Pawns should not be using to_piece_identifier"),
+        Tile::FIRST_BISHOP | Tile::SECOND_BISHOP => 'B',
+        Tile::FIRST_KNIGHT | Tile::SECOND_KNIGHT => 'N',
+        Tile::FIRST_ROOK | Tile::SECOND_ROOK => 'R',
+        Tile::FIRST_KING | Tile::SECOND_KING => 'K',
+        Tile::FIRST_QUEEN | Tile::SECOND_QUEEN => 'Q',
         _ => { panic!("This should never happen - piece is not a valid recognised chesspiece") }
     }
 }
@@ -58,14 +58,14 @@ mod tests {
 
     #[test]
     fn should_generate_san() {
-        let result = generate_san(Piece::FIRST_KNIGHT,File::new(2),Rank::new(3));
+        let result = generate_san(Tile::FIRST_KNIGHT, File::new(2), Rank::new(3));
 
         assert_eq!("Nc4", result);
     }
 
     #[test]
     fn should_generate_attack_san() {
-        let result = generate_attack_san(Piece::FIRST_ROOK, File::new(2), Rank::new(3));
+        let result = generate_attack_san(Tile::FIRST_ROOK, File::new(2), Rank::new(3));
 
         assert_eq!("Rxc4", result);
     }

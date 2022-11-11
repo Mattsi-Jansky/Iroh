@@ -2,20 +2,20 @@ use crate::moves::{dynamic_moves, Move, pawn_moves, static_moves};
 use crate::moves::castling_moves::generate_castling_moves;
 use crate::moves::resolve_move::{resolve_move_for};
 use crate::state::GameState;
-use crate::state::piece::{Piece};
+use crate::state::tile::{Tile};
 
 pub fn generate_moves(game_state: &GameState, is_for_first_player: bool) -> Vec<Move> {
     let mut available_moves = vec![];
 
-    let pieces = game_state.board.get_all_pieces_belonging_to_player(is_for_first_player);
-    for piece in pieces {
-        match piece.0 {
-            Piece::FIRST_PAWN | Piece::SECOND_PAWN => pawn_moves::generate_pawn_moves(game_state, &mut available_moves, piece, is_for_first_player),
-            Piece::FIRST_KNIGHT | Piece::SECOND_KNIGHT => static_moves::generate_knight_moves(&mut available_moves, piece, game_state, is_for_first_player),
-            Piece::FIRST_KING | Piece::SECOND_KING => static_moves::generate_king_moves(&mut available_moves, piece, game_state, is_for_first_player),
-            Piece::FIRST_ROOK | Piece::SECOND_ROOK => dynamic_moves::generate_rook_moves(&mut available_moves, piece, game_state, is_for_first_player),
-            Piece::FIRST_BISHOP | Piece::SECOND_BISHOP => dynamic_moves::generate_bishop_moves(&mut available_moves, piece, game_state, is_for_first_player),
-            Piece::FIRST_QUEEN | Piece::SECOND_QUEEN => dynamic_moves::generate_queen_moves(&mut available_moves, piece, game_state, is_for_first_player),
+    let tiles = game_state.board.get_all_pieces_belonging_to_player(is_for_first_player);
+    for tile in tiles {
+        match tile.0 {
+            Tile::FIRST_PAWN | Tile::SECOND_PAWN => pawn_moves::generate_pawn_moves(game_state, &mut available_moves, tile, is_for_first_player),
+            Tile::FIRST_KNIGHT | Tile::SECOND_KNIGHT => static_moves::generate_knight_moves(&mut available_moves, tile, game_state, is_for_first_player),
+            Tile::FIRST_KING | Tile::SECOND_KING => static_moves::generate_king_moves(&mut available_moves, tile, game_state, is_for_first_player),
+            Tile::FIRST_ROOK | Tile::SECOND_ROOK => dynamic_moves::generate_rook_moves(&mut available_moves, tile, game_state, is_for_first_player),
+            Tile::FIRST_BISHOP | Tile::SECOND_BISHOP => dynamic_moves::generate_bishop_moves(&mut available_moves, tile, game_state, is_for_first_player),
+            Tile::FIRST_QUEEN | Tile::SECOND_QUEEN => dynamic_moves::generate_queen_moves(&mut available_moves, tile, game_state, is_for_first_player),
             _ => { panic!("This should never happen - piece is not a valid recognised chesspiece") }
         }
     }

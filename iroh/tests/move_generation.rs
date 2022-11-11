@@ -6,7 +6,7 @@ use iroh::game::Game;
 
 use iroh::moves::Move;
 use iroh::state::coordinates::{Rank, File};
-use iroh::state::piece::Piece;
+use iroh::state::tile::Tile;
 
 #[test_case(0)]
 #[test_case(1)]
@@ -35,17 +35,17 @@ fn generate_moves_for_knight() {
     let available_moves = game.get_available_moves();
 
     assert_that!(&available_moves, contains_in_any_order(vec![
-        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(2),Rank::new(3)), 2: Piece::FIRST_KNIGHT },
-        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(2),Rank::new(5)), 2: Piece::FIRST_KNIGHT },
+        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(2),Rank::new(3)), 2: Tile::FIRST_KNIGHT },
+        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(2),Rank::new(5)), 2: Tile::FIRST_KNIGHT },
 
-        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(3),Rank::new(2)), 2: Piece::FIRST_KNIGHT },
-        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(3),Rank::new(6)), 2: Piece::FIRST_KNIGHT },
+        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(3),Rank::new(2)), 2: Tile::FIRST_KNIGHT },
+        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(3),Rank::new(6)), 2: Tile::FIRST_KNIGHT },
 
-        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(6),Rank::new(3)), 2: Piece::FIRST_KNIGHT },
-        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(6),Rank::new(5)), 2: Piece::FIRST_KNIGHT },
+        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(6),Rank::new(3)), 2: Tile::FIRST_KNIGHT },
+        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(6),Rank::new(5)), 2: Tile::FIRST_KNIGHT },
 
-        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(5),Rank::new(2)), 2: Piece::FIRST_KNIGHT },
-        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(5),Rank::new(6)), 2: Piece::FIRST_KNIGHT },
+        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(5),Rank::new(2)), 2: Tile::FIRST_KNIGHT },
+        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(5),Rank::new(6)), 2: Tile::FIRST_KNIGHT },
     ]));
 }
 
@@ -56,8 +56,8 @@ fn knight_moves_do_not_go_off_edge_of_board() {
     let available_moves = game.get_available_moves();
 
     assert_that!(&available_moves, contains_in_any_order(vec![
-        Move::RegularMove { 0: (File::new(0),Rank::new(0)), 1: (File::new(1),Rank::new(2)), 2: Piece::FIRST_KNIGHT },
-        Move::RegularMove { 0: (File::new(0),Rank::new(0)), 1: (File::new(2),Rank::new(1)), 2: Piece::FIRST_KNIGHT },
+        Move::RegularMove { 0: (File::new(0),Rank::new(0)), 1: (File::new(1),Rank::new(2)), 2: Tile::FIRST_KNIGHT },
+        Move::RegularMove { 0: (File::new(0),Rank::new(0)), 1: (File::new(2),Rank::new(1)), 2: Tile::FIRST_KNIGHT },
     ]));
 }
 
@@ -68,16 +68,16 @@ fn generate_moves_for_king() {
     let available_moves = game.get_available_moves();
 
     assert_that!(&available_moves, contains_in_any_order(vec![
-        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(3),Rank::new(3)), 2: Piece::FIRST_KING },
-        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(3),Rank::new(4)), 2: Piece::FIRST_KING },
-        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(3),Rank::new(5)), 2: Piece::FIRST_KING },
+        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(3),Rank::new(3)), 2: Tile::FIRST_KING },
+        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(3),Rank::new(4)), 2: Tile::FIRST_KING },
+        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(3),Rank::new(5)), 2: Tile::FIRST_KING },
 
-        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(4),Rank::new(3)), 2: Piece::FIRST_KING },
-        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(4),Rank::new(5)), 2: Piece::FIRST_KING },
+        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(4),Rank::new(3)), 2: Tile::FIRST_KING },
+        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(4),Rank::new(5)), 2: Tile::FIRST_KING },
 
-        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(5),Rank::new(3)), 2: Piece::FIRST_KING },
-        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(5),Rank::new(4)), 2: Piece::FIRST_KING },
-        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(5),Rank::new(5)), 2: Piece::FIRST_KING },
+        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(5),Rank::new(3)), 2: Tile::FIRST_KING },
+        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(5),Rank::new(4)), 2: Tile::FIRST_KING },
+        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(5),Rank::new(5)), 2: Tile::FIRST_KING },
     ]));
 }
 
@@ -88,23 +88,23 @@ fn generate_moves_for_rook() {
     let available_moves = game.get_available_moves();
 
     assert_that!(&available_moves, contains_in_any_order(vec![
-        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(4),Rank::new(0)), 2: Piece::FIRST_ROOK },
-        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(4),Rank::new(1)), 2: Piece::FIRST_ROOK },
-        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(4),Rank::new(2)), 2: Piece::FIRST_ROOK },
-        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(4),Rank::new(3)), 2: Piece::FIRST_ROOK },
+        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(4),Rank::new(0)), 2: Tile::FIRST_ROOK },
+        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(4),Rank::new(1)), 2: Tile::FIRST_ROOK },
+        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(4),Rank::new(2)), 2: Tile::FIRST_ROOK },
+        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(4),Rank::new(3)), 2: Tile::FIRST_ROOK },
 
-        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(4),Rank::new(5)), 2: Piece::FIRST_ROOK },
-        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(4),Rank::new(6)), 2: Piece::FIRST_ROOK },
-        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(4),Rank::new(7)), 2: Piece::FIRST_ROOK },
+        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(4),Rank::new(5)), 2: Tile::FIRST_ROOK },
+        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(4),Rank::new(6)), 2: Tile::FIRST_ROOK },
+        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(4),Rank::new(7)), 2: Tile::FIRST_ROOK },
 
-        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(0),Rank::new(4)), 2: Piece::FIRST_ROOK },
-        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(1),Rank::new(4)), 2: Piece::FIRST_ROOK },
-        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(2),Rank::new(4)), 2: Piece::FIRST_ROOK },
-        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(3),Rank::new(4)), 2: Piece::FIRST_ROOK },
+        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(0),Rank::new(4)), 2: Tile::FIRST_ROOK },
+        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(1),Rank::new(4)), 2: Tile::FIRST_ROOK },
+        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(2),Rank::new(4)), 2: Tile::FIRST_ROOK },
+        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(3),Rank::new(4)), 2: Tile::FIRST_ROOK },
 
-        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(5),Rank::new(4)), 2: Piece::FIRST_ROOK },
-        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(6),Rank::new(4)), 2: Piece::FIRST_ROOK },
-        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(7),Rank::new(4)), 2: Piece::FIRST_ROOK },
+        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(5),Rank::new(4)), 2: Tile::FIRST_ROOK },
+        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(6),Rank::new(4)), 2: Tile::FIRST_ROOK },
+        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(7),Rank::new(4)), 2: Tile::FIRST_ROOK },
     ]));
 }
 
@@ -115,22 +115,22 @@ fn generate_moves_for_bishop() {
     let available_moves = game.get_available_moves();
 
     assert_that!(&available_moves, contains_in_any_order(vec![
-        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(0),Rank::new(0)), 2: Piece::FIRST_BISHOP },
-        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(1),Rank::new(1)), 2: Piece::FIRST_BISHOP },
-        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(2),Rank::new(2)), 2: Piece::FIRST_BISHOP },
-        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(3),Rank::new(3)), 2: Piece::FIRST_BISHOP },
+        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(0),Rank::new(0)), 2: Tile::FIRST_BISHOP },
+        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(1),Rank::new(1)), 2: Tile::FIRST_BISHOP },
+        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(2),Rank::new(2)), 2: Tile::FIRST_BISHOP },
+        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(3),Rank::new(3)), 2: Tile::FIRST_BISHOP },
 
-        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(5),Rank::new(5)), 2: Piece::FIRST_BISHOP },
-        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(6),Rank::new(6)), 2: Piece::FIRST_BISHOP },
-        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(7),Rank::new(7)), 2: Piece::FIRST_BISHOP },
+        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(5),Rank::new(5)), 2: Tile::FIRST_BISHOP },
+        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(6),Rank::new(6)), 2: Tile::FIRST_BISHOP },
+        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(7),Rank::new(7)), 2: Tile::FIRST_BISHOP },
 
-        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(7),Rank::new(1)), 2: Piece::FIRST_BISHOP },
-        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(6),Rank::new(2)), 2: Piece::FIRST_BISHOP },
-        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(5),Rank::new(3)), 2: Piece::FIRST_BISHOP },
+        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(7),Rank::new(1)), 2: Tile::FIRST_BISHOP },
+        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(6),Rank::new(2)), 2: Tile::FIRST_BISHOP },
+        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(5),Rank::new(3)), 2: Tile::FIRST_BISHOP },
 
-        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(3),Rank::new(5)), 2: Piece::FIRST_BISHOP },
-        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(2),Rank::new(6)), 2: Piece::FIRST_BISHOP },
-        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(1),Rank::new(7)), 2: Piece::FIRST_BISHOP },
+        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(3),Rank::new(5)), 2: Tile::FIRST_BISHOP },
+        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(2),Rank::new(6)), 2: Tile::FIRST_BISHOP },
+        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(1),Rank::new(7)), 2: Tile::FIRST_BISHOP },
     ]));
 }
 
@@ -141,34 +141,34 @@ fn generate_moves_for_queen() {
     let available_moves = game.get_available_moves();
 
     assert_that!(&available_moves, contains_in_any_order(vec![
-        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(0),Rank::new(0)), 2: Piece::FIRST_QUEEN },
-        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(1),Rank::new(1)), 2: Piece::FIRST_QUEEN },
-        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(2),Rank::new(2)), 2: Piece::FIRST_QUEEN },
-        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(3),Rank::new(3)), 2: Piece::FIRST_QUEEN },
-        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(5),Rank::new(5)), 2: Piece::FIRST_QUEEN },
-        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(6),Rank::new(6)), 2: Piece::FIRST_QUEEN },
-        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(7),Rank::new(7)), 2: Piece::FIRST_QUEEN },
-        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(7),Rank::new(1)), 2: Piece::FIRST_QUEEN },
-        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(6),Rank::new(2)), 2: Piece::FIRST_QUEEN },
-        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(5),Rank::new(3)), 2: Piece::FIRST_QUEEN },
-        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(3),Rank::new(5)), 2: Piece::FIRST_QUEEN },
-        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(1),Rank::new(7)), 2: Piece::FIRST_QUEEN },
-        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(2),Rank::new(6)), 2: Piece::FIRST_QUEEN },
+        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(0),Rank::new(0)), 2: Tile::FIRST_QUEEN },
+        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(1),Rank::new(1)), 2: Tile::FIRST_QUEEN },
+        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(2),Rank::new(2)), 2: Tile::FIRST_QUEEN },
+        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(3),Rank::new(3)), 2: Tile::FIRST_QUEEN },
+        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(5),Rank::new(5)), 2: Tile::FIRST_QUEEN },
+        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(6),Rank::new(6)), 2: Tile::FIRST_QUEEN },
+        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(7),Rank::new(7)), 2: Tile::FIRST_QUEEN },
+        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(7),Rank::new(1)), 2: Tile::FIRST_QUEEN },
+        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(6),Rank::new(2)), 2: Tile::FIRST_QUEEN },
+        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(5),Rank::new(3)), 2: Tile::FIRST_QUEEN },
+        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(3),Rank::new(5)), 2: Tile::FIRST_QUEEN },
+        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(1),Rank::new(7)), 2: Tile::FIRST_QUEEN },
+        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(2),Rank::new(6)), 2: Tile::FIRST_QUEEN },
 
-        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(4),Rank::new(0)), 2: Piece::FIRST_QUEEN },
-        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(4),Rank::new(1)), 2: Piece::FIRST_QUEEN },
-        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(4),Rank::new(2)), 2: Piece::FIRST_QUEEN },
-        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(4),Rank::new(3)), 2: Piece::FIRST_QUEEN },
-        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(4),Rank::new(5)), 2: Piece::FIRST_QUEEN },
-        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(4),Rank::new(6)), 2: Piece::FIRST_QUEEN },
-        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(4),Rank::new(7)), 2: Piece::FIRST_QUEEN },
-        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(0),Rank::new(4)), 2: Piece::FIRST_QUEEN },
-        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(1),Rank::new(4)), 2: Piece::FIRST_QUEEN },
-        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(2),Rank::new(4)), 2: Piece::FIRST_QUEEN },
-        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(3),Rank::new(4)), 2: Piece::FIRST_QUEEN },
-        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(5),Rank::new(4)), 2: Piece::FIRST_QUEEN },
-        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(6),Rank::new(4)), 2: Piece::FIRST_QUEEN },
-        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(7),Rank::new(4)), 2: Piece::FIRST_QUEEN },
+        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(4),Rank::new(0)), 2: Tile::FIRST_QUEEN },
+        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(4),Rank::new(1)), 2: Tile::FIRST_QUEEN },
+        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(4),Rank::new(2)), 2: Tile::FIRST_QUEEN },
+        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(4),Rank::new(3)), 2: Tile::FIRST_QUEEN },
+        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(4),Rank::new(5)), 2: Tile::FIRST_QUEEN },
+        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(4),Rank::new(6)), 2: Tile::FIRST_QUEEN },
+        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(4),Rank::new(7)), 2: Tile::FIRST_QUEEN },
+        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(0),Rank::new(4)), 2: Tile::FIRST_QUEEN },
+        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(1),Rank::new(4)), 2: Tile::FIRST_QUEEN },
+        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(2),Rank::new(4)), 2: Tile::FIRST_QUEEN },
+        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(3),Rank::new(4)), 2: Tile::FIRST_QUEEN },
+        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(5),Rank::new(4)), 2: Tile::FIRST_QUEEN },
+        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(6),Rank::new(4)), 2: Tile::FIRST_QUEEN },
+        Move::RegularMove { 0: (File::new(4),Rank::new(4)), 1: (File::new(7),Rank::new(4)), 2: Tile::FIRST_QUEEN },
     ]));
 }
 

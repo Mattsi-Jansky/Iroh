@@ -2,20 +2,20 @@ use crate::moves::{DIAGONAL_DYNAMIC_TRANSFORMS, KING_STATIC_TRANSFORMS, KNIGHT_S
 use crate::state::board::Board;
 use crate::state::coordinates::{File, Rank};
 use crate::state::GameState;
-use crate::state::piece::{Piece};
+use crate::state::tile::{Tile};
 
 pub fn is_check(is_first_player: bool, game_state: &GameState) -> bool{
     let mut result = false;
 
     let king = game_state.board.get_all_pieces_belonging_to_player(is_first_player)
         .into_iter()
-        .find(|piece| piece.0 == Piece::FIRST_KING || piece.0 == Piece::SECOND_KING);
+        .find(|piece| piece.0 == Tile::FIRST_KING || piece.0 == Tile::SECOND_KING);
 
     if let Some(king) = king {
         let mut static_check = StaticCheckTester::new(&mut result, is_first_player, &game_state.board, &king);
-        static_check.test(if is_first_player { Piece::SECOND_KING } else { Piece::FIRST_KING }, &KING_STATIC_TRANSFORMS);
-        static_check.test(if is_first_player { Piece::SECOND_KNIGHT } else { Piece::FIRST_KNIGHT }, &KNIGHT_STATIC_TRANSFORMS);
-        static_check.test(if is_first_player {Piece::SECOND_PAWN} else {Piece::FIRST_PAWN},
+        static_check.test(if is_first_player { Tile::SECOND_KING } else { Tile::FIRST_KING }, &KING_STATIC_TRANSFORMS);
+        static_check.test(if is_first_player { Tile::SECOND_KNIGHT } else { Tile::FIRST_KNIGHT }, &KNIGHT_STATIC_TRANSFORMS);
+        static_check.test(if is_first_player { Tile::SECOND_PAWN} else { Tile::FIRST_PAWN},
                           if is_first_player { &[(-1, 1), (1, 1)]}
                           else {&[(-1, -1), (1, -1)]});
 
@@ -30,21 +30,21 @@ pub fn is_check(is_first_player: bool, game_state: &GameState) -> bool{
 struct DynamicCheckTester<'a> {
     result: &'a mut bool,
     board: &'a Board,
-    king: &'a (Piece, File, Rank),
-    enemy_queen: Piece,
-    enemy_rook: Piece,
-    enemy_bishop: Piece,
+    king: &'a (Tile, File, Rank),
+    enemy_queen: Tile,
+    enemy_rook: Tile,
+    enemy_bishop: Tile,
 }
 
 impl<'a> DynamicCheckTester<'a> {
     fn new(result: &'a mut bool,
            is_first_player: bool,
            board: &'a Board,
-           king: &'a (Piece, File, Rank)) -> DynamicCheckTester<'a> {
+           king: &'a (Tile, File, Rank)) -> DynamicCheckTester<'a> {
         DynamicCheckTester { result, board, king,
-            enemy_queen: if is_first_player { Piece::SECOND_QUEEN } else { Piece::FIRST_QUEEN },
-            enemy_rook: if is_first_player { Piece::SECOND_ROOK } else { Piece::FIRST_ROOK },
-            enemy_bishop: if is_first_player { Piece::SECOND_BISHOP } else { Piece::FIRST_BISHOP },
+            enemy_queen: if is_first_player { Tile::SECOND_QUEEN } else { Tile::FIRST_QUEEN },
+            enemy_rook: if is_first_player { Tile::SECOND_ROOK } else { Tile::FIRST_ROOK },
+            enemy_bishop: if is_first_player { Tile::SECOND_BISHOP } else { Tile::FIRST_BISHOP },
         }
     }
 
@@ -56,7 +56,7 @@ impl<'a> DynamicCheckTester<'a> {
         self.test(&[self.enemy_bishop, self.enemy_queen], &DIAGONAL_DYNAMIC_TRANSFORMS);
     }
 
-    fn test(&mut self, attacking_piece_types: &[Piece], transformations: &[(isize, isize)]) {
+    fn test(&mut self, attacking_piece_types: &[Tile], transformations: &[(isize, isize)]) {
         for transform in transformations {
             let (mut file, mut rank) = (Some(self.king.1), Some(self.king.2));
             loop {
@@ -83,25 +83,25 @@ struct StaticCheckTester<'a> {
     result: &'a mut bool,
     is_first_player: bool,
     board: &'a Board,
-    king: &'a (Piece, File, Rank)
+    king: &'a (Tile, File, Rank)
 }
 
 impl<'a> StaticCheckTester<'a> {
     fn new(result: &'a mut bool,
            is_first_player: bool,
            board: &'a Board,
-           king: &'a (Piece, File, Rank)) -> StaticCheckTester<'a> {
+           king: &'a (Tile, File, Rank)) -> StaticCheckTester<'a> {
         StaticCheckTester { result, is_first_player, board, king }
     }
 
-    fn test(&mut self, attacking_piece: Piece, transformations: &[(isize, isize)]) {
+    fn test(&mut self, attacking_tile: Tile, transformations: &[(isize, isize)]) {
         for transform in transformations {
             let target_file = self.king.1.transform(transform.0);
             let target_rank = self.king.2.transform(transform.1);
 
             if let (Some(target_file), Some(target_rank)) = (target_file, target_rank) {
                 let tile = self.board[(target_file, target_rank)];
-                if tile == attacking_piece { *self.result = true; }
+                if tile == attacking_tile { *self.result = true; }
             }
         }
     }
