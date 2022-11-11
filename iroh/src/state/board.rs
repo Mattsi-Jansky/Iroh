@@ -85,56 +85,52 @@ mod tests {
 
         let result = board[(File::new(0),Rank::new(0))];
 
-        assert!(result.is_none())
+        assert_eq!(result, Piece::NONE)
     }
 
     #[test]
     fn insert_piece_into_board_via_index() {
         let mut board = Board::blank();
 
-        board[(File::new(0),Rank::new(0))] = Some(Piece::new(true, Piece::King));
+        board[(File::new(0),Rank::new(0))] = Piece::FIRST_KING;
         let result = board[(File::new(0),Rank::new(0))];
 
-        assert!(!result.is_none());
-        let result = result.unwrap();
-        assert_that!(&result.piece_type, eq(Piece::King));
+        assert_eq!(result, Piece::FIRST_KING);
     }
 
     #[test]
     fn index_outermost_corner_of_board() {
         let mut board = Board::blank();
 
-        board[(File::new(7),Rank::new(7))] = Some(Piece::new(true, Piece::King));
+        board[(File::new(7),Rank::new(7))] = Piece::FIRST_KING;
         let result = board[(File::new(7),Rank::new(7))];
 
-        assert!(!result.is_none());
-        let result = result.unwrap();
-        assert_that!(&result.piece_type, eq(Piece::King));
+        assert_eq!(result, Piece::FIRST_KING);
     }
 
     #[test]
-    fn get_all_pieces_of_type_and_ownership() {
+    fn get_all_pieces_from_ownership() {
         let board = GameState::new().board;
 
         let result = board.get_all_pieces_belonging_to_player(true);
 
         assert_that!(&result, contains_in_any_order(vec![
-            (Piece::Pawn,File::new(0),Rank::new(1)),
-            (Piece::Pawn,File::new(1),Rank::new(1)),
-            (Piece::Pawn,File::new(2),Rank::new(1)),
-            (Piece::Pawn,File::new(3),Rank::new(1)),
-            (Piece::Pawn,File::new(4),Rank::new(1)),
-            (Piece::Pawn,File::new(5),Rank::new(1)),
-            (Piece::Pawn,File::new(6),Rank::new(1)),
-            (Piece::Pawn,File::new(7),Rank::new(1)),
-            (Piece::Rook,File::new(0),Rank::new(0)),
-            (Piece::Rook,File::new(7),Rank::new(0)),
-            (Piece::Knight,File::new(1),Rank::new(0)),
-            (Piece::Knight,File::new(6),Rank::new(0)),
-            (Piece::Bishop,File::new(5),Rank::new(0)),
-            (Piece::Bishop,File::new(2),Rank::new(0)),
-            (Piece::Queen,File::new(3),Rank::new(0)),
-            (Piece::King,File::new(4),Rank::new(0)),
+            (Piece::FIRST_PAWN,File::new(0),Rank::new(1)),
+            (Piece::FIRST_PAWN,File::new(1),Rank::new(1)),
+            (Piece::FIRST_PAWN,File::new(2),Rank::new(1)),
+            (Piece::FIRST_PAWN,File::new(3),Rank::new(1)),
+            (Piece::FIRST_PAWN,File::new(4),Rank::new(1)),
+            (Piece::FIRST_PAWN,File::new(5),Rank::new(1)),
+            (Piece::FIRST_PAWN,File::new(6),Rank::new(1)),
+            (Piece::FIRST_PAWN,File::new(7),Rank::new(1)),
+            (Piece::FIRST_ROOK,File::new(0),Rank::new(0)),
+            (Piece::FIRST_ROOK,File::new(7),Rank::new(0)),
+            (Piece::FIRST_KNIGHT,File::new(1),Rank::new(0)),
+            (Piece::FIRST_KNIGHT,File::new(6),Rank::new(0)),
+            (Piece::FIRST_BISHOP,File::new(5),Rank::new(0)),
+            (Piece::FIRST_BISHOP,File::new(2),Rank::new(0)),
+            (Piece::FIRST_QUEEN,File::new(3),Rank::new(0)),
+            (Piece::FIRST_KING,File::new(4),Rank::new(0)),
         ]));
     }
 }

@@ -58,14 +58,14 @@ mod tests {
 
     #[test]
     fn should_generate_san() {
-        let result = generate_san(Piece::Knight,File::new(2),Rank::new(3));
+        let result = generate_san(Piece::FIRST_KNIGHT,File::new(2),Rank::new(3));
 
         assert_eq!("Nc4", result);
     }
 
     #[test]
     fn should_generate_attack_san() {
-        let result = generate_attack_san(Piece::Rook, File::new(2), Rank::new(3));
+        let result = generate_attack_san(Piece::FIRST_ROOK, File::new(2), Rank::new(3));
 
         assert_eq!("Rxc4", result);
     }

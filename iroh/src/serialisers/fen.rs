@@ -117,8 +117,8 @@ mod tests {
 
         parse_fen(fen_that_forces_odd_numbered_rank_piece, &mut game_state);
 
-        let result = game_state.board[(File::new(4),Rank::new(4))].unwrap();
-        assert_eq!(Piece::Knight, result.piece_type)
+        let result = game_state.board[(File::new(4),Rank::new(4))];
+        assert_eq!(Piece::FIRST_KNIGHT, result)
     }
 
     #[test]
@@ -128,7 +128,7 @@ mod tests {
 
         parse_fen(fen_with_uppercase_king, &mut game_state);
 
-        assert_eq!(true, game_state.board[(File::new(4), Rank::new(7))].unwrap().is_owned_by_first_player);
+        assert_eq!(true, game_state.board[(File::new(4), Rank::new(7))].is_owned_by_first_player());
     }
 
     #[test]
@@ -138,7 +138,7 @@ mod tests {
 
         parse_fen(fen_with_lowercase_king, &mut game_state);
 
-        assert_eq!(false, game_state.board[(File::new(4), Rank::new(7))].unwrap().is_owned_by_first_player);
+        assert_eq!(false, game_state.board[(File::new(4), Rank::new(7))].is_owned_by_first_player());
     }
 
     #[test]

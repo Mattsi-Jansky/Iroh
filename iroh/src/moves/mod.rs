@@ -66,7 +66,7 @@ mod tests {
         let test_move = Move::RegularMove(
             (File::new(0),Rank::new(0)),
             (File::new(2),Rank::new(3)),
-            Piece::Knight);
+            Piece::FIRST_KNIGHT);
 
         let result = test_move.generate_san();
 
