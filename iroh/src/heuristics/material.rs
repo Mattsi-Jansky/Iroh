@@ -2,7 +2,7 @@ use crate::heuristics::{Heuristic, HeuristicType};
 use crate::heuristics::cache::HeuristicsCache;
 use crate::state::coordinates::{File, Rank};
 use crate::state::GameState;
-use crate::state::piece::PieceType;
+use crate::state::piece::Piece;
 
 pub struct MaterialHeuristic {}
 
@@ -11,9 +11,11 @@ impl Heuristic for MaterialHeuristic {
         let mut result = 0;
 
         result += state.board.get_all_pieces_belonging_to_player(true)
-            .into_iter().map(material_for).sum::<i32>();
+            .into_iter().map(|p| p.0)
+            .map(material_for).sum::<i32>();
         result -= state.board.get_all_pieces_belonging_to_player(false)
-            .into_iter().map(material_for).sum::<i32>();
+            .into_iter().map(|p| p.0)
+            .map(material_for).sum::<i32>();
 
         result
     }
@@ -23,14 +25,16 @@ impl Heuristic for MaterialHeuristic {
     }
 }
 
-fn material_for(piece: (PieceType, File, Rank)) -> i32 {
-    match piece.0 {
-        PieceType::Pawn => { 1 }
-        PieceType::Bishop => { 3 }
-        PieceType::Knight => { 3 }
-        PieceType::Rook => { 5 }
-        PieceType::King => { 0 }
-        PieceType::Queen => { 9 }
+fn material_for(piece: Piece) -> i32 {
+    match piece {
+        Piece::FIRST_PAWN | Piece::SECOND_PAWN => { 1 }
+        Piece::FIRST_BISHOP | Piece::SECOND_BISHOP => { 3 }
+        Piece::FIRST_KNIGHT | Piece::SECOND_KNIGHT => { 3 }
+        Piece::FIRST_ROOK | Piece::SECOND_ROOK => { 5 }
+        Piece::FIRST_KING | Piece::SECOND_KING => { 0 }
+        Piece::FIRST_QUEEN | Piece::SECOND_QUEEN => { 9 }
+        Piece::NONE => { panic!("Cannot generate material for an empty tile") }
+        _ => { panic!("This should never happen - piece is not a valid recognised chesspiece") }
     }
 }
 
