@@ -27,7 +27,7 @@ pub fn parse_fen(fen: &str, game_state: &mut GameState) {
             'p' | 'P' => Piece::FIRST_PAWN,
             _ => Piece::NONE
         };
-        if char.is_uppercase() { tile = tile.inverted_ownership() }
+        if !char.is_uppercase() { tile = tile.inverted_ownership() }
         game_state.board[(file, rank)] = tile;
 
         file += 1;
@@ -118,7 +118,7 @@ mod tests {
         parse_fen(fen_that_forces_odd_numbered_rank_piece, &mut game_state);
 
         let result = game_state.board[(File::new(4),Rank::new(4))];
-        assert_eq!(Piece::FIRST_KNIGHT, result)
+        assert_eq!(Piece::SECOND_KNIGHT, result)
     }
 
     #[test]
