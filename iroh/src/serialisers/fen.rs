@@ -2,54 +2,63 @@ use crate::state::coordinates::Coordinate;
 use crate::state::tile::{Tile};
 use crate::state::GameState;
 
+fn coordinate_from_rank_and_file(rank: u8, file: u8) -> Coordinate {
+    Coordinate::from_u8_no_bounds_check(file + rank * 8)
+}
+
 pub fn parse_fen(fen: &str, game_state: &mut GameState) {
-//     let mut rank = Rank::new(7);
-//     let mut file = File::new(0);
-//     let mut blocks = fen.split_whitespace();
-//
-//     for char in blocks.next().expect("Invalid FEN syntax").chars() {
-//         if char.eq(&'/') {
-//             rank -= 1;
-//             file = File::new(0);
-//             continue;
-//         }
-//         if char.is_ascii_digit() {
-//             file += char as usize - 0x30;
-//             continue;
-//         }
-//
-//         let mut tile = match char {
-//             'r' | 'R' => Tile::FIRST_ROOK,
-//             'n' | 'N' => Tile::FIRST_KNIGHT,
-//             'b' | 'B' => Tile::FIRST_BISHOP,
-//             'q' | 'Q' => Tile::FIRST_QUEEN,
-//             'k' | 'K' => Tile::FIRST_KING,
-//             'p' | 'P' => Tile::FIRST_PAWN,
-//             _ => Tile::EMPTY
-//         };
-//         if !char.is_uppercase() { tile = tile.inverted_ownership() }
-//         game_state.board[Coordinate] = tile;
-//
-//         file += 1;
-//     }
-//
-//     let player_to_move = blocks.next().expect("Invalid FEN syntax");
-//     match player_to_move {
-//         "w" => { game_state.is_first_player_turn = true; },
-//         "b" => { game_state.is_first_player_turn = false; },
-//         _ => panic!("Invalid FEN syntax")
-//     }
-//
-//     for char in blocks.next().expect("Invalid FEN syntax").chars() {
-//         match char {
-//             'K' => { game_state.first_player_can_castle_kingside = true; }
-//             'Q' => { game_state.first_player_can_castle_queenside = true; }
-//             'k' => { game_state.second_player_can_castle_kingside = true; }
-//             'q' => { game_state.second_player_can_castle_queenside = true; }
-//             '-' => { /* Do nothing */ }
-//             _ => panic!("Invalid FEN syntax")
-//         };
-//     }
+    let mut rank = 7 as u8;
+    let mut file = 0 as u8;
+    let mut blocks = fen.split_whitespace();
+
+    for char in blocks.next().expect("Invalid FEN syntax").chars() {
+        if char.eq(&'/') {
+            rank -= 1;
+            file = 0;
+            continue;
+        }
+        if char.is_ascii_digit() {
+            file += char as u8 - 0x30;
+            continue;
+        }
+
+        let mut tile = match char {
+            'R' => Tile::FIRST_ROOK,
+            'r' => Tile::SECOND_ROOK,
+            'N' => Tile::FIRST_KNIGHT,
+            'n' => Tile::SECOND_KNIGHT,
+            'B' => Tile::FIRST_BISHOP,
+            'b' => Tile::SECOND_BISHOP,
+            'Q' => Tile::FIRST_QUEEN,
+            'q' => Tile::SECOND_QUEEN,
+            'K' => Tile::FIRST_KING,
+            'k' => Tile::SECOND_KING,
+            'P' => Tile::FIRST_PAWN,
+            'p' => Tile::SECOND_PAWN,
+            _ => Tile::EMPTY
+        };
+        game_state.board[coordinate_from_rank_and_file(rank, file)] = tile;
+
+        file += 1;
+    }
+
+    let player_to_move = blocks.next().expect("Invalid FEN syntax");
+    match player_to_move {
+        "w" => { game_state.is_first_player_turn = true; },
+        "b" => { game_state.is_first_player_turn = false; },
+        _ => panic!("Invalid FEN syntax")
+    }
+
+    for char in blocks.next().expect("Invalid FEN syntax").chars() {
+        match char {
+            'K' => { game_state.first_player_can_castle_kingside = true; }
+            'Q' => { game_state.first_player_can_castle_queenside = true; }
+            'k' => { game_state.second_player_can_castle_kingside = true; }
+            'q' => { game_state.second_player_can_castle_queenside = true; }
+            '-' => { /* Do nothing */ }
+            _ => panic!("Invalid FEN syntax")
+        };
+    }
 }
 
 pub fn generate_fen(game_state: &GameState) -> String {
