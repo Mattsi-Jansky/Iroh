@@ -18,7 +18,7 @@ pub const DIAGONAL_DYNAMIC_TRANSFORMERS: [fn(Coordinate) -> Option<Coordinate>;4
     |c| c.south_west()
 ];
 
-pub const KING_STATIC_TRANSFORMS: [fn(Coordinate) -> Option<Coordinate>;8] = [
+pub const KING_STATIC_TRANSFORMERS: [fn(Coordinate) -> Option<Coordinate>;8] = [
     |c| c.north(),
     |c| c.east(),
     |c| c.south(),
@@ -29,7 +29,7 @@ pub const KING_STATIC_TRANSFORMS: [fn(Coordinate) -> Option<Coordinate>;8] = [
     |c| c.south_west(),
 ];
 
-pub const KNIGHT_STATIC_TRANSFORMS: [fn(Coordinate) -> Option<Coordinate>;8] = [
+pub const KNIGHT_STATIC_TRANSFORMERS: [fn(Coordinate) -> Option<Coordinate>;8] = [
     |c| c.east().and_then(|c| c.east())
         .and_then(|c|c.north()),
     |c| c.east().and_then(|c| c.north())
@@ -51,12 +51,12 @@ pub const KNIGHT_STATIC_TRANSFORMS: [fn(Coordinate) -> Option<Coordinate>;8] = [
         .and_then(|c|c.north()),
 ];
 
-pub const PAWN_STATIC_TRANSFORMS_FIRST_PLAYER: [fn(Coordinate) -> Option<Coordinate>;2] = [
+pub const PAWN_STATIC_TRANSFORMERS_FIRST_PLAYER: [fn(Coordinate) -> Option<Coordinate>;2] = [
     |c| c.north_east(),
     |c| c.north_west(),
 ];
 
-pub const PAWN_STATIC_TRANSFORMS_SECOND_PLAYER: [fn(Coordinate) -> Option<Coordinate>;2] = [
+pub const PAWN_STATIC_TRANSFORMERS_SECOND_PLAYER: [fn(Coordinate) -> Option<Coordinate>;2] = [
     |c| c.south_east(),
     |c| c.south_west(),
 ];
@@ -69,12 +69,15 @@ pub fn is_check(is_first_player: bool, game_state: &GameState) -> bool{
         .find(|tile| tile.0 == Tile::FIRST_KING || tile.0 == Tile::SECOND_KING);
 
     if let Some(king) = king {
+        let enemy_king = if is_first_player { Tile::SECOND_KING } else { Tile::FIRST_KING };
+        let enemy_knight = if is_first_player { Tile::SECOND_KNIGHT } else { Tile::FIRST_KNIGHT };
+        let enemy_pawn = if is_first_player { Tile::SECOND_PAWN } else { Tile::FIRST_PAWN };
         let mut static_check = StaticCheckTester::new(&mut result, is_first_player, &game_state.board, &king);
-        static_check.test(if is_first_player { Tile::SECOND_KING } else { Tile::FIRST_KING }, &KING_STATIC_TRANSFORMS);
-        static_check.test(if is_first_player { Tile::SECOND_KNIGHT } else { Tile::FIRST_KNIGHT }, &KNIGHT_STATIC_TRANSFORMS);
-        static_check.test(if is_first_player { Tile::SECOND_PAWN } else { Tile::FIRST_PAWN },
-                          if is_first_player { &PAWN_STATIC_TRANSFORMS_FIRST_PLAYER }
-                          else { &PAWN_STATIC_TRANSFORMS_SECOND_PLAYER });
+
+        static_check.test(enemy_king, &KING_STATIC_TRANSFORMERS);
+        static_check.test(enemy_knight, &KNIGHT_STATIC_TRANSFORMERS);
+        static_check.test(enemy_pawn,if is_first_player { &PAWN_STATIC_TRANSFORMERS_FIRST_PLAYER }
+                          else { &PAWN_STATIC_TRANSFORMERS_SECOND_PLAYER });
 
         let mut dynamic_check = DynamicCheckTester::new(&mut result, is_first_player, &game_state.board, &king);
         dynamic_check.test_straight_lines();
