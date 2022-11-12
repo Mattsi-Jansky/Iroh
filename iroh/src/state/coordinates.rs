@@ -104,19 +104,35 @@ impl Coordinate {
     }
 
     pub fn north(&self) -> Option<Coordinate> {
-        self.checked_add(8)
+        //wrap check
+        if self.0 > 55 {
+            None
+        } else {
+            self.checked_add(8)
+        }
     }
 
     pub fn east(&self) -> Option<Coordinate> {
-        self.checked_add(1)
+        //wrap check
+        if self.0 == 64 || self.0 == 55 || self.0 == 47 || self.0 == 39 || self.0 == 31 || self.0 == 23 || self.0 == 15 || self.0 == 7 {
+            None
+        }
+        else { self.checked_add(1) }
     }
 
     pub fn south(&self) -> Option<Coordinate> {
-        self.0.checked_sub(8).map(|x| Coordinate(x))
+        if self.0 < 8 { //wrap check
+            None
+        } else { self.0.checked_sub(8).map(|x| Coordinate(x)) }
     }
 
     pub fn west(&self) -> Option<Coordinate> {
-        self.0.checked_sub(1).map(|x| Coordinate(x))
+        //wrawp check
+        if self.0 == 0 || self.0 == 56 || self.0 == 48 || self.0 == 40 || self.0 == 32 || self.0 == 24 || self.0 == 16 || self.0 == 8 {
+            None
+        } else {
+            self.0.checked_sub(1).map(|x| Coordinate(x))
+        }
     }
 
     pub fn north_east(&self) -> Option<Coordinate> {
@@ -124,11 +140,19 @@ impl Coordinate {
     }
 
     pub fn north_west(&self) -> Option<Coordinate> {
-        self.checked_add(7)
+        if self.0 > 55 { //wrap check
+            None
+        } else {
+            self.checked_add(7)
+        }
     }
 
     pub fn south_east(&self) -> Option<Coordinate> {
-        self.0.checked_sub(7).map(|x| Coordinate(x))
+        if self.0 < 8 { //wrap check
+            None
+        } else {
+            self.0.checked_sub(7).map(|x| Coordinate(x))
+        }
     }
 
     pub fn south_west(&self) -> Option<Coordinate> {
@@ -315,6 +339,78 @@ mod tests {
     #[test]
     fn given_out_of_bounds_south_west_returns_none() {
         let coordinate = Coordinate::A1;
+
+        let result = coordinate.south_west();
+
+        assert_eq!(None, result);
+    }
+
+    #[test]
+    fn given_move_north_from_top_rank_returns_none() {
+        let coordinate = Coordinate::B8;
+
+        let result = coordinate.north();
+
+        assert_eq!(None, result);
+    }
+
+    #[test]
+    fn given_move_east_from_last_file_returns_none() {
+        let coordinate = Coordinate::H5;
+
+        let result = coordinate.east();
+
+        assert_eq!(None, result);
+    }
+
+    #[test]
+    fn given_move_south_from_first_rank_returns_none() {
+        let coordinate = Coordinate::B1;
+
+        let result = coordinate.south();
+
+        assert_eq!(None, result);
+    }
+
+    #[test]
+    fn given_move_west_from_first_file_returns_none() {
+        let coordinate = Coordinate::A5;
+
+        let result = coordinate.west();
+
+        assert_eq!(None, result);
+    }
+
+    #[test]
+    fn given_move_north_east_from_top_rank_returns_none() {
+        let coordinate = Coordinate::A8;
+
+        let result = coordinate.north_east();
+
+        assert_eq!(None, result);
+    }
+
+    #[test]
+    fn given_move_north_west_from_top_rank_returns_none() {
+        let coordinate = Coordinate::B8;
+
+        let result = coordinate.north_west();
+
+        assert_eq!(None, result);
+    }
+
+    #[test]
+    fn given_move_south_east_from_first_rank_returns_none() {
+        let coordinate = Coordinate::H1;
+
+        let result = coordinate.south_east();
+
+        assert_eq!(None, result);
+    }
+
+    #[test]
+    fn given_move_south_west_from_first_rank_returns_none() {
+        let coordinate = Coordinate::H1;
 
         let result = coordinate.south_west();
 
