@@ -22,7 +22,7 @@ pub fn parse_fen(fen: &str, game_state: &mut GameState) {
             continue;
         }
 
-        let mut tile = match char {
+        let tile = match char {
             'R' => Tile::FIRST_ROOK,
             'r' => Tile::SECOND_ROOK,
             'N' => Tile::FIRST_KNIGHT,
@@ -65,32 +65,34 @@ pub fn generate_fen(game_state: &GameState) -> String {
     let mut result = String::new();
     let mut blank_tiles_count = 0;
 
-    for i in (0..64).rev() {
-        let coordinate= Coordinate::from_u8_no_bounds_check(i);
-        let tile = game_state.board[coordinate];
-        if tile.is_occupied()  {
-            if blank_tiles_count > 0 {
-                result.push(char::from_digit(blank_tiles_count, 10).unwrap());
-                blank_tiles_count = 0;
-            };
-            let glyph = generate_fen_piece(tile);
-            result.push(glyph);
-        } else { blank_tiles_count += 1; }
+    for rank in (0 as u8..8).rev() {
+        for file in 0 as u8..8 {
+            let coordinate = coordinate_from_rank_and_file(rank,file);
+            let tile = game_state.board[coordinate];
+            if tile.is_occupied() {
+                if blank_tiles_count > 0 {
+                    result.push(char::from_digit(blank_tiles_count, 10).unwrap());
+                    blank_tiles_count = 0;
+                };
+                let glyph = generate_fen_piece(tile);
+                result.push(glyph);
+            } else { blank_tiles_count += 1; }
 
-
-        if coordinate.is_at_start_of_rank() {
-            if blank_tiles_count > 0 {
-                result.push(char::from_digit(blank_tiles_count, 10).unwrap());
-                blank_tiles_count = 0;
+            if coordinate.is_at_end_of_rank() {
+                if blank_tiles_count > 0 {
+                    result.push(char::from_digit(blank_tiles_count, 10).unwrap());
+                    blank_tiles_count = 0;
+                };
+                if rank != 0 { result.push('/') }
             };
-            if i > 0 { result.push('/') }
-        };
+        }
     }
 
     result.push_str(&*format!(
         " {} {} - 0 1",
         if game_state.is_first_player_turn {"w"} else {"b"},
-        generate_castling_metadata(game_state)));
+        generate_castling_metadata(game_state))
+    );
     result
 }
 
@@ -138,22 +140,22 @@ mod tests {
 
     #[test]
     fn uppercase_is_first_player() {
-        let fen_with_uppercase_king = "4K3/8/8/8/8/8/8/8 w KQkq - 0 1";
+        let fen_with_uppercase_king = "4K3/8/8/8/8/8/8/8 w - - 0 1";
         let mut game_state = GameState::new();
 
         parse_fen(fen_with_uppercase_king, &mut game_state);
 
-        assert_eq!(true, game_state.board[Coordinate::E7].is_owned_by_first_player());
+        assert_eq!(true, game_state.board[Coordinate::E8].is_owned_by_first_player());
     }
 
     #[test]
     fn lowercase_is_second_player() {
-        let fen_with_lowercase_king = "4k3/8/8/8/8/8/8/8 w KQkq - 0 1";
+        let fen_with_lowercase_king = "4k3/8/8/8/8/8/8/8 w - - 0 1";
         let mut game_state = GameState::new();
 
         parse_fen(fen_with_lowercase_king, &mut game_state);
 
-        assert_eq!(false, game_state.board[Coordinate::E7].is_owned_by_first_player());
+        assert_eq!(false, game_state.board[Coordinate::E8].is_owned_by_first_player());
     }
 
     #[test]

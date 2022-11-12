@@ -165,7 +165,7 @@ impl Coordinate {
     }
 
     pub fn is_at_end_of_rank(&self) -> bool {
-        self.0 == 64 || self.0 == 55 || self.0 == 47 || self.0 == 39 || self.0 == 31 || self.0 == 23 || self.0 == 15 || self.0 == 7
+        self.0 == 63 || self.0 == 55 || self.0 == 47 || self.0 == 39 || self.0 == 31 || self.0 == 23 || self.0 == 15 || self.0 == 7
     }
 
     pub fn is_at_start_of_rank(&self) -> bool {
