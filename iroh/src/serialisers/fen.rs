@@ -1,3 +1,4 @@
+use crate::state::coordinates::Coordinate;
 use crate::state::tile::{Tile};
 use crate::state::GameState;
 
@@ -53,29 +54,34 @@ pub fn parse_fen(fen: &str, game_state: &mut GameState) {
 
 pub fn generate_fen(game_state: &GameState) -> String {
     let mut result = String::new();
+    let mut blank_tiles_count = 0;
 
-    // for r in (0..=Rank::MAX).rev() {
-    //     let mut blank_tiles_count = 0;
-    //     for f in 0..=File::MAX {
-    //         let tile = game_state.board[(File::new(f), Rank::new(r))];
-    //         if tile.is_occupied()  {
-    //             if blank_tiles_count > 0 {
-    //                 result.push(char::from_digit(blank_tiles_count, 10).unwrap());
-    //                 blank_tiles_count = 0;
-    //             };
-    //             let glyph = generate_fen_piece(tile);
-    //             result.push(glyph);
-    //         } else { blank_tiles_count += 1; }
-    //     }
-    //
-    //     if blank_tiles_count > 0 { result.push(char::from_digit(blank_tiles_count, 10).unwrap()) };
-    //     if r > 0 { result.push('/') };
-    // }
-    //
-    // result.push_str(&*format!(
-    //     " {} {} - 0 1",
-    //     if game_state.is_first_player_turn {"w"} else {"b"},
-    //     generate_castling_metadata(game_state)));
+    for i in (0..64).rev() {
+        let coordinate= Coordinate::from_u8_no_bounds_check(i);
+        let tile = game_state.board[coordinate];
+        if tile.is_occupied()  {
+            if blank_tiles_count > 0 {
+                result.push(char::from_digit(blank_tiles_count, 10).unwrap());
+                blank_tiles_count = 0;
+            };
+            let glyph = generate_fen_piece(tile);
+            result.push(glyph);
+        } else { blank_tiles_count += 1; }
+
+
+        if coordinate.is_at_start_of_rank() {
+            if blank_tiles_count > 0 {
+                result.push(char::from_digit(blank_tiles_count, 10).unwrap());
+                blank_tiles_count = 0;
+            };
+            if i > 0 { result.push('/') }
+        };
+    }
+
+    result.push_str(&*format!(
+        " {} {} - 0 1",
+        if game_state.is_first_player_turn {"w"} else {"b"},
+        generate_castling_metadata(game_state)));
     result
 }
 

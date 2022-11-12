@@ -91,8 +91,17 @@ impl Coordinate {
     pub const H8: Coordinate = Coordinate(64);
 
     /// **Invariant:** input must be below 64
+    /// Giving input higher than 64 will crash your program for certain.
+    /// Only use when you are sure of the input size.
     pub fn from_usize_no_bounds_check(input: usize) -> Self {
         Coordinate(input as u8)
+    }
+
+    /// **Invariant:** input must be below 64
+    /// Giving input higher than 64 will crash your program for certain.
+    /// Only use when you are sure of the input size.
+    pub fn from_u8_no_bounds_check(input: u8) -> Self {
+        Coordinate(input)
     }
 
     pub fn as_usize(&self) -> usize {
@@ -114,7 +123,7 @@ impl Coordinate {
 
     pub fn east(&self) -> Option<Coordinate> {
         //wrap check
-        if self.0 == 64 || self.0 == 55 || self.0 == 47 || self.0 == 39 || self.0 == 31 || self.0 == 23 || self.0 == 15 || self.0 == 7 {
+        if self.is_at_end_of_rank() {
             None
         }
         else { self.checked_add(1) }
@@ -128,7 +137,7 @@ impl Coordinate {
 
     pub fn west(&self) -> Option<Coordinate> {
         //wrawp check
-        if self.0 == 0 || self.0 == 56 || self.0 == 48 || self.0 == 40 || self.0 == 32 || self.0 == 24 || self.0 == 16 || self.0 == 8 {
+        if self.is_at_start_of_rank() {
             None
         } else {
             self.0.checked_sub(1).map(|x| Coordinate(x))
@@ -153,6 +162,14 @@ impl Coordinate {
         } else {
             self.0.checked_sub(7).map(|x| Coordinate(x))
         }
+    }
+
+    pub fn is_at_end_of_rank(&self) -> bool {
+        self.0 == 64 || self.0 == 55 || self.0 == 47 || self.0 == 39 || self.0 == 31 || self.0 == 23 || self.0 == 15 || self.0 == 7
+    }
+
+    pub fn is_at_start_of_rank(&self) -> bool {
+        self.0 == 0 || self.0 == 56 || self.0 == 48 || self.0 == 40 || self.0 == 32 || self.0 == 24 || self.0 == 16 || self.0 == 8
     }
 
     pub fn south_west(&self) -> Option<Coordinate> {
@@ -181,6 +198,27 @@ mod tests {
         let result = Coordinate::from_usize_no_bounds_check(0 as usize);
 
         assert_eq!(0 as u8, result.0)
+    }
+
+    #[test]
+    fn creating_coordinate_from_usize_does_not_perform_boundary_checks() {
+        let result = Coordinate::from_usize_no_bounds_check(255 as usize);
+
+        assert_eq!(255 as u8, result.0)
+    }
+
+    #[test]
+    fn create_coordinate_from_u8() {
+        let result = Coordinate::from_u8_no_bounds_check(10);
+
+        assert_eq!(10, result.0);
+    }
+
+    #[test]
+    fn create_coordinate_from_u8_does_not_perform_boundary_checks() {
+        let result = Coordinate::from_u8_no_bounds_check(255);
+
+        assert_eq!(255, result.0);
     }
 
     #[test]
