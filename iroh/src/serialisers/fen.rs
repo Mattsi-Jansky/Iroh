@@ -1,82 +1,81 @@
-use crate::state::coordinates::{File, Rank};
 use crate::state::tile::{Tile};
 use crate::state::GameState;
 
 pub fn parse_fen(fen: &str, game_state: &mut GameState) {
-    let mut rank = Rank::new(7);
-    let mut file = File::new(0);
-    let mut blocks = fen.split_whitespace();
-
-    for char in blocks.next().expect("Invalid FEN syntax").chars() {
-        if char.eq(&'/') {
-            rank -= 1;
-            file = File::new(0);
-            continue;
-        }
-        if char.is_ascii_digit() {
-            file += char as usize - 0x30;
-            continue;
-        }
-
-        let mut tile = match char {
-            'r' | 'R' => Tile::FIRST_ROOK,
-            'n' | 'N' => Tile::FIRST_KNIGHT,
-            'b' | 'B' => Tile::FIRST_BISHOP,
-            'q' | 'Q' => Tile::FIRST_QUEEN,
-            'k' | 'K' => Tile::FIRST_KING,
-            'p' | 'P' => Tile::FIRST_PAWN,
-            _ => Tile::EMPTY
-        };
-        if !char.is_uppercase() { tile = tile.inverted_ownership() }
-        game_state.board[(file, rank)] = tile;
-
-        file += 1;
-    }
-
-    let player_to_move = blocks.next().expect("Invalid FEN syntax");
-    match player_to_move {
-        "w" => { game_state.is_first_player_turn = true; },
-        "b" => { game_state.is_first_player_turn = false; },
-        _ => panic!("Invalid FEN syntax")
-    }
-
-    for char in blocks.next().expect("Invalid FEN syntax").chars() {
-        match char {
-            'K' => { game_state.first_player_can_castle_kingside = true; }
-            'Q' => { game_state.first_player_can_castle_queenside = true; }
-            'k' => { game_state.second_player_can_castle_kingside = true; }
-            'q' => { game_state.second_player_can_castle_queenside = true; }
-            '-' => { /* Do nothing */ }
-            _ => panic!("Invalid FEN syntax")
-        };
-    }
+//     let mut rank = Rank::new(7);
+//     let mut file = File::new(0);
+//     let mut blocks = fen.split_whitespace();
+//
+//     for char in blocks.next().expect("Invalid FEN syntax").chars() {
+//         if char.eq(&'/') {
+//             rank -= 1;
+//             file = File::new(0);
+//             continue;
+//         }
+//         if char.is_ascii_digit() {
+//             file += char as usize - 0x30;
+//             continue;
+//         }
+//
+//         let mut tile = match char {
+//             'r' | 'R' => Tile::FIRST_ROOK,
+//             'n' | 'N' => Tile::FIRST_KNIGHT,
+//             'b' | 'B' => Tile::FIRST_BISHOP,
+//             'q' | 'Q' => Tile::FIRST_QUEEN,
+//             'k' | 'K' => Tile::FIRST_KING,
+//             'p' | 'P' => Tile::FIRST_PAWN,
+//             _ => Tile::EMPTY
+//         };
+//         if !char.is_uppercase() { tile = tile.inverted_ownership() }
+//         game_state.board[Coordinate] = tile;
+//
+//         file += 1;
+//     }
+//
+//     let player_to_move = blocks.next().expect("Invalid FEN syntax");
+//     match player_to_move {
+//         "w" => { game_state.is_first_player_turn = true; },
+//         "b" => { game_state.is_first_player_turn = false; },
+//         _ => panic!("Invalid FEN syntax")
+//     }
+//
+//     for char in blocks.next().expect("Invalid FEN syntax").chars() {
+//         match char {
+//             'K' => { game_state.first_player_can_castle_kingside = true; }
+//             'Q' => { game_state.first_player_can_castle_queenside = true; }
+//             'k' => { game_state.second_player_can_castle_kingside = true; }
+//             'q' => { game_state.second_player_can_castle_queenside = true; }
+//             '-' => { /* Do nothing */ }
+//             _ => panic!("Invalid FEN syntax")
+//         };
+//     }
 }
 
 pub fn generate_fen(game_state: &GameState) -> String {
     let mut result = String::new();
 
-    for r in (0..=Rank::MAX).rev() {
-        let mut blank_tiles_count = 0;
-        for f in 0..=File::MAX {
-            let tile = game_state.board[(File::new(f), Rank::new(r))];
-            if tile.is_occupied()  {
-                if blank_tiles_count > 0 {
-                    result.push(char::from_digit(blank_tiles_count, 10).unwrap());
-                    blank_tiles_count = 0;
-                };
-                let glyph = generate_fen_piece(tile);
-                result.push(glyph);
-            } else { blank_tiles_count += 1; }
-        }
-
-        if blank_tiles_count > 0 { result.push(char::from_digit(blank_tiles_count, 10).unwrap()) };
-        if r > 0 { result.push('/') };
-    }
-
-    result.push_str(&*format!(
-        " {} {} - 0 1",
-        if game_state.is_first_player_turn {"w"} else {"b"},
-        generate_castling_metadata(game_state)));
+    // for r in (0..=Rank::MAX).rev() {
+    //     let mut blank_tiles_count = 0;
+    //     for f in 0..=File::MAX {
+    //         let tile = game_state.board[(File::new(f), Rank::new(r))];
+    //         if tile.is_occupied()  {
+    //             if blank_tiles_count > 0 {
+    //                 result.push(char::from_digit(blank_tiles_count, 10).unwrap());
+    //                 blank_tiles_count = 0;
+    //             };
+    //             let glyph = generate_fen_piece(tile);
+    //             result.push(glyph);
+    //         } else { blank_tiles_count += 1; }
+    //     }
+    //
+    //     if blank_tiles_count > 0 { result.push(char::from_digit(blank_tiles_count, 10).unwrap()) };
+    //     if r > 0 { result.push('/') };
+    // }
+    //
+    // result.push_str(&*format!(
+    //     " {} {} - 0 1",
+    //     if game_state.is_first_player_turn {"w"} else {"b"},
+    //     generate_castling_metadata(game_state)));
     result
 }
 
@@ -108,6 +107,7 @@ fn generate_fen_piece(tile: Tile) -> char {
 
 #[cfg(test)]
 mod tests {
+    use crate::state::coordinates::Coordinate;
     use super::*;
 
     #[test]
@@ -117,7 +117,7 @@ mod tests {
 
         parse_fen(fen_that_forces_odd_numbered_rank_piece, &mut game_state);
 
-        let result = game_state.board[(File::new(4),Rank::new(4))];
+        let result = game_state.board[Coordinate::E5];
         assert_eq!(Tile::SECOND_KNIGHT, result)
     }
 
@@ -128,7 +128,7 @@ mod tests {
 
         parse_fen(fen_with_uppercase_king, &mut game_state);
 
-        assert_eq!(true, game_state.board[(File::new(4), Rank::new(7))].is_owned_by_first_player());
+        assert_eq!(true, game_state.board[Coordinate::E7].is_owned_by_first_player());
     }
 
     #[test]
@@ -138,7 +138,7 @@ mod tests {
 
         parse_fen(fen_with_lowercase_king, &mut game_state);
 
-        assert_eq!(false, game_state.board[(File::new(4), Rank::new(7))].is_owned_by_first_player());
+        assert_eq!(false, game_state.board[Coordinate::E7].is_owned_by_first_player());
     }
 
     #[test]

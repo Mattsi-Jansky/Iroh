@@ -1,355 +1,115 @@
+use std::fmt::{Display, Formatter};
 use std::ops::{Add, AddAssign, Mul, Sub, SubAssign};
 use derive_more::{Deref, Display};
 
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Deref, Display, Hash)]
-pub struct File {
-    inner: usize
-}
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Deref, Hash)]
+pub struct Coordinate(u8);
 
-impl File {
-    pub const MAX: usize = 7;
-    pub const A: File = File::new(0);
-    pub const B: File = File::new(1);
-    pub const C: File = File::new(2);
-    pub const D: File = File::new(3);
-    pub const E: File = File::new(4);
-    pub const F: File = File::new(5);
-    pub const G: File = File::new(6);
-    pub const H: File = File::new(7);
+const SAN_LOOKUP: [&str; 8*8] = [
+    "a1","a2","a3","a4","a5","a6","a7","a8",
+    "b1","b2","b3","b4","b5","b6","b7","b8",
+    "c1","c2","c3","c4","c5","c6","c7","c8",
+    "d1","d2","d3","d4","d5","d6","d7","d8",
+    "e1","e2","e3","e4","e5","e6","e7","e8",
+    "f1","f2","f3","f4","f5","f6","f7","f8",
+    "g1","g2","g3","g4","g5","g6","g7","g8",
+    "h1","h2","h3","h4","h5","h6","h7","h8",
+];
 
-    pub const fn new(inner: usize) -> File {
-        File{inner}
+impl Coordinate {
+    pub const A1: Coordinate = Coordinate(0);
+    pub const A2: Coordinate = Coordinate(1);
+    pub const A3: Coordinate = Coordinate(2);
+    pub const A4: Coordinate = Coordinate(3);
+    pub const A5: Coordinate = Coordinate(4);
+    pub const A6: Coordinate = Coordinate(5);
+    pub const A7: Coordinate = Coordinate(6);
+    pub const A8: Coordinate = Coordinate(7);
+
+    pub const B1: Coordinate = Coordinate(8);
+    pub const B2: Coordinate = Coordinate(9);
+    pub const B3: Coordinate = Coordinate(10);
+    pub const B4: Coordinate = Coordinate(11);
+    pub const B5: Coordinate = Coordinate(12);
+    pub const B6: Coordinate = Coordinate(13);
+    pub const B7: Coordinate = Coordinate(14);
+    pub const B8: Coordinate = Coordinate(15);
+
+    pub const C1: Coordinate = Coordinate(16);
+    pub const C2: Coordinate = Coordinate(17);
+    pub const C3: Coordinate = Coordinate(18);
+    pub const C4: Coordinate = Coordinate(19);
+    pub const C5: Coordinate = Coordinate(20);
+    pub const C6: Coordinate = Coordinate(21);
+    pub const C7: Coordinate = Coordinate(22);
+    pub const C8: Coordinate = Coordinate(23);
+
+    pub const D1: Coordinate = Coordinate(24);
+    pub const D2: Coordinate = Coordinate(25);
+    pub const D3: Coordinate = Coordinate(26);
+    pub const D4: Coordinate = Coordinate(27);
+    pub const D5: Coordinate = Coordinate(28);
+    pub const D6: Coordinate = Coordinate(29);
+    pub const D7: Coordinate = Coordinate(30);
+    pub const D8: Coordinate = Coordinate(31);
+
+    pub const E1: Coordinate = Coordinate(32);
+    pub const E2: Coordinate = Coordinate(33);
+    pub const E3: Coordinate = Coordinate(34);
+    pub const E4: Coordinate = Coordinate(35);
+    pub const E5: Coordinate = Coordinate(36);
+    pub const E6: Coordinate = Coordinate(37);
+    pub const E7: Coordinate = Coordinate(38);
+    pub const E8: Coordinate = Coordinate(39);
+
+    pub const F1: Coordinate = Coordinate(40);
+    pub const F2: Coordinate = Coordinate(41);
+    pub const F3: Coordinate = Coordinate(42);
+    pub const F4: Coordinate = Coordinate(43);
+    pub const F5: Coordinate = Coordinate(44);
+    pub const F6: Coordinate = Coordinate(45);
+    pub const F7: Coordinate = Coordinate(46);
+    pub const F8: Coordinate = Coordinate(47);
+
+    pub const G1: Coordinate = Coordinate(48);
+    pub const G2: Coordinate = Coordinate(49);
+    pub const G3: Coordinate = Coordinate(50);
+    pub const G4: Coordinate = Coordinate(51);
+    pub const G5: Coordinate = Coordinate(52);
+    pub const G6: Coordinate = Coordinate(53);
+    pub const G7: Coordinate = Coordinate(54);
+    pub const G8: Coordinate = Coordinate(55);
+
+    pub const H1: Coordinate = Coordinate(56);
+    pub const H2: Coordinate = Coordinate(57);
+    pub const H3: Coordinate = Coordinate(58);
+    pub const H4: Coordinate = Coordinate(59);
+    pub const H5: Coordinate = Coordinate(61);
+    pub const H6: Coordinate = Coordinate(62);
+    pub const H7: Coordinate = Coordinate(63);
+    pub const H8: Coordinate = Coordinate(64);
+
+    pub fn as_usize(&self) -> usize {
+        self.0 as usize
     }
 
-    pub fn transform(&self, rhs: isize) -> Option<File> {
-        let result = (self.inner as isize) + rhs;
-        if !(0..=7).contains(&result) { None }
-        else { Some(File { inner: result as usize }) }
-    }
-}
-
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Deref, Display, Hash)]
-pub struct Rank {
-    inner: usize
-}
-
-impl Rank {
-    pub const MAX: usize = 7;
-    pub const ONE: Rank = Rank::new(0);
-    pub const TWO: Rank = Rank::new(1);
-    pub const THREE: Rank = Rank::new(2);
-    pub const FOUR: Rank = Rank::new(3);
-    pub const FIVE: Rank = Rank::new(4);
-    pub const SIX: Rank = Rank::new(5);
-    pub const SEVEN: Rank = Rank::new(6);
-    pub const EIGHT: Rank = Rank::new(7);
-
-    pub const fn new(inner: usize) -> Rank {
-        Rank{inner}
+    pub fn file(&self) -> &str {
+        &SAN_LOOKUP[self.0 as usize][0..0]
     }
 
-    pub fn transform(&self, rhs: isize) -> Option<Rank> {
-        let result = (self.inner as isize) + rhs;
-        if !(0..=7).contains(&result) { None }
-        else { Some(Rank { inner: result as usize }) }
-    }
-}
-
-impl Add<usize> for File {
-    type Output = File;
-
-    fn add(self, rhs: usize) -> Self::Output {
-        File::new(self.inner + rhs)
-    }
-}
-
-impl Add<File> for usize {
-    type Output = File;
-
-    fn add(self, rhs: File) -> Self::Output {
-        File::new(self + rhs.inner)
-    }
-}
-
-impl Sub<usize> for File {
-    type Output = File;
-
-    fn sub(self, rhs: usize) -> Self::Output {
-        File::new(self.inner - rhs)
-    }
-}
-
-impl Sub<File> for usize {
-    type Output = File;
-
-    fn sub(self, rhs: File) -> Self::Output {
-        File::new(self - rhs.inner)
-    }
-}
-
-impl Mul<usize> for File {
-    type Output = File;
-
-    fn mul(self, rhs: usize) -> Self::Output {
-        File::new(self.inner * rhs)
-    }
-}
-
-impl Mul<File> for usize {
-    type Output = File;
-
-    fn mul(self, rhs: File) -> Self::Output {
-        File::new(self * rhs.inner)
+    pub fn north(&self) -> Coordinate {
+        Coordinate(self.0 + 7)
     }
 }
 
-impl PartialEq<usize> for File {
-    fn eq(&self, other: &usize) -> bool {
-        &self.inner == other
+impl Display for Coordinate {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", SAN_LOOKUP[self.0 as usize])
     }
 }
 
-impl PartialEq<File> for usize {
-    fn eq(&self, other: &File) -> bool {
-        self == &other.inner
-    }
-}
-
-impl SubAssign<usize> for File {
-    fn sub_assign(&mut self, rhs: usize) {
-        self.inner -= rhs;
-    }
-}
-
-impl AddAssign<usize> for File {
-    fn add_assign(&mut self, rhs: usize) {
-        self.inner += rhs;
-    }
-}
-
-impl From<File> for char {
-    fn from(file: File) -> Self {
-        file.inner as u8 as char
-    }
-}
-
-impl Add<usize> for Rank {
-    type Output = Rank;
-
-    fn add(self, rhs: usize) -> Self::Output {
-        Rank::new(self.inner + rhs)
-    }
-}
-
-impl Add<Rank> for usize {
-    type Output = Rank;
-
-    fn add(self, rhs: Rank) -> Self::Output {
-        Rank::new(self + rhs.inner)
-    }
-}
-
-impl Sub<usize> for Rank {
-    type Output = Rank;
-
-    fn sub(self, rhs: usize) -> Self::Output {
-        Rank::new(self.inner - rhs)
-    }
-}
-
-impl Sub<Rank> for usize {
-    type Output = Rank;
-
-    fn sub(self, rhs: Rank) -> Self::Output {
-        Rank::new(self - rhs.inner)
-    }
-}
-
-impl Mul<usize> for Rank {
-    type Output = Rank;
-
-    fn mul(self, rhs: usize) -> Self::Output {
-        Rank::new(self.inner * rhs)
-    }
-}
-
-impl Mul<Rank> for usize {
-    type Output = Rank;
-
-    fn mul(self, rhs: Rank) -> Self::Output {
-        Rank::new(self * rhs.inner)
-    }
-}
-
-impl PartialEq<usize> for Rank {
-    fn eq(&self, other: &usize) -> bool {
-        &self.inner == other
-    }
-}
-
-impl PartialEq<Rank> for usize {
-    fn eq(&self, other: &Rank) -> bool {
-        self == &other.inner
-    }
-}
-
-impl SubAssign<usize> for Rank {
-    fn sub_assign(&mut self, rhs: usize) {
-        self.inner -= rhs;
-    }
-}
-
-impl AddAssign<usize> for Rank {
-    fn add_assign(&mut self, rhs: usize) {
-        self.inner += rhs;
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn file_should_equal_integer_regardless_of_order() {
-        let file = File::new(8);
-
-        assert_eq!(8, file);
-        assert_eq!(file, 8);
-    }
-
-    #[test]
-    fn file_should_add_integer_regardless_of_order() {
-        let result = File::new(5) + 3;
-        let result_reverse = 3 + File::new(5);
-
-        assert_eq!(8, result);
-        assert_eq!(8, result_reverse);
-    }
-
-    #[test]
-    fn file_should_subtract_integer_regardless_of_order() {
-        let result = File::new(5) - 3;
-        let result_reverse = 5 - File::new(3);
-
-        assert_eq!(2, result);
-        assert_eq!(2, result_reverse);
-    }
-
-    #[test]
-    fn file_should_multiply_integer_regardless_of_order() {
-        let result = File::new(2) * 4;
-        let result_reverse = 4 * File::new(2);
-
-        assert_eq!(8, result);
-        assert_eq!(8, result_reverse);
-    }
-
-    #[test]
-    fn file_should_subtract_assign_integer() {
-        let mut result = File::new(2);
-        result -= 1;
-
-        assert_eq!(1, result);
-    }
-
-    #[test]
-    fn file_should_add_assign_integer() {
-        let mut result = File::new(2);
-        result += 1;
-
-        assert_eq!(3, result);
-    }
-
-    #[test]
-    fn file_should_transform_negative_number() {
-        let result = File::new(7).transform(-2).unwrap();
-
-        assert_eq!(5, result);
-    }
-
-    #[test]
-    fn file_transform_should_return_none_if_result_negative() {
-        let result = File::new(1).transform(-2);
-
-        assert!(result.is_none());
-    }
-
-    #[test]
-    fn file_transform_should_return_none_if_result_too_big() {
-        let result = File::new(7).transform(1);
-
-        assert!(result.is_none());
-    }
-
-    #[test]
-    fn rank_should_equal_integer_regardless_of_order() {
-        let rank = Rank::new(8);
-
-        assert_eq!(8, rank);
-        assert_eq!(rank, 8);
-    }
-
-    #[test]
-    fn rank_should_add_integer_regardless_of_order() {
-        let result = Rank::new(5) + 3;
-        let result_reverse = 3 + Rank::new(5);
-
-        assert_eq!(8, result);
-        assert_eq!(8, result_reverse);
-    }
-
-    #[test]
-    fn rank_should_subtract_integer_regardless_of_order() {
-        let result = Rank::new(5) - 3;
-        let result_reverse = 5 - Rank::new(3);
-
-        assert_eq!(2, result);
-        assert_eq!(2, result_reverse);
-    }
-
-    #[test]
-    fn rank_should_multiply_integer_regardless_of_order() {
-        let result = Rank::new(2) * 4;
-        let result_reverse = 4 * Rank::new(2);
-
-        assert_eq!(8, result);
-        assert_eq!(8, result_reverse);
-    }
-
-    #[test]
-    fn rank_should_subassign_integer() {
-        let mut result = Rank::new(2);
-        result -= 1;
-
-        assert_eq!(1, result);
-    }
-
-    #[test]
-    fn rank_should_add_assign_integer() {
-        let mut result = Rank::new(2);
-        result += 1;
-
-        assert_eq!(3, result);
-    }
-
-    #[test]
-    fn rank_should_transform_negative_number() {
-        let result = Rank::new(7).transform(-2).unwrap();
-
-        assert_eq!(5, result);
-    }
-
-    #[test]
-    fn rank_transform_should_return_none_if_result_negative() {
-        let result = Rank::new(1).transform(-2);
-
-        assert!(result.is_none());
-    }
-
-    #[test]
-    fn rank_transform_should_return_none_if_result_too_big() {
-        let result = Rank::new(7).transform(1);
-
-        assert!(result.is_none());
+impl From<usize> for Coordinate {
+    fn from(input: usize) -> Self {
+        Coordinate(input as u8)
     }
 }

@@ -160,8 +160,8 @@ mod tests {
     use galvanic_assert::assert_that;
     use galvanic_assert::matchers::*;
     use crate::moves::Move::PawnMove;
+    use crate::state::coordinates::Coordinate;
 
-    use crate::state::coordinates::{File, Rank};
     use crate::state::tile::{Tile};
     use super::*;
 
@@ -185,83 +185,83 @@ mod tests {
     fn create_board_from_fen_layout() {
         let result = GameState::from_fen(STARTING_POSITION_FEN).board;
 
-        assert_eq!(result[(File::new(0),Rank::new(0))], Tile::FIRST_ROOK);
-        assert_eq!(result[(File::new(1),Rank::new(0))], Tile::FIRST_KNIGHT);
-        assert_eq!(result[(File::new(2),Rank::new(0))], Tile::FIRST_BISHOP);
-        assert_eq!(result[(File::new(3),Rank::new(0))], Tile::FIRST_QUEEN);
-        assert_eq!(result[(File::new(4),Rank::new(0))], Tile::FIRST_KING);
-        assert_eq!(result[(File::new(5),Rank::new(0))], Tile::FIRST_BISHOP);
-        assert_eq!(result[(File::new(6),Rank::new(0))], Tile::FIRST_KNIGHT);
-        assert_eq!(result[(File::new(7),Rank::new(0))], Tile::FIRST_ROOK);
+        assert_eq!(result[Coordinate::A1], Tile::FIRST_ROOK);
+        assert_eq!(result[Coordinate::A2], Tile::FIRST_KNIGHT);
+        assert_eq!(result[Coordinate::A3], Tile::FIRST_BISHOP);
+        assert_eq!(result[Coordinate::A4], Tile::FIRST_QUEEN);
+        assert_eq!(result[Coordinate::A5], Tile::FIRST_KING);
+        assert_eq!(result[Coordinate::A6], Tile::FIRST_BISHOP);
+        assert_eq!(result[Coordinate::A7], Tile::FIRST_KNIGHT);
+        assert_eq!(result[Coordinate::A8], Tile::FIRST_ROOK);
 
-        assert_eq!(result[(File::new(0),Rank::new(1))], Tile::FIRST_PAWN);
-        assert_eq!(result[(File::new(1),Rank::new(1))], Tile::FIRST_PAWN);
-        assert_eq!(result[(File::new(2),Rank::new(1))], Tile::FIRST_PAWN);
-        assert_eq!(result[(File::new(3),Rank::new(1))], Tile::FIRST_PAWN);
-        assert_eq!(result[(File::new(4),Rank::new(1))], Tile::FIRST_PAWN);
-        assert_eq!(result[(File::new(5),Rank::new(1))], Tile::FIRST_PAWN);
-        assert_eq!(result[(File::new(6),Rank::new(1))], Tile::FIRST_PAWN);
-        assert_eq!(result[(File::new(7),Rank::new(1))], Tile::FIRST_PAWN);
+        assert_eq!(result[Coordinate::B1], Tile::FIRST_PAWN);
+        assert_eq!(result[Coordinate::B2], Tile::FIRST_PAWN);
+        assert_eq!(result[Coordinate::B3], Tile::FIRST_PAWN);
+        assert_eq!(result[Coordinate::B4], Tile::FIRST_PAWN);
+        assert_eq!(result[Coordinate::B5], Tile::FIRST_PAWN);
+        assert_eq!(result[Coordinate::B6], Tile::FIRST_PAWN);
+        assert_eq!(result[Coordinate::B7], Tile::FIRST_PAWN);
+        assert_eq!(result[Coordinate::B8], Tile::FIRST_PAWN);
 
-        assert_eq!(result[(File::new(0),Rank::new(2))], Tile::EMPTY);
-        assert_eq!(result[(File::new(1),Rank::new(2))], Tile::EMPTY);
-        assert_eq!(result[(File::new(2),Rank::new(2))], Tile::EMPTY);
-        assert_eq!(result[(File::new(3),Rank::new(2))], Tile::EMPTY);
-        assert_eq!(result[(File::new(4),Rank::new(2))], Tile::EMPTY);
-        assert_eq!(result[(File::new(5),Rank::new(2))], Tile::EMPTY);
-        assert_eq!(result[(File::new(6),Rank::new(2))], Tile::EMPTY);
-        assert_eq!(result[(File::new(7),Rank::new(2))], Tile::EMPTY);
+        assert_eq!(result[Coordinate::C1], Tile::EMPTY);
+        assert_eq!(result[Coordinate::C2], Tile::EMPTY);
+        assert_eq!(result[Coordinate::C3], Tile::EMPTY);
+        assert_eq!(result[Coordinate::C4], Tile::EMPTY);
+        assert_eq!(result[Coordinate::C5], Tile::EMPTY);
+        assert_eq!(result[Coordinate::C6], Tile::EMPTY);
+        assert_eq!(result[Coordinate::C7], Tile::EMPTY);
+        assert_eq!(result[Coordinate::C8], Tile::EMPTY);
 
-        assert_eq!(result[(File::new(0),Rank::new(3))], Tile::EMPTY);
-        assert_eq!(result[(File::new(1),Rank::new(3))], Tile::EMPTY);
-        assert_eq!(result[(File::new(2),Rank::new(3))], Tile::EMPTY);
-        assert_eq!(result[(File::new(3),Rank::new(3))], Tile::EMPTY);
-        assert_eq!(result[(File::new(4),Rank::new(3))], Tile::EMPTY);
-        assert_eq!(result[(File::new(5),Rank::new(3))], Tile::EMPTY);
-        assert_eq!(result[(File::new(6),Rank::new(3))], Tile::EMPTY);
-        assert_eq!(result[(File::new(7),Rank::new(3))], Tile::EMPTY);
+        assert_eq!(result[Coordinate::D1], Tile::EMPTY);
+        assert_eq!(result[Coordinate::D2], Tile::EMPTY);
+        assert_eq!(result[Coordinate::D3], Tile::EMPTY);
+        assert_eq!(result[Coordinate::D4], Tile::EMPTY);
+        assert_eq!(result[Coordinate::D5], Tile::EMPTY);
+        assert_eq!(result[Coordinate::D6], Tile::EMPTY);
+        assert_eq!(result[Coordinate::D7], Tile::EMPTY);
+        assert_eq!(result[Coordinate::D8], Tile::EMPTY);
 
-        assert_eq!(result[(File::new(0),Rank::new(4))], Tile::EMPTY);
-        assert_eq!(result[(File::new(1),Rank::new(4))], Tile::EMPTY);
-        assert_eq!(result[(File::new(2),Rank::new(4))], Tile::EMPTY);
-        assert_eq!(result[(File::new(3),Rank::new(4))], Tile::EMPTY);
-        assert_eq!(result[(File::new(4),Rank::new(4))], Tile::EMPTY);
-        assert_eq!(result[(File::new(5),Rank::new(4))], Tile::EMPTY);
-        assert_eq!(result[(File::new(6),Rank::new(4))], Tile::EMPTY);
-        assert_eq!(result[(File::new(7),Rank::new(4))], Tile::EMPTY);
+        assert_eq!(result[Coordinate::E1], Tile::EMPTY);
+        assert_eq!(result[Coordinate::E2], Tile::EMPTY);
+        assert_eq!(result[Coordinate::E3], Tile::EMPTY);
+        assert_eq!(result[Coordinate::E4], Tile::EMPTY);
+        assert_eq!(result[Coordinate::E5], Tile::EMPTY);
+        assert_eq!(result[Coordinate::E6], Tile::EMPTY);
+        assert_eq!(result[Coordinate::E7], Tile::EMPTY);
+        assert_eq!(result[Coordinate::E8], Tile::EMPTY);
 
-        assert_eq!(result[(File::new(0),Rank::new(5))], Tile::EMPTY);
-        assert_eq!(result[(File::new(1),Rank::new(5))], Tile::EMPTY);
-        assert_eq!(result[(File::new(2),Rank::new(5))], Tile::EMPTY);
-        assert_eq!(result[(File::new(3),Rank::new(5))], Tile::EMPTY);
-        assert_eq!(result[(File::new(4),Rank::new(5))], Tile::EMPTY);
-        assert_eq!(result[(File::new(5),Rank::new(5))], Tile::EMPTY);
-        assert_eq!(result[(File::new(6),Rank::new(5))], Tile::EMPTY);
-        assert_eq!(result[(File::new(7),Rank::new(5))], Tile::EMPTY);
+        assert_eq!(result[Coordinate::F1], Tile::EMPTY);
+        assert_eq!(result[Coordinate::F2], Tile::EMPTY);
+        assert_eq!(result[Coordinate::F3], Tile::EMPTY);
+        assert_eq!(result[Coordinate::F4], Tile::EMPTY);
+        assert_eq!(result[Coordinate::F5], Tile::EMPTY);
+        assert_eq!(result[Coordinate::F6], Tile::EMPTY);
+        assert_eq!(result[Coordinate::F7], Tile::EMPTY);
+        assert_eq!(result[Coordinate::F8], Tile::EMPTY);
 
-        assert_eq!(result[(File::new(0),Rank::new(6))], Tile::SECOND_PAWN);
-        assert_eq!(result[(File::new(1),Rank::new(6))], Tile::SECOND_PAWN);
-        assert_eq!(result[(File::new(2),Rank::new(6))], Tile::SECOND_PAWN);
-        assert_eq!(result[(File::new(3),Rank::new(6))], Tile::SECOND_PAWN);
-        assert_eq!(result[(File::new(4),Rank::new(6))], Tile::SECOND_PAWN);
-        assert_eq!(result[(File::new(5),Rank::new(6))], Tile::SECOND_PAWN);
-        assert_eq!(result[(File::new(6),Rank::new(6))], Tile::SECOND_PAWN);
-        assert_eq!(result[(File::new(7),Rank::new(6))], Tile::SECOND_PAWN);
+        assert_eq!(result[Coordinate::G1], Tile::SECOND_PAWN);
+        assert_eq!(result[Coordinate::G2], Tile::SECOND_PAWN);
+        assert_eq!(result[Coordinate::G3], Tile::SECOND_PAWN);
+        assert_eq!(result[Coordinate::G4], Tile::SECOND_PAWN);
+        assert_eq!(result[Coordinate::G5], Tile::SECOND_PAWN);
+        assert_eq!(result[Coordinate::G6], Tile::SECOND_PAWN);
+        assert_eq!(result[Coordinate::G7], Tile::SECOND_PAWN);
+        assert_eq!(result[Coordinate::G8], Tile::SECOND_PAWN);
 
-        assert_eq!(result[(File::new(0),Rank::new(7))], Tile::SECOND_ROOK);
-        assert_eq!(result[(File::new(1),Rank::new(7))], Tile::SECOND_KNIGHT);
-        assert_eq!(result[(File::new(2),Rank::new(7))], Tile::SECOND_BISHOP);
-        assert_eq!(result[(File::new(3),Rank::new(7))], Tile::SECOND_QUEEN);
-        assert_eq!(result[(File::new(4),Rank::new(7))], Tile::SECOND_KING);
-        assert_eq!(result[(File::new(5),Rank::new(7))], Tile::SECOND_BISHOP);
-        assert_eq!(result[(File::new(6),Rank::new(7))], Tile::SECOND_KNIGHT);
-        assert_eq!(result[(File::new(7),Rank::new(7))], Tile::SECOND_ROOK);
+        assert_eq!(result[Coordinate::H1], Tile::SECOND_ROOK);
+        assert_eq!(result[Coordinate::H2], Tile::SECOND_KNIGHT);
+        assert_eq!(result[Coordinate::H3], Tile::SECOND_BISHOP);
+        assert_eq!(result[Coordinate::H4], Tile::SECOND_QUEEN);
+        assert_eq!(result[Coordinate::H5], Tile::SECOND_KING);
+        assert_eq!(result[Coordinate::H6], Tile::SECOND_BISHOP);
+        assert_eq!(result[Coordinate::H7], Tile::SECOND_KNIGHT);
+        assert_eq!(result[Coordinate::H8], Tile::SECOND_ROOK);
     }
 
     #[test]
     fn make_move_from_struct_not_san() {
         let state = GameState::new();
-        let legal_move = PawnMove((File::E, Rank::TWO), Rank::FOUR);
+        let legal_move = PawnMove(Coordinate::E2, Coordinate::E4);
 
         let result = state.make_move(&legal_move);
 
@@ -271,7 +271,7 @@ mod tests {
     #[test]
     fn given_move_not_in_possible_moves_returns_illegal_move() {
         let state = GameState::new();
-        let illegal_move = PawnMove((File::A, Rank::EIGHT), Rank::SIX);
+        let illegal_move = PawnMove(Coordinate::A8, Coordinate::A6);
 
         let result = state.make_move(&illegal_move);
 
