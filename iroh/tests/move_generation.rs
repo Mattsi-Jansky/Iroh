@@ -18,8 +18,8 @@ use iroh::state::tile::Tile;
 #[test_case(Coordinate::H2)]
 fn generate_first_turn_pawn_moves(from: Coordinate) {
     let game = Game::new().unwrap_if_ongoing();
-    let one_ahead = from.north();
-    let two_ahead = one_ahead.north();
+    let one_ahead = from.north().unwrap();
+    let two_ahead = one_ahead.north().unwrap();
 
     let available_moves = game.get_available_moves();
 
