@@ -1,6 +1,5 @@
 use crate::heuristics::{Heuristic, HeuristicType};
 use crate::heuristics::cache::HeuristicsCache;
-use crate::state::coordinates::{File, Rank};
 use crate::state::GameState;
 use crate::state::tile::Tile;
 
