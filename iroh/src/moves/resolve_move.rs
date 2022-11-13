@@ -11,7 +11,7 @@ pub fn resolve_move(requested_move: &Move, game_state: GameState) -> GameState {
 pub fn resolve_move_for(requested_move: &Move, mut game_state: GameState, is_first_player: bool) -> GameState {
     match requested_move {
         Move::PawnMove(from, to) => {
-            // move_piece(&mut game_state, &from.0, &from.1, &from.0, to_rank);
+            move_piece(&mut game_state, from, to);
         }
         Move::RegularMove(from, to, _) => {
             // move_piece(&mut game_state, from_file, from_rank, to_file, to_rank);
@@ -78,49 +78,40 @@ pub fn resolve_move_for(requested_move: &Move, mut game_state: GameState, is_fir
     game_state
 }
 
-fn move_piece(game_state: &mut GameState, from: Coordinate, to: Coordinate) {
-    // let from = (from_file, from_rank);
-    // let to = (to_file, to_rank);
-    // let tile = game_state.board[from];
-    // game_state.board[from] = Tile::EMPTY;
-    // game_state.board[to] = tile;
+fn move_piece(game_state: &mut GameState, from: &Coordinate, to: &Coordinate) {
+    let tile = game_state.board[from];
+    game_state.board[from] = Tile::EMPTY;
+    game_state.board[to] = tile;
 
-    // update_castling_state(game_state, from, tile)
+    update_castling_state(game_state, from, tile)
 }
 
-// fn update_castling_state(game_state: &mut GameState, from: (&File, &Rank), tile: Tile) {
-//     if tile == Tile::FIRST_ROOK
-//         && from.0 == &File::H
-//         && from.1 == &Rank::ONE {
-//         game_state.first_player_can_castle_kingside = false;
-//     }
-//     else if tile == Tile::FIRST_ROOK
-//         && from.0 == &File::A
-//         && from.1 == &Rank::ONE {
-//         game_state.first_player_can_castle_queenside = false;
-//     }
-//     else if tile == Tile::FIRST_KING
-//         && from.0 == &File::E
-//         && from.1 == &Rank::ONE {
-//         game_state.first_player_can_castle_kingside = false;
-//         game_state.first_player_can_castle_queenside = false;
-//     }
-//
-//     if tile == Tile::SECOND_ROOK
-//         && from.0 == &File::H
-//         && from.1 == &Rank::EIGHT {
-//         game_state.second_player_can_castle_kingside = false;
-//     }
-//     else if tile == Tile::SECOND_ROOK
-//         && from.0 == &File::A
-//         && from.1 == &Rank::EIGHT {
-//         game_state.second_player_can_castle_queenside = false;
-//     }
-//     else if tile == Tile::SECOND_KING
-//         && from.0 == &File::E
-//         && from.1 == &Rank::EIGHT {
-//         game_state.second_player_can_castle_kingside = false;
-//         game_state.second_player_can_castle_queenside = false;
-//     }
-// }
+fn update_castling_state(game_state: &mut GameState, from: &Coordinate, tile: Tile) {
+    if tile == Tile::FIRST_ROOK
+        && from == &Coordinate::H1 {
+        game_state.first_player_can_castle_kingside = false;
+    }
+    else if tile == Tile::FIRST_ROOK
+        && from == &Coordinate::A1 {
+        game_state.first_player_can_castle_queenside = false;
+    }
+    else if tile == Tile::FIRST_KING
+        && from == &Coordinate::E1 {
+        game_state.first_player_can_castle_kingside = false;
+        game_state.first_player_can_castle_queenside = false;
+    }
 
+    if tile == Tile::SECOND_ROOK
+        && from == &Coordinate::H8 {
+        game_state.second_player_can_castle_kingside = false;
+    }
+    else if tile == Tile::SECOND_ROOK
+        && from == &Coordinate::A8 {
+        game_state.second_player_can_castle_queenside = false;
+    }
+    else if tile == Tile::SECOND_KING
+        && from == &Coordinate::E8 {
+        game_state.second_player_can_castle_kingside = false;
+        game_state.second_player_can_castle_queenside = false;
+    }
+}
