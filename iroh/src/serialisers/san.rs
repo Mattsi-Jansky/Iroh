@@ -23,7 +23,7 @@ pub fn generate_pawn_attack_san(start: Coordinate, target: Coordinate) -> String
 
 pub fn generate_pawn_promotion_san(to: Coordinate, promote_to: Tile) -> String {
     format!("{}={}",
-            to.file(),
+            to,
             to_piece_identifier(promote_to)
     )
 }

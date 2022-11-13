@@ -12,7 +12,7 @@ pub fn generate_pawn_moves(game_state: &GameState, available_moves: &mut Vec<Mov
         let is_on_starting_rank = if is_for_first_player {pawn.1.is_rank_2()} else {pawn.1.is_rank_7()};
 
         if ahead_rank_is_last_rank {
-            generate_promotion_moves(available_moves, pawn, is_for_first_player);
+            generate_promotion_moves(available_moves, ahead_coordinate, is_for_first_player);
         } else {
             available_moves.push(Move::PawnMove(pawn.1, ahead_coordinate));
 
@@ -52,21 +52,21 @@ fn generate_attack_move(game_state: &GameState, available_moves: &mut Vec<Move>,
     }
 }
 
-fn generate_promotion_moves(available_moves: &mut Vec<Move>, pawn: (Tile, Coordinate), is_for_first_player: bool) {
+fn generate_promotion_moves(available_moves: &mut Vec<Move>, to: Coordinate, is_for_first_player: bool) {
     available_moves.push(Move::PawnPromotion (
-        pawn.1,
-    if is_for_first_player { Tile::FIRST_QUEEN } else { Tile::SECOND_QUEEN }
+        to,
+        if is_for_first_player { Tile::FIRST_QUEEN } else { Tile::SECOND_QUEEN }
     ));
     available_moves.push(Move::PawnPromotion (
-        pawn.1,
+        to,
         if is_for_first_player { Tile::FIRST_ROOK } else { Tile::SECOND_ROOK }
     ));
     available_moves.push(Move::PawnPromotion (
-        pawn.1,
+        to,
         if is_for_first_player { Tile::FIRST_BISHOP } else { Tile::SECOND_BISHOP }
     ));
     available_moves.push(Move::PawnPromotion (
-        pawn.1,
+        to,
         if is_for_first_player { Tile::FIRST_KNIGHT } else { Tile::SECOND_KNIGHT }
     ));
 }
