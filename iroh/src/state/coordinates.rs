@@ -136,7 +136,7 @@ impl Coordinate {
     }
 
     pub fn west(&self) -> Option<Coordinate> {
-        //wrawp check
+        //wrap check
         if self.is_at_start_of_rank() {
             None
         } else {
@@ -145,11 +145,15 @@ impl Coordinate {
     }
 
     pub fn north_east(&self) -> Option<Coordinate> {
-        self.checked_add(9)
+        if self.is_at_end_of_rank() { //wrap check
+            None
+        } else {
+            self.checked_add(9)
+        }
     }
 
     pub fn north_west(&self) -> Option<Coordinate> {
-        if self.0 > 55 { //wrap check
+        if self.0 > 55 || self.is_at_start_of_rank(){ //wrap check
             None
         } else {
             self.checked_add(7)
@@ -157,10 +161,19 @@ impl Coordinate {
     }
 
     pub fn south_east(&self) -> Option<Coordinate> {
-        if self.0 < 8 { //wrap check
+        if self.0 < 8 || self.is_at_end_of_rank() { //wrap check
             None
         } else {
             self.0.checked_sub(7).map(|x| Coordinate(x))
+        }
+    }
+
+    pub fn south_west(&self) -> Option<Coordinate> {
+        //wrap check
+        if self.is_at_start_of_rank() {
+            None
+        } else {
+            self.0.checked_sub(9).map(|x| Coordinate(x))
         }
     }
 
@@ -170,10 +183,6 @@ impl Coordinate {
 
     pub fn is_at_start_of_rank(&self) -> bool {
         self.0 == 0 || self.0 == 56 || self.0 == 48 || self.0 == 40 || self.0 == 32 || self.0 == 24 || self.0 == 16 || self.0 == 8
-    }
-
-    pub fn south_west(&self) -> Option<Coordinate> {
-        self.0.checked_sub(9).map(|x| Coordinate(x))
     }
 
     fn checked_add(&self, input: u8) -> Option<Coordinate> {
@@ -467,6 +476,42 @@ mod tests {
         let coordinate = Coordinate::H1;
 
         let result = coordinate.south_west();
+
+        assert_eq!(None, result);
+    }
+    
+    #[test]
+    fn given_a3_coord_south_west_returns_none() {
+        let coordinate = Coordinate::A3;
+
+        let result = coordinate.south_west();
+
+        assert_eq!(None, result);
+    }
+
+    #[test]
+    fn given_h2_coord_south_east_returns_none() {
+        let coordinate = Coordinate::H2;
+
+        let result = coordinate.south_east();
+
+        assert_eq!(None, result);
+    }
+
+    #[test]
+    fn given_h2_coord_north_east_returns_none() {
+        let coordinate = Coordinate::H2;
+
+        let result = coordinate.north_east();
+
+        assert_eq!(None, result);
+    }
+
+    #[test]
+    fn given_a3_coord_north_west_returns_none() {
+        let coordinate = Coordinate::A3;
+
+        let result = coordinate.north_west();
 
         assert_eq!(None, result);
     }

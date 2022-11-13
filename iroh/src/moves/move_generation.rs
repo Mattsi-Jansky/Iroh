@@ -48,6 +48,15 @@ mod tests {
             .iter().count();
 
         assert_eq!(5, n_moves_for_first_player);
+        let result = generate_moves(&state, false);
+        for possible_move in result {
+            match possible_move {
+                Move::RegularMove(from, to, tile) => {
+                    println!("{:?} is moving from {} to {}", tile, from, to);
+                }
+                _ => panic!("wat")
+            }
+        }
         assert_eq!(33, n_moves_for_second_player);
     }
 
