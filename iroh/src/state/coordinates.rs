@@ -181,6 +181,22 @@ impl Coordinate {
         if result > 63 { None }
         else { Some(Coordinate(result)) }
     }
+
+    pub fn is_last_rank(&self) -> bool {
+        self.0 > 55
+    }
+
+    pub fn is_rank_7(&self) -> bool {
+        self.0 > 47 && self.0 < 56
+    }
+
+    pub fn is_rank_2(&self) -> bool {
+        self.0 > 7 && self.0 < 16
+    }
+
+    pub fn is_first_rank(&self) -> bool {
+        self.0 < 8
+    }
 }
 
 impl Display for Coordinate {
