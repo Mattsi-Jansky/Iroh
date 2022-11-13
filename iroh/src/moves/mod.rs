@@ -3,9 +3,6 @@ use crate::state::tile::{Tile};
 use crate::serialisers::san::{generate_attack_san, generate_castling_san, generate_pawn_attack_san, generate_pawn_promotion_san, generate_pawn_san, generate_san};
 use crate::state::coordinates::Coordinate;
 
-pub const STRAIGHT_DYNAMIC_TRANSFORMS: [(isize, isize);4] = [(1, 0),(0, 1),(-1, 0),(0, -1)];
-pub const DIAGONAL_DYNAMIC_TRANSFORMS: [(isize, isize);4] = [(1, 1),(1, -1),(-1, 1),(-1, -1)];
-
 pub mod move_generation;
 pub mod resolve_move;
 pub(crate) mod coordinate_transformers;
