@@ -14,6 +14,17 @@ pub const DIAGONAL_DYNAMIC_TRANSFORMERS: [fn(Coordinate) -> Option<Coordinate>;4
     |c| c.south_west()
 ];
 
+pub const STRAIGHT_AND_DIAGONAL_TRANSFORMERS: [fn(Coordinate) -> Option<Coordinate>;8] = [
+    |c| c.north(),
+    |c| c.east(),
+    |c| c.south(),
+    |c| c.west(),
+    |c| c.north_east(),
+    |c| c.north_west(),
+    |c| c.south_east(),
+    |c| c.south_west()
+];
+
 pub const KING_STATIC_TRANSFORMERS: [fn(Coordinate) -> Option<Coordinate>;8] = [
     |c| c.north(),
     |c| c.east(),

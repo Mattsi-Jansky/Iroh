@@ -1,11 +1,11 @@
 use crate::moves::{Move};
-use crate::moves::coordinate_transformers::{DIAGONAL_DYNAMIC_TRANSFORMERS, STRAIGHT_DYNAMIC_TRANSFORMERS};
+use crate::moves::coordinate_transformers::{DIAGONAL_DYNAMIC_TRANSFORMERS, STRAIGHT_AND_DIAGONAL_TRANSFORMERS, STRAIGHT_DYNAMIC_TRANSFORMERS};
 use crate::state::coordinates::Coordinate;
 use crate::state::GameState;
 use crate::state::tile::{Tile};
 
 pub fn generate_queen_moves(available_moves: &mut Vec<Move>, queen: (Tile, Coordinate), game_state: &GameState, is_for_first_player: bool) {
-    generate_dynamic_moves(game_state, available_moves, queen, &[STRAIGHT_DYNAMIC_TRANSFORMERS, DIAGONAL_DYNAMIC_TRANSFORMERS].concat(), is_for_first_player);
+    generate_dynamic_moves(game_state, available_moves, queen, &STRAIGHT_AND_DIAGONAL_TRANSFORMERS, is_for_first_player);
 }
 
 pub fn generate_bishop_moves(available_moves: &mut Vec<Move>, bishop: (Tile, Coordinate), game_state: &GameState, is_for_first_player: bool) {

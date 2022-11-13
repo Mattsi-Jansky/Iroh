@@ -1,5 +1,6 @@
 use crate::moves::Move;
 use crate::moves::resolve_move::resolve_move;
+use crate::state::coordinates::Coordinate;
 use crate::state::GameState;
 use crate::state::tile::{Tile};
 
@@ -105,13 +106,13 @@ pub fn generate_castling_moves(available_moves: &mut Vec<Move>, game_state: &Gam
 //     let result = resolve_move(&skipped_move, game_state.clone());
 //     result.is_check(true)
 // }
-//
-// fn would_be_check_second_player(target_file: File, game_state: &GameState) -> bool {
-//     let skipped_move = Move::RegularMove (
-//         (File::E, Rank::EIGHT),
-//         (target_Coordinate::EIGHT),
-//         Tile::SECOND_KING
-//     );
-//     let result = resolve_move(&skipped_move, game_state.clone());
-//     result.is_check(false)
-// }
+
+fn would_be_check_second_player(target: Coordinate, game_state: &GameState) -> bool {
+    let skipped_move = Move::RegularMove (
+        Coordinate::E8,
+        target,
+        Tile::SECOND_KING
+    );
+    let result = resolve_move(&skipped_move, game_state.clone());
+    result.is_check(false)
+}
