@@ -14,15 +14,15 @@ pub fn resolve_move_for(requested_move: &Move, mut game_state: GameState, is_fir
             move_piece(&mut game_state, from, to);
         }
         Move::RegularMove(from, to, _) => {
-            // move_piece(&mut game_state, from_file, from_rank, to_file, to_rank);
+            move_piece(&mut game_state, from, to);
         }
         Move::AttackMove(from, to, _) => {
-            // let tile = game_state.board[(to_file, to_rank)];
-            // assert!(tile.is_occupied(), "Illegal move, no target to attack");
-            // if is_first_player {game_state.captured_pieces.captured_second_player(tile, game_state.turn_number);}
-            // else {game_state.captured_pieces.captured_first_player(tile, game_state.turn_number);}
-            //
-            // move_piece(&mut game_state, from_file, from_rank, to_file, to_rank);
+            let target_tile = game_state.board[to];
+            assert!(target_tile.is_occupied(), "Illegal move, no target to attack");
+            if is_first_player {game_state.captured_pieces.captured_second_player(target_tile, game_state.turn_number);}
+            else {game_state.captured_pieces.captured_first_player(target_tile, game_state.turn_number);}
+
+            move_piece(&mut game_state, from, to);
         }
         Move::PawnAttackMove(from, to) => {
             // let tile = game_state.board[(to_file, to_rank)];
