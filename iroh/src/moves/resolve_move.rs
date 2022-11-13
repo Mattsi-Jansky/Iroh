@@ -25,24 +25,18 @@ pub fn resolve_move_for(requested_move: &Move, mut game_state: GameState, is_fir
             move_piece(&mut game_state, from, to);
         }
         Move::PawnAttackMove(from, to) => {
-            // let tile = game_state.board[(to_file, to_rank)];
-            // assert!(tile.is_occupied(), "Illegal move, no target to attack");
-            // if is_first_player {game_state.captured_pieces.captured_second_player(tile, game_state.turn_number);}
-            // else {game_state.captured_pieces.captured_first_player(tile, game_state.turn_number);}
-            //
-            // let direction = if is_first_player {-1} else {1};
-            // move_piece(&mut game_state,
-            //            from,
-            //            &to_rank.transform(direction)
-            //                .expect("should not be possible to get an out of bounds pawn attack command"),
-            //            to_file,
-            //            to_rank);
+            let target_tile = game_state.board[(to)];
+            assert!(target_tile.is_occupied(), "Illegal move, no target to attack");
+            if is_first_player {game_state.captured_pieces.captured_second_player(target_tile, game_state.turn_number);}
+            else {game_state.captured_pieces.captured_first_player(target_tile, game_state.turn_number);}
+
+            move_piece(&mut game_state, from, to);
         }
         Move::PawnPromotion(target, tile) => {
-            // let from_rank = &Rank::new(if tile.is_owned_by_first_player() {6} else {1});
-            // let to_rank = &Rank::new(if tile.is_owned_by_first_player() {7} else {0});
-            // game_state.board[(target, from_rank)] = Tile::EMPTY;
-            // game_state.board[(target, to_rank)] = tile.clone()
+            let from = (if tile.is_owned_by_first_player() {target.south()} else {target.north()})
+                .expect("Cannot resolve pawn promotion, given invalid move");
+            game_state.board[from] = Tile::EMPTY;
+            game_state.board[target] = tile.clone()
         }
         Move::Castle(is_kingside) => {
             // match (is_first_player, *is_kingside) {
