@@ -85,10 +85,10 @@ impl Coordinate {
     pub const B8: Coordinate = Coordinate(57);
     pub const C8: Coordinate = Coordinate(58);
     pub const D8: Coordinate = Coordinate(59);
-    pub const E8: Coordinate = Coordinate(61);
-    pub const F8: Coordinate = Coordinate(62);
-    pub const G8: Coordinate = Coordinate(63);
-    pub const H8: Coordinate = Coordinate(64);
+    pub const E8: Coordinate = Coordinate(60);
+    pub const F8: Coordinate = Coordinate(61);
+    pub const G8: Coordinate = Coordinate(62);
+    pub const H8: Coordinate = Coordinate(63);
 
     /// **Invariant:** input must be below 64
     /// Giving input higher than 64 will crash your program for certain.
@@ -178,7 +178,7 @@ impl Coordinate {
 
     fn checked_add(&self, input: u8) -> Option<Coordinate> {
         let result = self.0 + input;
-        if result > 64 { None }
+        if result > 63 { None }
         else { Some(Coordinate(result)) }
     }
 }
