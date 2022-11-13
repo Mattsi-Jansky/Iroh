@@ -96,7 +96,7 @@ fn generate_moves_for_rook() {
 
         Move::RegularMove { 0: Coordinate::E5, 1: Coordinate::E6, 2: Tile::FIRST_ROOK },
         Move::RegularMove { 0: Coordinate::E5, 1: Coordinate::E7, 2: Tile::FIRST_ROOK },
-        Move::RegularMove { 0: Coordinate::E5, 1: Coordinate::E7, 2: Tile::FIRST_ROOK },
+        Move::RegularMove { 0: Coordinate::E5, 1: Coordinate::E8, 2: Tile::FIRST_ROOK },
 
         Move::RegularMove { 0: Coordinate::E5, 1: Coordinate::A5, 2: Tile::FIRST_ROOK },
         Move::RegularMove { 0: Coordinate::E5, 1: Coordinate::B5, 2: Tile::FIRST_ROOK },
@@ -142,34 +142,38 @@ fn generate_moves_for_queen() {
     let available_moves = game.get_available_moves();
 
     assert_that!(&available_moves, contains_in_any_order(vec![
-        Move::RegularMove { 0: Coordinate::D5, 1: Coordinate::A1, 2: Tile::FIRST_QUEEN },
-        Move::RegularMove { 0: Coordinate::D5, 1: Coordinate::B2, 2: Tile::FIRST_QUEEN },
-        Move::RegularMove { 0: Coordinate::D5, 1: Coordinate::C3, 2: Tile::FIRST_QUEEN },
-        Move::RegularMove { 0: Coordinate::D5, 1: Coordinate::D4, 2: Tile::FIRST_QUEEN },
-        Move::RegularMove { 0: Coordinate::D5, 1: Coordinate::F6, 2: Tile::FIRST_QUEEN },
-        Move::RegularMove { 0: Coordinate::D5, 1: Coordinate::G7, 2: Tile::FIRST_QUEEN },
-        Move::RegularMove { 0: Coordinate::D5, 1: Coordinate::H8, 2: Tile::FIRST_QUEEN },
-        Move::RegularMove { 0: Coordinate::D5, 1: Coordinate::H2, 2: Tile::FIRST_QUEEN },
-        Move::RegularMove { 0: Coordinate::D5, 1: Coordinate::G3, 2: Tile::FIRST_QUEEN },
-        Move::RegularMove { 0: Coordinate::D5, 1: Coordinate::F4, 2: Tile::FIRST_QUEEN },
-        Move::RegularMove { 0: Coordinate::D5, 1: Coordinate::D6, 2: Tile::FIRST_QUEEN },
-        Move::RegularMove { 0: Coordinate::D5, 1: Coordinate::B8, 2: Tile::FIRST_QUEEN },
-        Move::RegularMove { 0: Coordinate::D5, 1: Coordinate::C7, 2: Tile::FIRST_QUEEN },
+        Move::RegularMove { 0: Coordinate::E5, 1: Coordinate::A1, 2: Tile::FIRST_QUEEN },
+        Move::RegularMove { 0: Coordinate::E5, 1: Coordinate::B2, 2: Tile::FIRST_QUEEN },
+        Move::RegularMove { 0: Coordinate::E5, 1: Coordinate::C3, 2: Tile::FIRST_QUEEN },
+        Move::RegularMove { 0: Coordinate::E5, 1: Coordinate::D4, 2: Tile::FIRST_QUEEN },
+        Move::RegularMove { 0: Coordinate::E5, 1: Coordinate::F6, 2: Tile::FIRST_QUEEN },
+        Move::RegularMove { 0: Coordinate::E5, 1: Coordinate::G7, 2: Tile::FIRST_QUEEN },
+        Move::RegularMove { 0: Coordinate::E5, 1: Coordinate::H8, 2: Tile::FIRST_QUEEN },
 
-        Move::RegularMove { 0: Coordinate::D5, 1: Coordinate::E1, 2: Tile::FIRST_QUEEN },
-        Move::RegularMove { 0: Coordinate::D5, 1: Coordinate::E2, 2: Tile::FIRST_QUEEN },
-        Move::RegularMove { 0: Coordinate::D5, 1: Coordinate::E3, 2: Tile::FIRST_QUEEN },
-        Move::RegularMove { 0: Coordinate::D5, 1: Coordinate::E4, 2: Tile::FIRST_QUEEN },
-        Move::RegularMove { 0: Coordinate::D5, 1: Coordinate::E6, 2: Tile::FIRST_QUEEN },
-        Move::RegularMove { 0: Coordinate::D5, 1: Coordinate::E7, 2: Tile::FIRST_QUEEN },
-        Move::RegularMove { 0: Coordinate::D5, 1: Coordinate::E8, 2: Tile::FIRST_QUEEN },
-        Move::RegularMove { 0: Coordinate::D5, 1: Coordinate::A5, 2: Tile::FIRST_QUEEN },
-        Move::RegularMove { 0: Coordinate::D5, 1: Coordinate::B5, 2: Tile::FIRST_QUEEN },
-        Move::RegularMove { 0: Coordinate::D5, 1: Coordinate::C5, 2: Tile::FIRST_QUEEN },
-        Move::RegularMove { 0: Coordinate::D5, 1: Coordinate::D5, 2: Tile::FIRST_QUEEN },
-        Move::RegularMove { 0: Coordinate::D5, 1: Coordinate::F5, 2: Tile::FIRST_QUEEN },
-        Move::RegularMove { 0: Coordinate::D5, 1: Coordinate::G5, 2: Tile::FIRST_QUEEN },
-        Move::RegularMove { 0: Coordinate::D5, 1: Coordinate::H5, 2: Tile::FIRST_QUEEN },
+        Move::RegularMove { 0: Coordinate::E5, 1: Coordinate::H2, 2: Tile::FIRST_QUEEN },
+        Move::RegularMove { 0: Coordinate::E5, 1: Coordinate::G3, 2: Tile::FIRST_QUEEN },
+        Move::RegularMove { 0: Coordinate::E5, 1: Coordinate::F4, 2: Tile::FIRST_QUEEN },
+        Move::RegularMove { 0: Coordinate::E5, 1: Coordinate::D6, 2: Tile::FIRST_QUEEN },
+        Move::RegularMove { 0: Coordinate::E5, 1: Coordinate::B8, 2: Tile::FIRST_QUEEN },
+        Move::RegularMove { 0: Coordinate::E5, 1: Coordinate::C7, 2: Tile::FIRST_QUEEN },
+
+        Move::RegularMove { 0: Coordinate::E5, 1: Coordinate::E1, 2: Tile::FIRST_QUEEN },
+        Move::RegularMove { 0: Coordinate::E5, 1: Coordinate::E2, 2: Tile::FIRST_QUEEN },
+        Move::RegularMove { 0: Coordinate::E5, 1: Coordinate::E3, 2: Tile::FIRST_QUEEN },
+        Move::RegularMove { 0: Coordinate::E5, 1: Coordinate::E4, 2: Tile::FIRST_QUEEN },
+
+        Move::RegularMove { 0: Coordinate::E5, 1: Coordinate::E6, 2: Tile::FIRST_QUEEN },
+        Move::RegularMove { 0: Coordinate::E5, 1: Coordinate::E7, 2: Tile::FIRST_QUEEN },
+        Move::RegularMove { 0: Coordinate::E5, 1: Coordinate::E8, 2: Tile::FIRST_QUEEN },
+
+        Move::RegularMove { 0: Coordinate::E5, 1: Coordinate::A5, 2: Tile::FIRST_QUEEN },
+        Move::RegularMove { 0: Coordinate::E5, 1: Coordinate::B5, 2: Tile::FIRST_QUEEN },
+        Move::RegularMove { 0: Coordinate::E5, 1: Coordinate::C5, 2: Tile::FIRST_QUEEN },
+        Move::RegularMove { 0: Coordinate::E5, 1: Coordinate::D5, 2: Tile::FIRST_QUEEN },
+
+        Move::RegularMove { 0: Coordinate::E5, 1: Coordinate::F5, 2: Tile::FIRST_QUEEN },
+        Move::RegularMove { 0: Coordinate::E5, 1: Coordinate::G5, 2: Tile::FIRST_QUEEN },
+        Move::RegularMove { 0: Coordinate::E5, 1: Coordinate::H5, 2: Tile::FIRST_QUEEN },
     ]));
 }
 
