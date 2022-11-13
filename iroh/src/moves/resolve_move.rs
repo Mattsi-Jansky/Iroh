@@ -39,32 +39,24 @@ pub fn resolve_move_for(requested_move: &Move, mut game_state: GameState, is_fir
             game_state.board[target] = tile.clone()
         }
         Move::Castle(is_kingside) => {
-            // match (is_first_player, *is_kingside) {
-            //     (true, true) => {
-            //         move_piece(&mut game_state, &File::E, &Rank::ONE,
-            //                    &File::G, &Rank::ONE);
-            //         move_piece(&mut game_state, &File::H, &Rank::ONE,
-            //                    &File::F, &Rank::ONE);
-            //     }
-            //     (true, false) => {
-            //         move_piece(&mut game_state, &File::E, &Rank::ONE,
-            //                    &File::C, &Rank::ONE);
-            //         move_piece(&mut game_state, &File::A, &Rank::ONE,
-            //                    &File::D, &Rank::ONE);
-            //     }
-            //     (false, true) => {
-            //         move_piece(&mut game_state, &File::E, &Rank::EIGHT,
-            //                    &File::G, &Rank::EIGHT);
-            //         move_piece(&mut game_state, &File::H, &Rank::EIGHT,
-            //                    &File::F, &Rank::EIGHT);
-            //     }
-            //     (false, false) => {
-            //         move_piece(&mut game_state, &File::E, &Rank::EIGHT,
-            //                    &File::C, &Rank::EIGHT);
-            //         move_piece(&mut game_state, &File::A, &Rank::EIGHT,
-            //                    &File::D, &Rank::EIGHT);
-            //     }
-            // }
+            match (is_first_player, *is_kingside) {
+                (true, true) => {
+                    move_piece(&mut game_state, &Coordinate::E1, &Coordinate::G1);
+                    move_piece(&mut game_state, &Coordinate::H1,&Coordinate::F1);
+                }
+                (true, false) => {
+                    move_piece(&mut game_state, &Coordinate::E1, &Coordinate::C1);
+                    move_piece(&mut game_state, &Coordinate::A1, &Coordinate::D1);
+                }
+                (false, true) => {
+                    move_piece(&mut game_state, &Coordinate::E8, &Coordinate::G8);
+                    move_piece(&mut game_state, &Coordinate::H8, &Coordinate::F8);
+                }
+                (false, false) => {
+                    move_piece(&mut game_state, &Coordinate::E8, &Coordinate::C8);
+                    move_piece(&mut game_state, &Coordinate::A8, &Coordinate::D8);
+                }
+            }
         }
     }
 
