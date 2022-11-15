@@ -145,11 +145,14 @@ impl Coordinate {
     }
 
     pub fn is_at_end_of_rank(&self) -> bool {
-        self.0 == 63 || self.0 == 55 || self.0 == 47 || self.0 == 39 || self.0 == 31 || self.0 == 23 || self.0 == 15 || self.0 == 7
-    }
-
-    pub fn is_at_start_of_rank(&self) -> bool {
-        self.0 == 0 || self.0 == 56 || self.0 == 48 || self.0 == 40 || self.0 == 32 || self.0 == 24 || self.0 == 16 || self.0 == 8
+        self.0 == Coordinate::A8.0
+            || self.0 == Coordinate::B8.0
+            || self.0 == Coordinate::C8.0
+            || self.0 == Coordinate::D8.0
+            || self.0 == Coordinate::E8.0
+            || self.0 == Coordinate::F8.0
+            || self.0 == Coordinate::G8.0
+            || self.0 == Coordinate::H8.0
     }
 
     fn is_on_board(&self) -> bool {
@@ -564,6 +567,24 @@ mod tests {
         let coordinate = Coordinate::A2;
 
         let result = coordinate.is_rank_2();
+
+        assert_eq!(true, result);
+    }
+    
+    #[test]
+    fn given_e1_is_not_at_end_of_rank() {
+        let coordinate = Coordinate::E1;
+
+        let result = coordinate.is_at_end_of_rank();
+
+        assert_eq!(false, result);
+    }
+
+    #[test]
+    fn given_e8_is_at_end_of_rank() {
+        let coordinate = Coordinate::E8;
+
+        let result = coordinate.is_at_end_of_rank();
 
         assert_eq!(true, result);
     }
