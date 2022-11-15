@@ -129,11 +129,7 @@ impl Coordinate {
     }
 
     pub fn north_east(&self) -> Option<Coordinate> {
-        if self.is_at_end_of_rank() { //wrap check
-            None
-        } else {
-            self.checked_add(17)
-        }
+        self.checked_add(17)
     }
 
     pub fn north_west(&self) -> Option<Coordinate> {
