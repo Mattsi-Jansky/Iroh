@@ -5,15 +5,23 @@ use derive_more::{Deref, Display};
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Deref, Hash)]
 pub struct Coordinate(u8);
 
-const SAN_LOOKUP: [&str; 8*8] = [
+const SAN_LOOKUP: [&str; 8*8*2] = [
     "a1","b1","c1","d1","e1","f1","g1","h1",
+    "X","X","X","X","X","X","X","X",
     "a2","b2","c2","d2","e2","f2","g2","h2",
+    "X","X","X","X","X","X","X","X",
     "a3","b3","c3","d3","e3","f3","g3","h3",
+    "X","X","X","X","X","X","X","X",
     "a4","b4","c4","d4","e4","f4","g4","h4",
+    "X","X","X","X","X","X","X","X",
     "a5","b5","c5","d5","e5","f5","g5","h5",
+    "X","X","X","X","X","X","X","X",
     "a6","b6","c6","d6","e6","f6","g6","h6",
+    "X","X","X","X","X","X","X","X",
     "a7","b7","c7","d7","e7","f7","g7","h7",
+    "X","X","X","X","X","X","X","X",
     "a8","b8","c8","d8","e8","f8","g8","h8",
+    "X","X","X","X","X","X","X","X",
 ];
 const MAX_INDEX: u8 = 8*8;
 
@@ -93,13 +101,6 @@ impl Coordinate {
     /// **Invariant:** input must be below 64
     /// Giving input higher than 64 will crash your program for certain.
     /// Only use when you are sure of the input size.
-    pub fn from_usize_no_bounds_check(input: usize) -> Self {
-        Coordinate(input as u8)
-    }
-
-    /// **Invariant:** input must be below 64
-    /// Giving input higher than 64 will crash your program for certain.
-    /// Only use when you are sure of the input size.
     pub fn from_u8_no_bounds_check(input: u8) -> Self {
         Coordinate(input)
     }
@@ -155,7 +156,7 @@ impl Coordinate {
             || self.0 == Coordinate::H8.0
     }
 
-    fn is_on_board(&self) -> bool {
+    pub fn is_on_board(&self) -> bool {
         (self.0 & 0x88) == 0
     }
 
@@ -200,20 +201,6 @@ impl Display for Coordinate {
 #[cfg(test)]
 mod tests {
     use super::*;
-
-    #[test]
-    fn create_coordinate_from_usize() {
-        let result = Coordinate::from_usize_no_bounds_check(0 as usize);
-
-        assert_eq!(0 as u8, result.0)
-    }
-
-    #[test]
-    fn creating_coordinate_from_usize_does_not_perform_boundary_checks() {
-        let result = Coordinate::from_usize_no_bounds_check(255 as usize);
-
-        assert_eq!(255 as u8, result.0)
-    }
 
     #[test]
     fn create_coordinate_from_u8() {
@@ -570,7 +557,7 @@ mod tests {
 
         assert_eq!(true, result);
     }
-    
+
     #[test]
     fn given_e1_is_not_at_end_of_rank() {
         let coordinate = Coordinate::E1;

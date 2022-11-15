@@ -3,7 +3,7 @@ use crate::state::tile::{Tile};
 use crate::state::GameState;
 
 fn coordinate_from_rank_and_file(rank: u8, file: u8) -> Coordinate {
-    Coordinate::from_u8_no_bounds_check(file + rank * 8)
+    Coordinate::from_u8_no_bounds_check(file + rank * 16)
 }
 
 pub fn parse_fen(fen: &str, game_state: &mut GameState) {

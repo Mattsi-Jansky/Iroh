@@ -34,10 +34,16 @@ impl Board {
     pub(crate) fn get_all_pieces_belonging_to_player(&self, is_owned_by_first_player: bool) -> Vec<(Tile, Coordinate)> {
         let mut result = vec![];
 
-        for (index, tile) in self.state.iter().enumerate() {
-            if tile.is_occupied() {
-                if tile.is_owned_by_first_player() == is_owned_by_first_player {
-                    result.push((tile.clone(), Coordinate::from_usize_no_bounds_check(index)));
+        let mut index = 0;
+        while index < 128 {
+            let coordinate = Coordinate::from_u8_no_bounds_check(index);
+            if !coordinate.is_on_board() {
+                index += 8;
+            } else {
+                index += 1;
+                let tile = self[coordinate];
+                if tile.is_occupied() && tile.is_owned_by_first_player() == is_owned_by_first_player{
+                    result.push((tile.clone(), coordinate));
                 }
             }
         }
