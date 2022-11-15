@@ -78,7 +78,7 @@ pub fn generate_fen(game_state: &GameState) -> String {
                 result.push(glyph);
             } else { blank_tiles_count += 1; }
 
-            if coordinate.is_at_end_of_rank() {
+            if file == 7 {
                 if blank_tiles_count > 0 {
                     result.push(char::from_digit(blank_tiles_count, 10).unwrap());
                     blank_tiles_count = 0;
