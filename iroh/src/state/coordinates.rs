@@ -176,15 +176,15 @@ impl Coordinate {
     }
 
     pub fn is_last_rank(&self) -> bool {
-        self.0 > 55
+        self.0 > 111
     }
 
     pub fn is_rank_7(&self) -> bool {
-        self.0 > 47 && self.0 < 56
+        (self.0 >> 4) == 6
     }
 
     pub fn is_rank_2(&self) -> bool {
-        self.0 > 7 && self.0 < 16
+        (self.0 >> 4) == 1
     }
 
     pub fn is_first_rank(&self) -> bool {
@@ -498,5 +498,77 @@ mod tests {
         let result = coordinate.north_west();
 
         assert_eq!(None, result);
+    }
+
+    #[test]
+    fn given_h7_is_not_last_rank() {
+        let coordinate = Coordinate::H7;
+
+        let result = coordinate.is_last_rank();
+
+        assert_eq!(false, result);
+    }
+
+    #[test]
+    fn given_a8_is_last_rank() {
+        let coordinate = Coordinate::A8;
+
+        let result = coordinate.is_last_rank();
+
+        assert_eq!(true, result);
+    }
+
+    #[test]
+    fn given_a2_is_not_first_rank() {
+        let coordinate = Coordinate::A2;
+
+        let result = coordinate.is_first_rank();
+
+        assert_eq!(false, result);
+    }
+
+    #[test]
+    fn given_h1_is__first_rank() {
+        let coordinate = Coordinate::H1;
+
+        let result = coordinate.is_first_rank();
+
+        assert_eq!(true, result);
+    }
+
+    #[test]
+    fn given_h6_is_not_rank_7() {
+        let coordinate = Coordinate::H6;
+
+        let result = coordinate.is_rank_7();
+
+        assert_eq!(false, result);
+    }
+
+    #[test]
+    fn given_a7_is_rank_7() {
+        let coordinate = Coordinate::A7;
+
+        let result = coordinate.is_rank_7();
+
+        assert_eq!(true, result);
+    }
+
+    #[test]
+    fn given_a3_is_not_rank_3() {
+        let coordinate = Coordinate::A3;
+
+        let result = coordinate.is_rank_2();
+
+        assert_eq!(false, result);
+    }
+
+    #[test]
+    fn given_a2_is_rank_2() {
+        let coordinate = Coordinate::A2;
+
+        let result = coordinate.is_rank_2();
+
+        assert_eq!(true, result);
     }
 }
