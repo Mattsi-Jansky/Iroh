@@ -27,68 +27,68 @@ impl Coordinate {
     pub const G1: Coordinate = Coordinate(6);
     pub const H1: Coordinate = Coordinate(7);
 
-    pub const A2: Coordinate = Coordinate(8);
-    pub const B2: Coordinate = Coordinate(9);
-    pub const C2: Coordinate = Coordinate(10);
-    pub const D2: Coordinate = Coordinate(11);
-    pub const E2: Coordinate = Coordinate(12);
-    pub const F2: Coordinate = Coordinate(13);
-    pub const G2: Coordinate = Coordinate(14);
-    pub const H2: Coordinate = Coordinate(15);
+    pub const A2: Coordinate = Coordinate(16);
+    pub const B2: Coordinate = Coordinate(17);
+    pub const C2: Coordinate = Coordinate(18);
+    pub const D2: Coordinate = Coordinate(19);
+    pub const E2: Coordinate = Coordinate(20);
+    pub const F2: Coordinate = Coordinate(21);
+    pub const G2: Coordinate = Coordinate(22);
+    pub const H2: Coordinate = Coordinate(23);
 
-    pub const A3: Coordinate = Coordinate(16);
-    pub const B3: Coordinate = Coordinate(17);
-    pub const C3: Coordinate = Coordinate(18);
-    pub const D3: Coordinate = Coordinate(19);
-    pub const E3: Coordinate = Coordinate(20);
-    pub const F3: Coordinate = Coordinate(21);
-    pub const G3: Coordinate = Coordinate(22);
-    pub const H3: Coordinate = Coordinate(23);
+    pub const A3: Coordinate = Coordinate(32);
+    pub const B3: Coordinate = Coordinate(33);
+    pub const C3: Coordinate = Coordinate(34);
+    pub const D3: Coordinate = Coordinate(35);
+    pub const E3: Coordinate = Coordinate(36);
+    pub const F3: Coordinate = Coordinate(37);
+    pub const G3: Coordinate = Coordinate(38);
+    pub const H3: Coordinate = Coordinate(39);
 
-    pub const A4: Coordinate = Coordinate(24);
-    pub const B4: Coordinate = Coordinate(25);
-    pub const C4: Coordinate = Coordinate(26);
-    pub const D4: Coordinate = Coordinate(27);
-    pub const E4: Coordinate = Coordinate(28);
-    pub const F4: Coordinate = Coordinate(29);
-    pub const G4: Coordinate = Coordinate(30);
-    pub const H4: Coordinate = Coordinate(31);
+    pub const A4: Coordinate = Coordinate(48);
+    pub const B4: Coordinate = Coordinate(49);
+    pub const C4: Coordinate = Coordinate(50);
+    pub const D4: Coordinate = Coordinate(51);
+    pub const E4: Coordinate = Coordinate(52);
+    pub const F4: Coordinate = Coordinate(53);
+    pub const G4: Coordinate = Coordinate(54);
+    pub const H4: Coordinate = Coordinate(55);
 
-    pub const A5: Coordinate = Coordinate(32);
-    pub const B5: Coordinate = Coordinate(33);
-    pub const C5: Coordinate = Coordinate(34);
-    pub const D5: Coordinate = Coordinate(35);
-    pub const E5: Coordinate = Coordinate(36);
-    pub const F5: Coordinate = Coordinate(37);
-    pub const G5: Coordinate = Coordinate(38);
-    pub const H5: Coordinate = Coordinate(39);
+    pub const A5: Coordinate = Coordinate(64);
+    pub const B5: Coordinate = Coordinate(65);
+    pub const C5: Coordinate = Coordinate(66);
+    pub const D5: Coordinate = Coordinate(67);
+    pub const E5: Coordinate = Coordinate(68);
+    pub const F5: Coordinate = Coordinate(69);
+    pub const G5: Coordinate = Coordinate(70);
+    pub const H5: Coordinate = Coordinate(71);
 
-    pub const A6: Coordinate = Coordinate(40);
-    pub const B6: Coordinate = Coordinate(41);
-    pub const C6: Coordinate = Coordinate(42);
-    pub const D6: Coordinate = Coordinate(43);
-    pub const E6: Coordinate = Coordinate(44);
-    pub const F6: Coordinate = Coordinate(45);
-    pub const G6: Coordinate = Coordinate(46);
-    pub const H6: Coordinate = Coordinate(47);
+    pub const A6: Coordinate = Coordinate(80);
+    pub const B6: Coordinate = Coordinate(81);
+    pub const C6: Coordinate = Coordinate(82);
+    pub const D6: Coordinate = Coordinate(83);
+    pub const E6: Coordinate = Coordinate(84);
+    pub const F6: Coordinate = Coordinate(85);
+    pub const G6: Coordinate = Coordinate(86);
+    pub const H6: Coordinate = Coordinate(87);
 
-    pub const A7: Coordinate = Coordinate(48);
-    pub const B7: Coordinate = Coordinate(49);
-    pub const C7: Coordinate = Coordinate(50);
-    pub const D7: Coordinate = Coordinate(51);
-    pub const E7: Coordinate = Coordinate(52);
-    pub const F7: Coordinate = Coordinate(53);
-    pub const G7: Coordinate = Coordinate(54);
-    pub const H7: Coordinate = Coordinate(55);
+    pub const A7: Coordinate = Coordinate(96);
+    pub const B7: Coordinate = Coordinate(97);
+    pub const C7: Coordinate = Coordinate(98);
+    pub const D7: Coordinate = Coordinate(99);
+    pub const E7: Coordinate = Coordinate(100);
+    pub const F7: Coordinate = Coordinate(101);
+    pub const G7: Coordinate = Coordinate(102);
+    pub const H7: Coordinate = Coordinate(103);
 
-    pub const A8: Coordinate = Coordinate(56);
-    pub const B8: Coordinate = Coordinate(57);
-    pub const C8: Coordinate = Coordinate(58);
-    pub const D8: Coordinate = Coordinate(59);
-    pub const E8: Coordinate = Coordinate(60);
-    pub const F8: Coordinate = Coordinate(61);
-    pub const G8: Coordinate = Coordinate(62);
-    pub const H8: Coordinate = Coordinate(63);
+    pub const A8: Coordinate = Coordinate(112);
+    pub const B8: Coordinate = Coordinate(113);
+    pub const C8: Coordinate = Coordinate(114);
+    pub const D8: Coordinate = Coordinate(115);
+    pub const E8: Coordinate = Coordinate(116);
+    pub const F8: Coordinate = Coordinate(117);
+    pub const G8: Coordinate = Coordinate(118);
+    pub const H8: Coordinate = Coordinate(119);
 
     /// **Invariant:** input must be below 64
     /// Giving input higher than 64 will crash your program for certain.
@@ -113,68 +113,39 @@ impl Coordinate {
     }
 
     pub fn north(&self) -> Option<Coordinate> {
-        //wrap check
-        if self.0 > 55 {
-            None
-        } else {
-            self.checked_add(8)
-        }
+        self.checked_add(16)
     }
 
     pub fn east(&self) -> Option<Coordinate> {
-        //wrap check
-        if self.is_at_end_of_rank() {
-            None
-        }
-        else { self.checked_add(1) }
+        self.checked_add(1)
     }
 
     pub fn south(&self) -> Option<Coordinate> {
-        if self.0 < 8 { //wrap check
-            None
-        } else { self.0.checked_sub(8).map(|x| Coordinate(x)) }
+        self.checked_sub(16)
     }
 
     pub fn west(&self) -> Option<Coordinate> {
-        //wrap check
-        if self.is_at_start_of_rank() {
-            None
-        } else {
-            self.0.checked_sub(1).map(|x| Coordinate(x))
-        }
+        self.checked_sub(1)
     }
 
     pub fn north_east(&self) -> Option<Coordinate> {
         if self.is_at_end_of_rank() { //wrap check
             None
         } else {
-            self.checked_add(9)
+            self.checked_add(17)
         }
     }
 
     pub fn north_west(&self) -> Option<Coordinate> {
-        if self.0 > 55 || self.is_at_start_of_rank(){ //wrap check
-            None
-        } else {
-            self.checked_add(7)
-        }
+        self.checked_add(15)
     }
 
     pub fn south_east(&self) -> Option<Coordinate> {
-        if self.0 < 8 || self.is_at_end_of_rank() { //wrap check
-            None
-        } else {
-            self.0.checked_sub(7).map(|x| Coordinate(x))
-        }
+        self.checked_sub(15)
     }
 
     pub fn south_west(&self) -> Option<Coordinate> {
-        //wrap check
-        if self.is_at_start_of_rank() {
-            None
-        } else {
-            self.0.checked_sub(9).map(|x| Coordinate(x))
-        }
+        self.checked_sub(17)
     }
 
     pub fn is_at_end_of_rank(&self) -> bool {
@@ -185,10 +156,23 @@ impl Coordinate {
         self.0 == 0 || self.0 == 56 || self.0 == 48 || self.0 == 40 || self.0 == 32 || self.0 == 24 || self.0 == 16 || self.0 == 8
     }
 
+    fn is_on_board(&self) -> bool {
+        (self.0 & 0x88) == 0
+    }
+
     fn checked_add(&self, input: u8) -> Option<Coordinate> {
-        let result = self.0 + input;
-        if result > 63 { None }
-        else { Some(Coordinate(result)) }
+        let result = Coordinate(self.0 + input);
+        if !result.is_on_board() { None }
+        else { Some(result) }
+    }
+
+    fn checked_sub(&self, input: u8) -> Option<Coordinate> {
+        let result = self.0.checked_sub(input)
+            .map(|x| Coordinate(x));
+        if let Some(coordinate) = result {
+            if coordinate.is_on_board() { Some(coordinate) }
+            else { None }
+        } else { None }
     }
 
     pub fn is_last_rank(&self) -> bool {
@@ -252,7 +236,7 @@ mod tests {
 
         let result = coordinate.as_usize();
 
-        assert_eq!(10 as usize, result);
+        assert_eq!(18 as usize, result);
     }
 
     #[test]

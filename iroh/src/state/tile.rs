@@ -18,6 +18,9 @@ impl Tile {
     pub const FIRST_KING: Tile = Tile(5);
     pub const FIRST_QUEEN: Tile = Tile(6);
 
+    //A guard value that says "This is not a real tile!"
+    pub const SENTINEL: Tile = Tile(120);
+
     pub fn is_occupied(&self) -> bool {
         self.0 != 0
     }

@@ -4,7 +4,7 @@ use crate::state::tile::{Tile};
 
 #[derive(Debug, Copy, Clone, PartialEq, Eq)]
 pub struct Board {
-    state: [Tile; 8*8]
+    state: [Tile; 8*8*2]
 }
 
 impl Board {
@@ -12,13 +12,21 @@ impl Board {
         Board {
             state: [
                 Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY,
+                Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,
                 Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY,
+                Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,
                 Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY,
+                Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,
                 Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY,
+                Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,
                 Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY,
+                Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,
                 Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY,
+                Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,
                 Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY,
+                Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,
                 Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY,
+                Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,
             ]
         }
     }
