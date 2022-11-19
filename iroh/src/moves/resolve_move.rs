@@ -5,12 +5,17 @@ use crate::state::tile::{Tile};
 
 pub struct Memento<'a> {
     last_move: &'a Move,
-    captured_piece: Tile
+    captured_piece: Tile,
+    is_first_player: bool
 }
 
 pub fn resolve_move(requested_move: &Move, game_state: &mut GameState) {
     let is_first_player_turn = game_state.is_first_player_turn;
-    perform_move_for(requested_move, game_state, is_first_player_turn);
+    let memento = perform_move_for(requested_move, game_state, is_first_player_turn);
+    if memento.captured_piece != Tile::EMPTY {
+        if is_first_player_turn {game_state.captured_pieces.captured_second_player(memento.captured_piece, game_state.turn_number);}
+        else {game_state.captured_pieces.captured_first_player(memento.captured_piece, game_state.turn_number);}
+    }
     game_state.next_turn();
 }
 
@@ -18,36 +23,32 @@ pub fn perform_move_for<'a>(requested_move: &'a Move, game_state: &mut GameState
     match requested_move {
         Move::PawnMove(from, to) => {
             move_piece(game_state, from, to);
-            Memento { last_move: requested_move, captured_piece: Tile::EMPTY }
+            Memento { last_move: requested_move, captured_piece: Tile::EMPTY, is_first_player }
         }
         Move::RegularMove(from, to, _) => {
             move_piece(game_state, from, to);
-            Memento { last_move: requested_move, captured_piece: Tile::EMPTY }
+            Memento { last_move: requested_move, captured_piece: Tile::EMPTY, is_first_player }
         }
         Move::AttackMove(from, to, _) => {
             let target_tile = game_state.board[to];
             assert!(target_tile.is_occupied(), "Illegal move, no target to attack");
-            if is_first_player {game_state.captured_pieces.captured_second_player(target_tile, game_state.turn_number);}
-            else {game_state.captured_pieces.captured_first_player(target_tile, game_state.turn_number);}
 
             move_piece(game_state, from, to);
-            Memento { last_move: requested_move, captured_piece: target_tile }
+            Memento { last_move: requested_move, captured_piece: target_tile, is_first_player }
         }
         Move::PawnAttackMove(from, to) => {
             let target_tile = game_state.board[(to)];
             assert!(target_tile.is_occupied(), "Illegal move, no target to attack");
-            if is_first_player {game_state.captured_pieces.captured_second_player(target_tile, game_state.turn_number);}
-            else {game_state.captured_pieces.captured_first_player(target_tile, game_state.turn_number);}
 
             move_piece(game_state, from, to);
-            Memento { last_move: requested_move, captured_piece: target_tile }
+            Memento { last_move: requested_move, captured_piece: target_tile, is_first_player }
         }
         Move::PawnPromotion(target, tile) => {
             let from = (if tile.is_owned_by_first_player() {target.south()} else {target.north()})
                 .expect("Cannot resolve pawn promotion, given invalid move");
             game_state.board[from] = Tile::EMPTY;
             game_state.board[target] = tile.clone();
-            Memento { last_move: requested_move, captured_piece: Tile::EMPTY }
+            Memento { last_move: requested_move, captured_piece: Tile::EMPTY, is_first_player }
         }
         Move::Castle(is_kingside) => {
             match (is_first_player, *is_kingside) {
@@ -68,29 +69,26 @@ pub fn perform_move_for<'a>(requested_move: &'a Move, game_state: &mut GameState
                     move_piece(game_state, &Coordinate::A8, &Coordinate::D8);
                 }
             }
-            Memento { last_move: requested_move, captured_piece: Tile::EMPTY }
+            Memento { last_move: requested_move, captured_piece: Tile::EMPTY, is_first_player }
         }
     }
 }
 
-pub fn undo_move_for(requested_move: &Move, mut game_state: GameState, is_first_player: bool) -> GameState {
+pub fn undo_move_for(Memento {last_move, captured_piece, is_first_player}: Memento, game_state: &mut GameState) {
 
-    match requested_move {
+    match last_move {
         Move::RegularMove(from, to, _) => {
-            move_piece(&mut game_state, to, from);
+            move_piece(game_state, to, from);
         }
         Move::AttackMove(from, to, _) => {
-            // if is_first_player {game_state.captured_pieces.captured_second_player(target_tile, game_state.turn_number);}
-            // else {game_state.captured_pieces.captured_first_player(target_tile, game_state.turn_number);}
-            move_piece(&mut game_state, to, from);
+            move_piece(game_state, to, from);
+            game_state.board[to] = captured_piece;
         }
         Move::PawnMove(_, _) => {}
         Move::PawnAttackMove(_, _) => {}
         Move::PawnPromotion(_, _) => {}
         Move::Castle(_) => {}
     }
-
-    game_state
 }
 
 
@@ -142,11 +140,11 @@ mod tests {
         let mut state = GameState::from_fen("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
         let requested_move = RegularMove(Coordinate::G1, Coordinate::F3, Tile::FIRST_KNIGHT);
 
-        perform_move_for(&requested_move, &mut state, true);
+        let memento = perform_move_for(&requested_move, &mut state, true);
 
         assert_eq!("rnbqkbnr/pppppppp/8/8/8/5N2/PPPPPPPP/RNBQKB1R w KQkq - 0 1", state.generate_fen());
 
-        state = undo_move_for(&requested_move, state, true);
+        undo_move_for(memento, &mut state);
 
         assert_eq!("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1", state.generate_fen());
     }
@@ -156,14 +154,13 @@ mod tests {
         let mut state = GameState::from_fen("3k4/8/8/8/2p5/3K4/8/8 w - - 0 1");
         let requested_move = AttackMove(Coordinate::D3, Coordinate::C4, Tile::FIRST_KING);
 
-        perform_move_for(&requested_move, &mut state, true);
+        let memento = perform_move_for(&requested_move, &mut state, true);
 
         assert_eq!("3k4/8/8/8/2K5/8/8/8 w - - 0 1", state.generate_fen());
-        assert_eq!(state.captured_pieces.second_player.len(), 1);
+        assert_eq!(state.captured_pieces.second_player.len(), 0);
 
-        state = undo_move_for(&requested_move, state, true);
+        undo_move_for(memento, &mut state);
 
         assert_eq!("3k4/8/8/8/2p5/3K4/8/8 w - - 0 1", state.generate_fen());
-        assert_eq!(state.captured_pieces.second_player.len(), 0);
     }
 }
