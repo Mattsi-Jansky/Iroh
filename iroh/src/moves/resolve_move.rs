@@ -84,8 +84,13 @@ pub fn undo_move_for(Memento {last_move, captured_piece, is_first_player}: Memen
             move_piece(game_state, to, from);
             game_state.board[to] = captured_piece;
         }
-        Move::PawnMove(_, _) => {}
-        Move::PawnAttackMove(_, _) => {}
+        Move::PawnMove(from, to) => {
+            move_piece(game_state, to, from);
+        }
+        Move::PawnAttackMove(from, to) => {
+            move_piece(game_state, to, from);
+            game_state.board[to] = captured_piece;
+        }
         Move::PawnPromotion(_, _) => {}
         Move::Castle(_) => {}
     }
@@ -162,5 +167,33 @@ mod tests {
         undo_move_for(memento, &mut state);
 
         assert_eq!("3k4/8/8/8/2p5/3K4/8/8 w - - 0 1", state.generate_fen());
+    }
+
+    #[test]
+    fn undo_pawn_move() {
+        let mut state = GameState::from_fen("4k3/8/8/2P5/1K6/8/8/8 w - - 0 1");
+        let requested_move = PawnMove(Coordinate::C5, Coordinate::C6);
+
+        let memento = perform_move_for(&requested_move, &mut state, true);
+
+        assert_eq!("4k3/8/2P5/8/1K6/8/8/8 w - - 0 1", state.generate_fen());
+
+        undo_move_for(memento, &mut state);
+
+        assert_eq!("4k3/8/8/2P5/1K6/8/8/8 w - - 0 1", state.generate_fen());
+    }
+
+    #[test]
+    fn undo_pawn_attack() {
+        let mut state = GameState::from_fen("4k3/8/3p4/2P5/1K6/8/8/8 w - - 0 1");
+        let requested_move = PawnAttackMove(Coordinate::C5, Coordinate::D6);
+
+        let memento = perform_move_for(&requested_move, &mut state, true);
+
+        assert_eq!("4k3/8/3P4/8/1K6/8/8/8 w - - 0 1", state.generate_fen());
+
+        undo_move_for(memento, &mut state);
+
+        assert_eq!("4k3/8/3p4/2P5/1K6/8/8/8 w - - 0 1", state.generate_fen());
     }
 }
