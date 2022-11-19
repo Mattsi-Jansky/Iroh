@@ -6,27 +6,32 @@ use crate::state::GameState;
 use crate::state::tile::{Tile};
 
 pub fn is_check(is_first_player: bool, game_state: &GameState) -> bool{
-    let mut result = false;
-
     let king = game_state.board.get_all_pieces_belonging_to_player(is_first_player)
         .into_iter()
         .find(|tile| tile.0 == Tile::FIRST_KING || tile.0 == Tile::SECOND_KING);
 
     if let Some(king) = king {
-        let enemy_king = if is_first_player { Tile::SECOND_KING } else { Tile::FIRST_KING };
-        let enemy_knight = if is_first_player { Tile::SECOND_KNIGHT } else { Tile::FIRST_KNIGHT };
-        let enemy_pawn = if is_first_player { Tile::SECOND_PAWN } else { Tile::FIRST_PAWN };
-        let mut static_check = StaticCheckTester::new(&mut result, is_first_player, &game_state.board, &king);
+        would_be_check(king, game_state)
+    } else { false }
+}
 
-        static_check.test(enemy_king, &KING_STATIC_TRANSFORMERS);
-        static_check.test(enemy_knight, &KNIGHT_STATIC_TRANSFORMERS);
-        static_check.test(enemy_pawn,if is_first_player { &PAWN_STATIC_TRANSFORMERS_FIRST_PLAYER }
-                          else { &PAWN_STATIC_TRANSFORMERS_SECOND_PLAYER });
+pub fn would_be_check(king: (Tile, Coordinate), game_state: &GameState) -> bool {
+    let mut result = false;
+    let is_first_player = king.0.is_owned_by_first_player();
 
-        let mut dynamic_check = DynamicCheckTester::new(&mut result, is_first_player, &game_state.board, &king);
-        dynamic_check.test_straight_lines();
-        dynamic_check.test_diagonal_lines();
-    }
+    let enemy_king = if is_first_player { Tile::SECOND_KING } else { Tile::FIRST_KING };
+    let enemy_knight = if is_first_player { Tile::SECOND_KNIGHT } else { Tile::FIRST_KNIGHT };
+    let enemy_pawn = if is_first_player { Tile::SECOND_PAWN } else { Tile::FIRST_PAWN };
+    let mut static_check = StaticCheckTester::new(&mut result, is_first_player, &game_state.board, &king);
+
+    static_check.test(enemy_king, &KING_STATIC_TRANSFORMERS);
+    static_check.test(enemy_knight, &KNIGHT_STATIC_TRANSFORMERS);
+    static_check.test(enemy_pawn,if is_first_player { &PAWN_STATIC_TRANSFORMERS_FIRST_PLAYER }
+    else { &PAWN_STATIC_TRANSFORMERS_SECOND_PLAYER });
+
+    let mut dynamic_check = DynamicCheckTester::new(&mut result, is_first_player, &game_state.board, &king);
+    dynamic_check.test_straight_lines();
+    dynamic_check.test_diagonal_lines();
 
     result
 }

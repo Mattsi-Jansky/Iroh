@@ -12,7 +12,7 @@ pub mod board;
 pub mod tile;
 pub mod coordinates;
 pub mod captured_pieces;
-mod check;
+pub(crate) mod check;
 
 const STARTING_POSITION_FEN: &str = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
@@ -98,7 +98,8 @@ impl GameState {
     fn make_move_inner(&self, requested_move: &Move) -> Game {
         let mut sans = self.sans.clone();
         sans.push(String::from(requested_move.generate_san()));
-        let game_state = resolve_move(&requested_move, self.clone());
+        let mut game_state = self.clone();
+        resolve_move(&requested_move, &mut game_state);
         let possible_moves = generate_moves(&game_state, game_state.is_first_player_turn);
         let state = GameState {
             sans,

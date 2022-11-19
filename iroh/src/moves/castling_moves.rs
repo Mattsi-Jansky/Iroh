@@ -103,8 +103,9 @@ fn would_be_check_first_player(target: Coordinate, game_state: &GameState) -> bo
         target,
         Tile::FIRST_KING
     );
-    let result = resolve_move(&skipped_move, game_state.clone());
-    result.is_check(true)
+    let mut temp_state = game_state.clone();
+    resolve_move(&skipped_move, &mut temp_state);
+    temp_state.is_check(true)
 }
 
 fn would_be_check_second_player(target: Coordinate, game_state: &GameState) -> bool {
@@ -113,6 +114,7 @@ fn would_be_check_second_player(target: Coordinate, game_state: &GameState) -> b
         target,
         Tile::SECOND_KING
     );
-    let result = resolve_move(&skipped_move, game_state.clone());
-    result.is_check(false)
+    let mut temp_state = game_state.clone();
+    resolve_move(&skipped_move, &mut temp_state);
+    temp_state.is_check(false)
 }

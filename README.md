@@ -55,3 +55,7 @@ Start the CLI interface in your terminal with `cargo run`.
   * Replace some of these tuples with types, particularly in `board.rs`
   * Searching/evaluating more than needs be in some places
     * `check.rs` should stop further checks if result is true
+* Optimisations
+  * When in check only search king moves, and moves that would place a piece between the attacker and king or capture the attacker.  
+  * When in double check only search king moves
+  * 
