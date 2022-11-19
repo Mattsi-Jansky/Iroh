@@ -3,19 +3,26 @@ use crate::state::coordinates::Coordinate;
 use crate::state::GameState;
 use crate::state::tile::{Tile};
 
-pub fn resolve_move(requested_move: &Move, game_state: &mut GameState)  {
+pub struct Memento<'a> {
+    last_move: &'a Move,
+    captured_piece: Tile
+}
+
+pub fn resolve_move(requested_move: &Move, game_state: &mut GameState) {
     let is_first_player_turn = game_state.is_first_player_turn;
     perform_move_for(requested_move, game_state, is_first_player_turn);
     game_state.next_turn();
 }
 
-pub fn perform_move_for(requested_move: &Move, game_state: &mut GameState, is_first_player: bool)  {
+pub fn perform_move_for<'a>(requested_move: &'a Move, game_state: &mut GameState, is_first_player: bool) -> Memento<'a>  {
     match requested_move {
         Move::PawnMove(from, to) => {
             move_piece(game_state, from, to);
+            Memento { last_move: requested_move, captured_piece: Tile::EMPTY }
         }
         Move::RegularMove(from, to, _) => {
             move_piece(game_state, from, to);
+            Memento { last_move: requested_move, captured_piece: Tile::EMPTY }
         }
         Move::AttackMove(from, to, _) => {
             let target_tile = game_state.board[to];
@@ -24,6 +31,7 @@ pub fn perform_move_for(requested_move: &Move, game_state: &mut GameState, is_fi
             else {game_state.captured_pieces.captured_first_player(target_tile, game_state.turn_number);}
 
             move_piece(game_state, from, to);
+            Memento { last_move: requested_move, captured_piece: target_tile }
         }
         Move::PawnAttackMove(from, to) => {
             let target_tile = game_state.board[(to)];
@@ -32,12 +40,14 @@ pub fn perform_move_for(requested_move: &Move, game_state: &mut GameState, is_fi
             else {game_state.captured_pieces.captured_first_player(target_tile, game_state.turn_number);}
 
             move_piece(game_state, from, to);
+            Memento { last_move: requested_move, captured_piece: target_tile }
         }
         Move::PawnPromotion(target, tile) => {
             let from = (if tile.is_owned_by_first_player() {target.south()} else {target.north()})
                 .expect("Cannot resolve pawn promotion, given invalid move");
             game_state.board[from] = Tile::EMPTY;
-            game_state.board[target] = tile.clone()
+            game_state.board[target] = tile.clone();
+            Memento { last_move: requested_move, captured_piece: Tile::EMPTY }
         }
         Move::Castle(is_kingside) => {
             match (is_first_player, *is_kingside) {
@@ -58,6 +68,7 @@ pub fn perform_move_for(requested_move: &Move, game_state: &mut GameState, is_fi
                     move_piece(game_state, &Coordinate::A8, &Coordinate::D8);
                 }
             }
+            Memento { last_move: requested_move, captured_piece: Tile::EMPTY }
         }
     }
 }
