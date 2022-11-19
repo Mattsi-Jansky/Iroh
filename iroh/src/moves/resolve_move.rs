@@ -91,7 +91,10 @@ pub fn undo_move_for(Memento {last_move, captured_piece, is_first_player}: Memen
             move_piece(game_state, to, from);
             game_state.board[to] = captured_piece;
         }
-        Move::PawnPromotion(_, _) => {}
+        Move::PawnPromotion(to, tile) => {
+            game_state.board[to] = Tile::EMPTY;
+            game_state.board[to.south().unwrap()] = if is_first_player { Tile::FIRST_PAWN } else { Tile::SECOND_PAWN };
+        }
         Move::Castle(_) => {}
     }
 }
@@ -101,8 +104,7 @@ fn move_piece(game_state: &mut GameState, from: &Coordinate, to: &Coordinate) {
     let tile = game_state.board[from];
     game_state.board[from] = Tile::EMPTY;
     game_state.board[to] = tile;
-
-    update_castling_state(game_state, from, tile)
+    update_castling_state(game_state, from, tile);
 }
 
 fn update_castling_state(game_state: &mut GameState, from: &Coordinate, tile: Tile) {
@@ -195,5 +197,19 @@ mod tests {
         undo_move_for(memento, &mut state);
 
         assert_eq!("4k3/8/3p4/2P5/1K6/8/8/8 w - - 0 1", state.generate_fen());
+    }
+
+    #[test]
+    fn undo_pawn_promotion() {
+        let mut state = GameState::from_fen("6k1/2P5/8/8/1K6/8/8/8 w - - 0 1");
+        let requested_move = PawnPromotion(Coordinate::C8, Tile::FIRST_QUEEN);
+
+        let memento = perform_move_for(&requested_move, &mut state, true);
+
+        assert_eq!("2Q3k1/8/8/8/1K6/8/8/8 w - - 0 1", state.generate_fen());
+
+        undo_move_for(memento, &mut state);
+
+        assert_eq!("6k1/2P5/8/8/1K6/8/8/8 w - - 0 1", state.generate_fen());
     }
 }
