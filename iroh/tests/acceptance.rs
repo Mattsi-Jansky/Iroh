@@ -4,8 +4,8 @@ extern crate core;
 
 use galvanic_assert::matchers::collection::*;
 use test_case::test_case;
-use iroh::state::piece::PieceType;
 use iroh::game::Game;
+use iroh::state::tile::Tile;
 
 mod generators;
 
@@ -98,10 +98,10 @@ fn attack_move_from_dynamic_movement_piece() {
 
     assert_eq!("1. Rxe5 Rxd4 2. Rd5 *", result_pgn);
     assert_that!(&result_game.captured_pieces().unwrap().second_player, contains_in_any_order(vec![
-        PieceType::Rook
+        Tile::SECOND_ROOK
     ]));
     assert_that!(&result_game.captured_pieces().unwrap().first_player, contains_in_any_order(vec![
-        PieceType::Rook
+        Tile::FIRST_ROOK
     ]));
 }
 
@@ -117,10 +117,10 @@ fn attack_move_from_static_movement_piece() {
 
     assert_eq!("1. Nxb7 Nxg7 2. Nc5 *", result);
     assert_that!(&result_game.captured_pieces().unwrap().second_player, contains_in_any_order(vec![
-        PieceType::Knight
+        Tile::SECOND_KNIGHT
     ]));
     assert_that!(&result_game.captured_pieces().unwrap().first_player, contains_in_any_order(vec![
-        PieceType::Knight
+        Tile::FIRST_KNIGHT
     ]));
 }
 
@@ -137,10 +137,10 @@ fn attack_move_from_pawn() {
 
     assert_eq!("1. cxd6 gxf5 2. d7 f4 *", result);
     assert_that!(&result_game.captured_pieces().unwrap().second_player, contains_in_any_order(vec![
-        PieceType::Pawn
+        Tile::SECOND_PAWN
     ]));
     assert_that!(&result_game.captured_pieces().unwrap().first_player, contains_in_any_order(vec![
-        PieceType::Pawn
+        Tile::FIRST_PAWN
     ]));
 }
 
@@ -234,7 +234,7 @@ fn given_seventy_five_turns_without_pawn_move_or_capture_should_automatically_dr
     let moves = vec!["Rc2", "Rc7", "Rb2","Rb7","Ra2","Ra7"];
     let mut index = 0;
 
-    for i in 0..74 {
+    for _ in 0..74 {
         if index == moves.len() { index = 0; }
         game = game.make_move(moves[index]);
         index += 1;

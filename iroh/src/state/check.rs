@@ -1,63 +1,84 @@
-use crate::moves::{DIAGONAL_DYNAMIC_TRANSFORMS, KING_STATIC_TRANSFORMS, KNIGHT_STATIC_TRANSFORMS, STRAIGHT_DYNAMIC_TRANSFORMS};
+use crate::moves::coordinate_transformers::{DIAGONAL_DYNAMIC_TRANSFORMERS, KING_STATIC_TRANSFORMERS, KNIGHT_STATIC_TRANSFORMERS, PAWN_STATIC_TRANSFORMERS_FIRST_PLAYER, PAWN_STATIC_TRANSFORMERS_SECOND_PLAYER, STRAIGHT_DYNAMIC_TRANSFORMERS};
 use crate::state::board::Board;
-use crate::state::coordinates::{File, Rank};
+use crate::state::coordinates::Coordinate;
 use crate::state::GameState;
-use crate::state::piece::PieceType;
+use crate::state::tile::{Tile};
 
 pub fn is_check(is_first_player: bool, game_state: &GameState) -> bool{
-    let mut result = false;
-
     let king = game_state.board.get_all_pieces_belonging_to_player(is_first_player)
         .into_iter()
-        .find(|piece| piece.0 == PieceType::King);
+        .find(|tile| tile.0 == Tile::FIRST_KING || tile.0 == Tile::SECOND_KING);
 
     if let Some(king) = king {
-        let mut static_check = StaticCheckTester::new(&mut result, is_first_player, &game_state.board, &king);
-        static_check.test(PieceType::King, &KING_STATIC_TRANSFORMS);
-        static_check.test(PieceType::Knight, &KNIGHT_STATIC_TRANSFORMS);
-        static_check.test(PieceType::Pawn,
-                          if is_first_player { &[(-1, 1), (1, 1)]}
-                          else {&[(-1, -1), (1, -1)]});
+        would_be_check(king, game_state)
+    } else { false }
+}
 
-        let mut dynamic_check = DynamicCheckTester::new(&mut result, is_first_player, &game_state.board, &king);
-        dynamic_check.test(&[PieceType::Rook, PieceType::Queen], &STRAIGHT_DYNAMIC_TRANSFORMS);
-        dynamic_check.test(&[PieceType::Bishop, PieceType::Queen], &DIAGONAL_DYNAMIC_TRANSFORMS);
-    }
+pub fn would_be_check(king: (Tile, Coordinate), game_state: &GameState) -> bool {
+    let mut result = false;
+    let is_first_player = king.0.is_owned_by_first_player();
+
+    let enemy_king = if is_first_player { Tile::SECOND_KING } else { Tile::FIRST_KING };
+    let enemy_knight = if is_first_player { Tile::SECOND_KNIGHT } else { Tile::FIRST_KNIGHT };
+    let enemy_pawn = if is_first_player { Tile::SECOND_PAWN } else { Tile::FIRST_PAWN };
+    let mut static_check = StaticCheckTester::new(&mut result, &game_state.board, &king);
+
+    static_check.test(enemy_king, &KING_STATIC_TRANSFORMERS);
+    static_check.test(enemy_knight, &KNIGHT_STATIC_TRANSFORMERS);
+    static_check.test(enemy_pawn,if is_first_player { &PAWN_STATIC_TRANSFORMERS_FIRST_PLAYER }
+    else { &PAWN_STATIC_TRANSFORMERS_SECOND_PLAYER });
+
+    let mut dynamic_check = DynamicCheckTester::new(&mut result, is_first_player, &game_state.board, &king);
+    dynamic_check.test_straight_lines();
+    dynamic_check.test_diagonal_lines();
 
     result
 }
 
 struct DynamicCheckTester<'a> {
     result: &'a mut bool,
-    is_first_player: bool,
     board: &'a Board,
-    king: &'a (PieceType, File, Rank)
+    king: &'a (Tile, Coordinate),
+    enemy_queen: Tile,
+    enemy_rook: Tile,
+    enemy_bishop: Tile,
 }
 
 impl<'a> DynamicCheckTester<'a> {
     fn new(result: &'a mut bool,
            is_first_player: bool,
            board: &'a Board,
-           king: &'a (PieceType, File, Rank)) -> DynamicCheckTester<'a> {
-        DynamicCheckTester { result, is_first_player, board, king }
+           king: &'a (Tile, Coordinate)) -> DynamicCheckTester<'a> {
+        DynamicCheckTester { result, board, king,
+            enemy_queen: if is_first_player { Tile::SECOND_QUEEN } else { Tile::FIRST_QUEEN },
+            enemy_rook: if is_first_player { Tile::SECOND_ROOK } else { Tile::FIRST_ROOK },
+            enemy_bishop: if is_first_player { Tile::SECOND_BISHOP } else { Tile::FIRST_BISHOP },
+        }
     }
 
-    fn test(&mut self, attacking_piece_types: &[PieceType], transformations: &[(isize, isize)]) {
-        for transform in transformations {
-            let (mut file, mut rank) = (Some(self.king.1), Some(self.king.2));
+    fn test_straight_lines(&mut self) {
+        self.test(&[self.enemy_rook, self.enemy_queen],
+                  &STRAIGHT_DYNAMIC_TRANSFORMERS);
+    }
+
+    fn test_diagonal_lines(&mut self) {
+        self.test(&[self.enemy_bishop, self.enemy_queen], &DIAGONAL_DYNAMIC_TRANSFORMERS);
+    }
+
+    fn test(&mut self, attacking_piece_types: &[Tile], transformers: &[fn(Coordinate) -> Option<Coordinate>]) {
+        for transform in transformers {
+            let mut coordinate = Some(self.king.1);
             loop {
-                file = file.unwrap().transform(transform.0);
-                rank = rank.unwrap().transform(transform.1);
-                if let(Some(file), Some(rank)) = (file,rank) {
-                    if let Some(target_piece) = self.board[(file, rank)] {
-                        if target_piece.is_owned_by_first_player != self.is_first_player
-                            && attacking_piece_types.contains(&target_piece.piece_type) {
+                coordinate = transform(coordinate.unwrap());
+                if let Some(coordinate) = coordinate {
+                    let tile = self.board[coordinate];
+                    if tile.is_occupied() {
+                        if attacking_piece_types.contains(&tile) {
                             *self.result = true;
                         }
                         break;
                     }
-                }
-                else {
+                } else {
                     break;
                 }
             }
@@ -67,29 +88,24 @@ impl<'a> DynamicCheckTester<'a> {
 
 struct StaticCheckTester<'a> {
     result: &'a mut bool,
-    is_first_player: bool,
     board: &'a Board,
-    king: &'a (PieceType, File, Rank)
+    king: &'a (Tile, Coordinate)
 }
 
 impl<'a> StaticCheckTester<'a> {
     fn new(result: &'a mut bool,
-           is_first_player: bool,
            board: &'a Board,
-           king: &'a (PieceType, File, Rank)) -> StaticCheckTester<'a> {
-        StaticCheckTester { result, is_first_player, board, king }
+           king: &'a (Tile, Coordinate)) -> StaticCheckTester<'a> {
+        StaticCheckTester { result, board, king }
     }
 
-    fn test(&mut self, attacking_piece_type: PieceType, transformations: &[(isize, isize)]) {
-        for transform in transformations {
-            let target_file = self.king.1.transform(transform.0);
-            let target_rank = self.king.2.transform(transform.1);
+    fn test(&mut self, attacking_tile: Tile, transformers: &[fn(Coordinate) -> Option<Coordinate>]) {
+        for transform in transformers {
+            let coordinate = transform(self.king.1);
 
-            if let (Some(target_file), Some(target_rank)) = (target_file, target_rank) {
-                if let Some(piece) = self.board[(target_file, target_rank)] {
-                    if piece.is_owned_by_first_player != self.is_first_player
-                        && piece.piece_type == attacking_piece_type { *self.result = true; }
-                }
+            if let Some(coordinate) = coordinate {
+                let tile = self.board[coordinate];
+                if tile == attacking_tile { *self.result = true; }
             }
         }
     }

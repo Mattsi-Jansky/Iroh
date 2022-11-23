@@ -1,35 +1,43 @@
-use crate::state::coordinates::{File, Rank};
-use crate::state::piece::{Piece, PieceType};
+use crate::state::coordinates::Coordinate;
+use crate::state::tile::{Tile};
 use crate::state::GameState;
 
+fn coordinate_from_rank_and_file(rank: u8, file: u8) -> Coordinate {
+    Coordinate::from_u8_no_bounds_check(file + rank * 16)
+}
+
 pub fn parse_fen(fen: &str, game_state: &mut GameState) {
-    let mut rank = Rank::new(7);
-    let mut file = File::new(0);
+    let mut rank = 7_u8;
+    let mut file = 0_u8;
     let mut blocks = fen.split_whitespace();
 
     for char in blocks.next().expect("Invalid FEN syntax").chars() {
         if char.eq(&'/') {
             rank -= 1;
-            file = File::new(0);
+            file = 0;
             continue;
         }
         if char.is_ascii_digit() {
-            file += char as usize - 0x30;
+            file += char as u8 - 0x30;
             continue;
         }
 
-        let piece_type = match char {
-            'r' | 'R' => Some(PieceType::Rook),
-            'n' | 'N' => Some(PieceType::Knight),
-            'b' | 'B' => Some(PieceType::Bishop),
-            'q' | 'Q' => Some(PieceType::Queen),
-            'k' | 'K' => Some(PieceType::King),
-            'p' | 'P' => Some(PieceType::Pawn),
-            _ => None
+        let tile = match char {
+            'R' => Tile::FIRST_ROOK,
+            'r' => Tile::SECOND_ROOK,
+            'N' => Tile::FIRST_KNIGHT,
+            'n' => Tile::SECOND_KNIGHT,
+            'B' => Tile::FIRST_BISHOP,
+            'b' => Tile::SECOND_BISHOP,
+            'Q' => Tile::FIRST_QUEEN,
+            'q' => Tile::SECOND_QUEEN,
+            'K' => Tile::FIRST_KING,
+            'k' => Tile::SECOND_KING,
+            'P' => Tile::FIRST_PAWN,
+            'p' => Tile::SECOND_PAWN,
+            _ => Tile::EMPTY
         };
-        let is_owned_by_first_player = char.is_uppercase();
-        game_state.board[(file, rank)] = piece_type.map(
-                     |piece_type| Piece::new(is_owned_by_first_player, piece_type));
+        game_state.board[coordinate_from_rank_and_file(rank, file)] = tile;
 
         file += 1;
     }
@@ -55,28 +63,36 @@ pub fn parse_fen(fen: &str, game_state: &mut GameState) {
 
 pub fn generate_fen(game_state: &GameState) -> String {
     let mut result = String::new();
+    let mut blank_tiles_count = 0;
 
-    for r in (0..=Rank::MAX).rev() {
-        let mut blank_tiles_count = 0;
-        for f in 0..=File::MAX {
-            if let Some(piece) = game_state.board[(File::new(f),Rank::new(r))] {
+    for rank in (0_u8..8).rev() {
+        for file in 0_u8..8 {
+            let coordinate = coordinate_from_rank_and_file(rank,file);
+            let tile = game_state.board[coordinate];
+            if tile.is_occupied() {
                 if blank_tiles_count > 0 {
                     result.push(char::from_digit(blank_tiles_count, 10).unwrap());
                     blank_tiles_count = 0;
                 };
-                let glyph = generate_fen_piece(piece);
+                let glyph = generate_fen_piece(tile);
                 result.push(glyph);
             } else { blank_tiles_count += 1; }
-        }
 
-        if blank_tiles_count > 0 { result.push(char::from_digit(blank_tiles_count, 10).unwrap()) };
-        if r > 0 { result.push('/') };
+            if file == 7 {
+                if blank_tiles_count > 0 {
+                    result.push(char::from_digit(blank_tiles_count, 10).unwrap());
+                    blank_tiles_count = 0;
+                };
+                if rank != 0 { result.push('/') }
+            };
+        }
     }
 
     result.push_str(&*format!(
         " {} {} - 0 1",
         if game_state.is_first_player_turn {"w"} else {"b"},
-        generate_castling_metadata(game_state)));
+        generate_castling_metadata(game_state))
+    );
     result
 }
 
@@ -93,20 +109,22 @@ fn generate_castling_metadata(game_state: &GameState) -> String {
     result
 }
 
-fn generate_fen_piece(piece: Piece) -> char {
-    let piece_type = match piece.piece_type {
-        PieceType::Rook => 'r',
-        PieceType::Knight => 'n',
-        PieceType::Bishop => 'b',
-        PieceType::Queen => 'q',
-        PieceType::King => 'k',
-        PieceType::Pawn => 'p',
+fn generate_fen_piece(tile: Tile) -> char {
+    let piece_type = match tile {
+        Tile::FIRST_ROOK | Tile::SECOND_ROOK => 'r',
+        Tile::FIRST_KNIGHT | Tile::SECOND_KNIGHT => 'n',
+        Tile::FIRST_BISHOP | Tile::SECOND_BISHOP => 'b',
+        Tile::FIRST_QUEEN | Tile::SECOND_QUEEN => 'q',
+        Tile::FIRST_KING | Tile::SECOND_KING => 'k',
+        Tile::FIRST_PAWN | Tile::SECOND_PAWN => 'p',
+        _ => { panic!("This should never happen - piece is not a valid recognised chesspiece") }
     };
-    if piece.is_owned_by_first_player { piece_type.to_uppercase().next().unwrap() } else {piece_type}
+    if tile.is_owned_by_first_player() { piece_type.to_uppercase().next().unwrap() } else {piece_type}
 }
 
 #[cfg(test)]
 mod tests {
+    use crate::state::coordinates::Coordinate;
     use super::*;
 
     #[test]
@@ -116,28 +134,28 @@ mod tests {
 
         parse_fen(fen_that_forces_odd_numbered_rank_piece, &mut game_state);
 
-        let result = game_state.board[(File::new(4),Rank::new(4))].unwrap();
-        assert_eq!(PieceType::Knight, result.piece_type)
+        let result = game_state.board[Coordinate::E5];
+        assert_eq!(Tile::SECOND_KNIGHT, result)
     }
 
     #[test]
     fn uppercase_is_first_player() {
-        let fen_with_uppercase_king = "4K3/8/8/8/8/8/8/8 w KQkq - 0 1";
+        let fen_with_uppercase_king = "4K3/8/8/8/8/8/8/8 w - - 0 1";
         let mut game_state = GameState::new();
 
         parse_fen(fen_with_uppercase_king, &mut game_state);
 
-        assert_eq!(true, game_state.board[(File::new(4), Rank::new(7))].unwrap().is_owned_by_first_player);
+        assert_eq!(true, game_state.board[Coordinate::E8].is_owned_by_first_player());
     }
 
     #[test]
     fn lowercase_is_second_player() {
-        let fen_with_lowercase_king = "4k3/8/8/8/8/8/8/8 w KQkq - 0 1";
+        let fen_with_lowercase_king = "4k3/8/8/8/8/8/8/8 w - - 0 1";
         let mut game_state = GameState::new();
 
         parse_fen(fen_with_lowercase_king, &mut game_state);
 
-        assert_eq!(false, game_state.board[(File::new(4), Rank::new(7))].unwrap().is_owned_by_first_player);
+        assert_eq!(false, game_state.board[Coordinate::E8].is_owned_by_first_player());
     }
 
     #[test]

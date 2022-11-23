@@ -31,41 +31,44 @@ fn evaluate_attacks(possible_moves: &[Move]) -> i32 {
 
 #[cfg(test)]
 mod tests {
-    use galvanic_assert::assert_that;
     use super::*;
 
     #[test]
     fn given_neither_player_can_attack_returns_zero() {
-        let state = GameState::new();
+        let mut state = GameState::new();
 
-        let result = AttacksHeuristic {}.evaluate(&state, &HeuristicsCache::from(&state));
+        let cache = HeuristicsCache::from(&mut state);
+        let result = AttacksHeuristic {}.evaluate(&state, &cache);
 
         assert_eq!(0, result)
     }
 
     #[test]
     fn given_first_player_has_two_attacks_returns_positive_2() {
-        let state = GameState::from_fen("3k4/8/8/8/2pKp3/8/8/8 w - - 0 1");
+        let mut state = GameState::from_fen("3k4/8/8/8/2pKp3/8/8/8 w - - 0 1");
 
-        let result = AttacksHeuristic {}.evaluate(&state, &HeuristicsCache::from(&state));
+        let cache = HeuristicsCache::from(&mut state);
+        let result = AttacksHeuristic {}.evaluate(&state, &cache);
 
         assert_eq!(2, result)
     }
 
     #[test]
     fn given_second_player_has_two_attacks_returns_negative_2() {
-        let state = GameState::from_fen("8/2PkP3/8/8/3K4/8/8/8 w - - 0 1");
+        let mut state = GameState::from_fen("8/2PkP3/8/8/3K4/8/8/8 w - - 0 1");
 
-        let result = AttacksHeuristic {}.evaluate(&state, &HeuristicsCache::from(&state));
+        let cache = HeuristicsCache::from(&mut state);
+        let result = AttacksHeuristic {}.evaluate(&state, &cache);
 
         assert_eq!(-2, result)
     }
 
     #[test]
     fn given_equal_number_of_attacks_returns_0() {
-        let state = GameState::from_fen("3k4/8/3q4/8/8/3Q4/8/3K4 w - - 0 1");
+        let mut state = GameState::from_fen("3k4/8/3q4/8/8/3Q4/8/3K4 w - - 0 1");
 
-        let result = AttacksHeuristic {}.evaluate(&state, &HeuristicsCache::from(&state));
+        let cache = HeuristicsCache::from(&mut state);
+        let result = AttacksHeuristic {}.evaluate(&state, &cache);
 
         assert_eq!(0, result)
     }

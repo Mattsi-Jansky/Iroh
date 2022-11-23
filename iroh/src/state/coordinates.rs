@@ -1,207 +1,187 @@
-use std::ops::{Add, AddAssign, Mul, Sub, SubAssign};
-use derive_more::{Deref, Display};
+use std::fmt::{Display, Formatter};
+use derive_more::{Deref};
 
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Deref, Display, Hash)]
-pub struct File {
-    inner: usize
-}
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Deref, Hash)]
+pub struct Coordinate(u8);
 
-impl File {
-    pub const MAX: usize = 7;
-    pub const A: File = File::new(0);
-    pub const B: File = File::new(1);
-    pub const C: File = File::new(2);
-    pub const D: File = File::new(3);
-    pub const E: File = File::new(4);
-    pub const F: File = File::new(5);
-    pub const G: File = File::new(6);
-    pub const H: File = File::new(7);
+const SAN_LOOKUP: [&str; 8*8*2] = [
+    "a1","b1","c1","d1","e1","f1","g1","h1",
+    "X","X","X","X","X","X","X","X",
+    "a2","b2","c2","d2","e2","f2","g2","h2",
+    "X","X","X","X","X","X","X","X",
+    "a3","b3","c3","d3","e3","f3","g3","h3",
+    "X","X","X","X","X","X","X","X",
+    "a4","b4","c4","d4","e4","f4","g4","h4",
+    "X","X","X","X","X","X","X","X",
+    "a5","b5","c5","d5","e5","f5","g5","h5",
+    "X","X","X","X","X","X","X","X",
+    "a6","b6","c6","d6","e6","f6","g6","h6",
+    "X","X","X","X","X","X","X","X",
+    "a7","b7","c7","d7","e7","f7","g7","h7",
+    "X","X","X","X","X","X","X","X",
+    "a8","b8","c8","d8","e8","f8","g8","h8",
+    "X","X","X","X","X","X","X","X",
+];
 
-    pub const fn new(inner: usize) -> File {
-        File{inner}
+impl Coordinate {
+    pub const A1: Coordinate = Coordinate(0);
+    pub const B1: Coordinate = Coordinate(1);
+    pub const C1: Coordinate = Coordinate(2);
+    pub const D1: Coordinate = Coordinate(3);
+    pub const E1: Coordinate = Coordinate(4);
+    pub const F1: Coordinate = Coordinate(5);
+    pub const G1: Coordinate = Coordinate(6);
+    pub const H1: Coordinate = Coordinate(7);
+
+    pub const A2: Coordinate = Coordinate(16);
+    pub const B2: Coordinate = Coordinate(17);
+    pub const C2: Coordinate = Coordinate(18);
+    pub const D2: Coordinate = Coordinate(19);
+    pub const E2: Coordinate = Coordinate(20);
+    pub const F2: Coordinate = Coordinate(21);
+    pub const G2: Coordinate = Coordinate(22);
+    pub const H2: Coordinate = Coordinate(23);
+
+    pub const A3: Coordinate = Coordinate(32);
+    pub const B3: Coordinate = Coordinate(33);
+    pub const C3: Coordinate = Coordinate(34);
+    pub const D3: Coordinate = Coordinate(35);
+    pub const E3: Coordinate = Coordinate(36);
+    pub const F3: Coordinate = Coordinate(37);
+    pub const G3: Coordinate = Coordinate(38);
+    pub const H3: Coordinate = Coordinate(39);
+
+    pub const A4: Coordinate = Coordinate(48);
+    pub const B4: Coordinate = Coordinate(49);
+    pub const C4: Coordinate = Coordinate(50);
+    pub const D4: Coordinate = Coordinate(51);
+    pub const E4: Coordinate = Coordinate(52);
+    pub const F4: Coordinate = Coordinate(53);
+    pub const G4: Coordinate = Coordinate(54);
+    pub const H4: Coordinate = Coordinate(55);
+
+    pub const A5: Coordinate = Coordinate(64);
+    pub const B5: Coordinate = Coordinate(65);
+    pub const C5: Coordinate = Coordinate(66);
+    pub const D5: Coordinate = Coordinate(67);
+    pub const E5: Coordinate = Coordinate(68);
+    pub const F5: Coordinate = Coordinate(69);
+    pub const G5: Coordinate = Coordinate(70);
+    pub const H5: Coordinate = Coordinate(71);
+
+    pub const A6: Coordinate = Coordinate(80);
+    pub const B6: Coordinate = Coordinate(81);
+    pub const C6: Coordinate = Coordinate(82);
+    pub const D6: Coordinate = Coordinate(83);
+    pub const E6: Coordinate = Coordinate(84);
+    pub const F6: Coordinate = Coordinate(85);
+    pub const G6: Coordinate = Coordinate(86);
+    pub const H6: Coordinate = Coordinate(87);
+
+    pub const A7: Coordinate = Coordinate(96);
+    pub const B7: Coordinate = Coordinate(97);
+    pub const C7: Coordinate = Coordinate(98);
+    pub const D7: Coordinate = Coordinate(99);
+    pub const E7: Coordinate = Coordinate(100);
+    pub const F7: Coordinate = Coordinate(101);
+    pub const G7: Coordinate = Coordinate(102);
+    pub const H7: Coordinate = Coordinate(103);
+
+    pub const A8: Coordinate = Coordinate(112);
+    pub const B8: Coordinate = Coordinate(113);
+    pub const C8: Coordinate = Coordinate(114);
+    pub const D8: Coordinate = Coordinate(115);
+    pub const E8: Coordinate = Coordinate(116);
+    pub const F8: Coordinate = Coordinate(117);
+    pub const G8: Coordinate = Coordinate(118);
+    pub const H8: Coordinate = Coordinate(119);
+
+    /// **Invariant:** input must be below 64
+    /// Giving input higher than 64 will crash your program for certain.
+    /// Only use when you are sure of the input size.
+    pub fn from_u8_no_bounds_check(input: u8) -> Self {
+        Coordinate(input)
     }
 
-    pub fn transform(&self, rhs: isize) -> Option<File> {
-        let result = (self.inner as isize) + rhs;
-        if !(0..=7).contains(&result) { None }
-        else { Some(File { inner: result as usize }) }
-    }
-}
-
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Deref, Display, Hash)]
-pub struct Rank {
-    inner: usize
-}
-
-impl Rank {
-    pub const MAX: usize = 7;
-    pub const ONE: Rank = Rank::new(0);
-    pub const TWO: Rank = Rank::new(1);
-    pub const THREE: Rank = Rank::new(2);
-    pub const FOUR: Rank = Rank::new(3);
-    pub const FIVE: Rank = Rank::new(4);
-    pub const SIX: Rank = Rank::new(5);
-    pub const SEVEN: Rank = Rank::new(6);
-    pub const EIGHT: Rank = Rank::new(7);
-
-    pub const fn new(inner: usize) -> Rank {
-        Rank{inner}
+    pub fn as_usize(&self) -> usize {
+        self.0 as usize
     }
 
-    pub fn transform(&self, rhs: isize) -> Option<Rank> {
-        let result = (self.inner as isize) + rhs;
-        if !(0..=7).contains(&result) { None }
-        else { Some(Rank { inner: result as usize }) }
+    pub fn file(&self) -> &str {
+        &SAN_LOOKUP[self.0 as usize][0..1]
     }
-}
 
-impl Add<usize> for File {
-    type Output = File;
-
-    fn add(self, rhs: usize) -> Self::Output {
-        File::new(self.inner + rhs)
+    pub fn north(&self) -> Option<Coordinate> {
+        self.checked_add(16)
     }
-}
 
-impl Add<File> for usize {
-    type Output = File;
-
-    fn add(self, rhs: File) -> Self::Output {
-        File::new(self + rhs.inner)
+    pub fn east(&self) -> Option<Coordinate> {
+        self.checked_add(1)
     }
-}
 
-impl Sub<usize> for File {
-    type Output = File;
-
-    fn sub(self, rhs: usize) -> Self::Output {
-        File::new(self.inner - rhs)
+    pub fn south(&self) -> Option<Coordinate> {
+        self.checked_sub(16)
     }
-}
 
-impl Sub<File> for usize {
-    type Output = File;
-
-    fn sub(self, rhs: File) -> Self::Output {
-        File::new(self - rhs.inner)
+    pub fn west(&self) -> Option<Coordinate> {
+        self.checked_sub(1)
     }
-}
 
-impl Mul<usize> for File {
-    type Output = File;
-
-    fn mul(self, rhs: usize) -> Self::Output {
-        File::new(self.inner * rhs)
+    pub fn north_east(&self) -> Option<Coordinate> {
+        self.checked_add(17)
     }
-}
 
-impl Mul<File> for usize {
-    type Output = File;
-
-    fn mul(self, rhs: File) -> Self::Output {
-        File::new(self * rhs.inner)
+    pub fn north_west(&self) -> Option<Coordinate> {
+        self.checked_add(15)
     }
-}
 
-impl PartialEq<usize> for File {
-    fn eq(&self, other: &usize) -> bool {
-        &self.inner == other
+    pub fn south_east(&self) -> Option<Coordinate> {
+        self.checked_sub(15)
     }
-}
 
-impl PartialEq<File> for usize {
-    fn eq(&self, other: &File) -> bool {
-        self == &other.inner
+    pub fn south_west(&self) -> Option<Coordinate> {
+        self.checked_sub(17)
     }
-}
 
-impl SubAssign<usize> for File {
-    fn sub_assign(&mut self, rhs: usize) {
-        self.inner -= rhs;
+    pub fn is_on_board(&self) -> bool {
+        (self.0 & 0x88) == 0
     }
-}
 
-impl AddAssign<usize> for File {
-    fn add_assign(&mut self, rhs: usize) {
-        self.inner += rhs;
+    fn checked_add(&self, input: u8) -> Option<Coordinate> {
+        let result = Coordinate(self.0 + input);
+        if !result.is_on_board() { None }
+        else { Some(result) }
     }
-}
 
-impl From<File> for char {
-    fn from(file: File) -> Self {
-        file.inner as u8 as char
+    fn checked_sub(&self, input: u8) -> Option<Coordinate> {
+        let result = self.0.checked_sub(input)
+            .map(Coordinate);
+        if let Some(coordinate) = result {
+            if coordinate.is_on_board() { Some(coordinate) }
+            else { None }
+        } else { None }
     }
-}
 
-impl Add<usize> for Rank {
-    type Output = Rank;
-
-    fn add(self, rhs: usize) -> Self::Output {
-        Rank::new(self.inner + rhs)
+    pub fn is_last_rank(&self) -> bool {
+        self.0 > 111
     }
-}
 
-impl Add<Rank> for usize {
-    type Output = Rank;
-
-    fn add(self, rhs: Rank) -> Self::Output {
-        Rank::new(self + rhs.inner)
+    pub fn is_rank_7(&self) -> bool {
+        (self.0 >> 4) == 6
     }
-}
 
-impl Sub<usize> for Rank {
-    type Output = Rank;
-
-    fn sub(self, rhs: usize) -> Self::Output {
-        Rank::new(self.inner - rhs)
+    pub fn is_rank_2(&self) -> bool {
+        (self.0 >> 4) == 1
     }
-}
 
-impl Sub<Rank> for usize {
-    type Output = Rank;
-
-    fn sub(self, rhs: Rank) -> Self::Output {
-        Rank::new(self - rhs.inner)
-    }
-}
-
-impl Mul<usize> for Rank {
-    type Output = Rank;
-
-    fn mul(self, rhs: usize) -> Self::Output {
-        Rank::new(self.inner * rhs)
-    }
-}
-
-impl Mul<Rank> for usize {
-    type Output = Rank;
-
-    fn mul(self, rhs: Rank) -> Self::Output {
-        Rank::new(self * rhs.inner)
+    pub fn is_first_rank(&self) -> bool {
+        self.0 < 8
     }
 }
 
-impl PartialEq<usize> for Rank {
-    fn eq(&self, other: &usize) -> bool {
-        &self.inner == other
-    }
-}
-
-impl PartialEq<Rank> for usize {
-    fn eq(&self, other: &Rank) -> bool {
-        self == &other.inner
-    }
-}
-
-impl SubAssign<usize> for Rank {
-    fn sub_assign(&mut self, rhs: usize) {
-        self.inner -= rhs;
-    }
-}
-
-impl AddAssign<usize> for Rank {
-    fn add_assign(&mut self, rhs: usize) {
-        self.inner += rhs;
+impl Display for Coordinate {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", SAN_LOOKUP[self.0 as usize])
     }
 }
 
@@ -210,146 +190,358 @@ mod tests {
     use super::*;
 
     #[test]
-    fn file_should_equal_integer_regardless_of_order() {
-        let file = File::new(8);
+    fn create_coordinate_from_u8() {
+        let result = Coordinate::from_u8_no_bounds_check(10);
 
-        assert_eq!(8, file);
-        assert_eq!(file, 8);
+        assert_eq!(10, result.0);
     }
 
     #[test]
-    fn file_should_add_integer_regardless_of_order() {
-        let result = File::new(5) + 3;
-        let result_reverse = 3 + File::new(5);
+    fn create_coordinate_from_u8_does_not_perform_boundary_checks() {
+        let result = Coordinate::from_u8_no_bounds_check(255);
 
-        assert_eq!(8, result);
-        assert_eq!(8, result_reverse);
+        assert_eq!(255, result.0);
     }
 
     #[test]
-    fn file_should_subtract_integer_regardless_of_order() {
-        let result = File::new(5) - 3;
-        let result_reverse = 5 - File::new(3);
+    fn convert_to_usize() {
+        let coordinate = Coordinate::C2;
 
-        assert_eq!(2, result);
-        assert_eq!(2, result_reverse);
+        let result = coordinate.as_usize();
+
+        assert_eq!(18 as usize, result);
     }
 
     #[test]
-    fn file_should_multiply_integer_regardless_of_order() {
-        let result = File::new(2) * 4;
-        let result_reverse = 4 * File::new(2);
+    fn file_returns_str_file_for_coordinate() {
+        let coordinate = Coordinate::A1;
 
-        assert_eq!(8, result);
-        assert_eq!(8, result_reverse);
+        let result = coordinate.file();
+
+        assert_eq!("a", result);
     }
 
     #[test]
-    fn file_should_subtract_assign_integer() {
-        let mut result = File::new(2);
-        result -= 1;
+    fn north() {
+        let coordinate = Coordinate::E4;
 
-        assert_eq!(1, result);
+        let result = coordinate.north().unwrap();
+
+        assert_eq!(Coordinate::E5, result);
     }
 
     #[test]
-    fn file_should_add_assign_integer() {
-        let mut result = File::new(2);
-        result += 1;
+    fn east() {
+        let coordinate = Coordinate::E4;
 
-        assert_eq!(3, result);
+        let result = coordinate.east().unwrap();
+
+        assert_eq!(Coordinate::F4, result);
     }
 
     #[test]
-    fn file_should_transform_negative_number() {
-        let result = File::new(7).transform(-2).unwrap();
+    fn south() {
+        let coordinate = Coordinate::E4;
 
-        assert_eq!(5, result);
+        let result = coordinate.south().unwrap();
+
+        assert_eq!(Coordinate::E3, result);
     }
 
     #[test]
-    fn file_transform_should_return_none_if_result_negative() {
-        let result = File::new(1).transform(-2);
+    fn west() {
+        let coordinate = Coordinate::E4;
 
-        assert!(result.is_none());
+        let result = coordinate.west().unwrap();
+
+        assert_eq!(Coordinate::D4, result);
     }
 
     #[test]
-    fn file_transform_should_return_none_if_result_too_big() {
-        let result = File::new(7).transform(1);
+    fn north_east() {
+        let coordinate = Coordinate::E4;
 
-        assert!(result.is_none());
+        let result = coordinate.north_east().unwrap();
+
+        assert_eq!(Coordinate::F5, result);
     }
 
     #[test]
-    fn rank_should_equal_integer_regardless_of_order() {
-        let rank = Rank::new(8);
+    fn north_west() {
+        let coordinate = Coordinate::E4;
 
-        assert_eq!(8, rank);
-        assert_eq!(rank, 8);
+        let result = coordinate.north_west().unwrap();
+
+        assert_eq!(Coordinate::D5, result);
     }
 
     #[test]
-    fn rank_should_add_integer_regardless_of_order() {
-        let result = Rank::new(5) + 3;
-        let result_reverse = 3 + Rank::new(5);
+    fn south_east() {
+        let coordinate = Coordinate::E4;
 
-        assert_eq!(8, result);
-        assert_eq!(8, result_reverse);
+        let result = coordinate.south_east().unwrap();
+
+        assert_eq!(Coordinate::F3, result);
     }
 
     #[test]
-    fn rank_should_subtract_integer_regardless_of_order() {
-        let result = Rank::new(5) - 3;
-        let result_reverse = 5 - Rank::new(3);
+    fn south_west() {
+        let coordinate = Coordinate::E4;
 
-        assert_eq!(2, result);
-        assert_eq!(2, result_reverse);
+        let result = coordinate.south_west().unwrap();
+
+        assert_eq!(Coordinate::D3, result);
     }
 
     #[test]
-    fn rank_should_multiply_integer_regardless_of_order() {
-        let result = Rank::new(2) * 4;
-        let result_reverse = 4 * Rank::new(2);
+    fn given_out_of_bounds_north_returns_none() {
+        let coordinate = Coordinate::H8;
 
-        assert_eq!(8, result);
-        assert_eq!(8, result_reverse);
+        let result = coordinate.north();
+
+        assert_eq!(None, result);
     }
 
     #[test]
-    fn rank_should_subassign_integer() {
-        let mut result = Rank::new(2);
-        result -= 1;
+    fn given_out_of_bounds_east_returns_none() {
+        let coordinate = Coordinate::H8;
 
-        assert_eq!(1, result);
+        let result = coordinate.east();
+
+        assert_eq!(None, result);
     }
 
     #[test]
-    fn rank_should_add_assign_integer() {
-        let mut result = Rank::new(2);
-        result += 1;
+    fn given_out_of_bounds_south_returns_none() {
+        let coordinate = Coordinate::A1;
 
-        assert_eq!(3, result);
+        let result = coordinate.south();
+
+        assert_eq!(None, result);
     }
 
     #[test]
-    fn rank_should_transform_negative_number() {
-        let result = Rank::new(7).transform(-2).unwrap();
+    fn given_out_of_bounds_west_returns_none() {
+        let coordinate = Coordinate::A1;
 
-        assert_eq!(5, result);
+        let result = coordinate.west();
+
+        assert_eq!(None, result);
     }
 
     #[test]
-    fn rank_transform_should_return_none_if_result_negative() {
-        let result = Rank::new(1).transform(-2);
+    fn given_out_of_bounds_north_east_returns_none() {
+        let coordinate = Coordinate::H8;
 
-        assert!(result.is_none());
+        let result = coordinate.north_east();
+
+        assert_eq!(None, result);
     }
 
     #[test]
-    fn rank_transform_should_return_none_if_result_too_big() {
-        let result = Rank::new(7).transform(1);
+    fn given_out_of_bounds_north_west_returns_none() {
+        let coordinate = Coordinate::H8;
 
-        assert!(result.is_none());
+        let result = coordinate.north_west();
+
+        assert_eq!(None, result);
+    }
+
+    #[test]
+    fn given_out_of_bounds_south_east_returns_none() {
+        let coordinate = Coordinate::A1;
+
+        let result = coordinate.south_east();
+
+        assert_eq!(None, result);
+    }
+
+    #[test]
+    fn given_out_of_bounds_south_west_returns_none() {
+        let coordinate = Coordinate::A1;
+
+        let result = coordinate.south_west();
+
+        assert_eq!(None, result);
+    }
+
+    #[test]
+    fn given_move_north_from_top_rank_returns_none() {
+        let coordinate = Coordinate::B8;
+
+        let result = coordinate.north();
+
+        assert_eq!(None, result);
+    }
+
+    #[test]
+    fn given_move_east_from_last_file_returns_none() {
+        let coordinate = Coordinate::H5;
+
+        let result = coordinate.east();
+
+        assert_eq!(None, result);
+    }
+
+    #[test]
+    fn given_move_south_from_first_rank_returns_none() {
+        let coordinate = Coordinate::B1;
+
+        let result = coordinate.south();
+
+        assert_eq!(None, result);
+    }
+
+    #[test]
+    fn given_move_west_from_first_file_returns_none() {
+        let coordinate = Coordinate::A5;
+
+        let result = coordinate.west();
+
+        assert_eq!(None, result);
+    }
+
+    #[test]
+    fn given_move_north_east_from_top_rank_returns_none() {
+        let coordinate = Coordinate::A8;
+
+        let result = coordinate.north_east();
+
+        assert_eq!(None, result);
+    }
+
+    #[test]
+    fn given_move_north_west_from_top_rank_returns_none() {
+        let coordinate = Coordinate::B8;
+
+        let result = coordinate.north_west();
+
+        assert_eq!(None, result);
+    }
+
+    #[test]
+    fn given_move_south_east_from_first_rank_returns_none() {
+        let coordinate = Coordinate::H1;
+
+        let result = coordinate.south_east();
+
+        assert_eq!(None, result);
+    }
+
+    #[test]
+    fn given_move_south_west_from_first_rank_returns_none() {
+        let coordinate = Coordinate::H1;
+
+        let result = coordinate.south_west();
+
+        assert_eq!(None, result);
+    }
+    
+    #[test]
+    fn given_a3_coord_south_west_returns_none() {
+        let coordinate = Coordinate::A3;
+
+        let result = coordinate.south_west();
+
+        assert_eq!(None, result);
+    }
+
+    #[test]
+    fn given_h2_coord_south_east_returns_none() {
+        let coordinate = Coordinate::H2;
+
+        let result = coordinate.south_east();
+
+        assert_eq!(None, result);
+    }
+
+    #[test]
+    fn given_h2_coord_north_east_returns_none() {
+        let coordinate = Coordinate::H2;
+
+        let result = coordinate.north_east();
+
+        assert_eq!(None, result);
+    }
+
+    #[test]
+    fn given_a3_coord_north_west_returns_none() {
+        let coordinate = Coordinate::A3;
+
+        let result = coordinate.north_west();
+
+        assert_eq!(None, result);
+    }
+
+    #[test]
+    fn given_h7_is_not_last_rank() {
+        let coordinate = Coordinate::H7;
+
+        let result = coordinate.is_last_rank();
+
+        assert_eq!(false, result);
+    }
+
+    #[test]
+    fn given_a8_is_last_rank() {
+        let coordinate = Coordinate::A8;
+
+        let result = coordinate.is_last_rank();
+
+        assert_eq!(true, result);
+    }
+
+    #[test]
+    fn given_a2_is_not_first_rank() {
+        let coordinate = Coordinate::A2;
+
+        let result = coordinate.is_first_rank();
+
+        assert_eq!(false, result);
+    }
+
+    #[test]
+    fn given_h1_is_first_rank() {
+        let coordinate = Coordinate::H1;
+
+        let result = coordinate.is_first_rank();
+
+        assert_eq!(true, result);
+    }
+
+    #[test]
+    fn given_h6_is_not_rank_7() {
+        let coordinate = Coordinate::H6;
+
+        let result = coordinate.is_rank_7();
+
+        assert_eq!(false, result);
+    }
+
+    #[test]
+    fn given_a7_is_rank_7() {
+        let coordinate = Coordinate::A7;
+
+        let result = coordinate.is_rank_7();
+
+        assert_eq!(true, result);
+    }
+
+    #[test]
+    fn given_a3_is_not_rank_3() {
+        let coordinate = Coordinate::A3;
+
+        let result = coordinate.is_rank_2();
+
+        assert_eq!(false, result);
+    }
+
+    #[test]
+    fn given_a2_is_rank_2() {
+        let coordinate = Coordinate::A2;
+
+        let result = coordinate.is_rank_2();
+
+        assert_eq!(true, result);
     }
 }

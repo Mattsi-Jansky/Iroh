@@ -1,35 +1,49 @@
 use std::ops::{Index, IndexMut};
-use crate::state::coordinates::{File, Rank};
-use crate::state::piece::{Piece, PieceType};
+use crate::state::coordinates::Coordinate;
+use crate::state::tile::{Tile};
 
 #[derive(Debug, Copy, Clone, PartialEq, Eq)]
 pub struct Board {
-    state: [Option<Piece>; 8*8]
+    state: [Tile; 8*8*2]
 }
 
 impl Board {
     pub fn blank() -> Board {
         Board {
             state: [
-                None,None,None,None,None,None,None,None,
-                None,None,None,None,None,None,None,None,
-                None,None,None,None,None,None,None,None,
-                None,None,None,None,None,None,None,None,
-                None,None,None,None,None,None,None,None,
-                None,None,None,None,None,None,None,None,
-                None,None,None,None,None,None,None,None,
-                None,None,None,None,None,None,None,None,
+                Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY,
+                Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,
+                Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY,
+                Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,
+                Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY,
+                Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,
+                Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY,
+                Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,
+                Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY,
+                Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,
+                Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY,
+                Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,
+                Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY,
+                Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,
+                Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY,
+                Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,
             ]
         }
     }
 
-    pub(crate) fn get_all_pieces_belonging_to_player(&self, is_owned_by_first_player: bool) -> Vec<(PieceType, File, Rank)> {
+    pub(crate) fn get_all_pieces_belonging_to_player(&self, is_owned_by_first_player: bool) -> Vec<(Tile, Coordinate)> {
         let mut result = vec![];
 
-        for (index, piece_or_none) in self.state.iter().enumerate() {
-            if let Some(piece) = piece_or_none {
-                if piece.is_owned_by_first_player == is_owned_by_first_player {
-                    result.push((piece.piece_type, File::new(index % 8), Rank::new(index / 8)));
+        let mut index = 0;
+        while index < 128 {
+            let coordinate = Coordinate::from_u8_no_bounds_check(index);
+            if !coordinate.is_on_board() {
+                index += 8;
+            } else {
+                index += 1;
+                let tile = self[coordinate];
+                if tile.is_occupied() && tile.is_owned_by_first_player() == is_owned_by_first_player{
+                    result.push((tile, coordinate));
                 }
             }
         }
@@ -38,29 +52,29 @@ impl Board {
     }
 }
 
-impl Index<(File,Rank)> for Board {
-    type Output = Option<Piece>;
-    fn index(&self, s: (File,Rank)) -> &Option<Piece> {
-        &self.state[*s.0 + *(s.1 * 8)]
+impl Index<Coordinate> for Board {
+    type Output = Tile;
+    fn index(&self, s: Coordinate) -> &Tile {
+        &self.state[s.as_usize()]
     }
 }
 
-impl Index<(&File,&Rank)> for Board {
-    type Output = Option<Piece>;
-    fn index(&self, s: (&File,&Rank)) -> &Option<Piece> {
-        &self.state[*(*s.0 + *(*s.1 * 8))]
+impl Index<&Coordinate> for Board {
+    type Output = Tile;
+    fn index(&self, s: &Coordinate) -> &Tile {
+        &self.state[s.as_usize()]
     }
 }
 
-impl IndexMut<(File,Rank)> for Board {
-    fn index_mut(&mut self, s: (File,Rank)) -> &mut Option<Piece> {
-        &mut self.state[*s.0 + *(s.1 * 8)]
+impl IndexMut<Coordinate> for Board {
+    fn index_mut(&mut self, s: Coordinate) -> &mut Tile {
+        &mut self.state[s.as_usize()]
     }
 }
 
-impl IndexMut<(&File,&Rank)> for Board {
-    fn index_mut(&mut self, s: (&File,&Rank)) -> &mut Option<Piece> {
-        &mut self.state[*(*s.0 + *(*s.1 * 8))]
+impl IndexMut<&Coordinate> for Board {
+    fn index_mut(&mut self, s: &Coordinate) -> &mut Tile {
+        &mut self.state[s.as_usize()]
     }
 }
 
@@ -73,7 +87,6 @@ impl Default for Board {
 #[cfg(test)]
 mod tests {
     use galvanic_assert::assert_that;
-    use galvanic_assert::matchers::*;
     use galvanic_assert::matchers::collection::*;
 
     use crate::state::GameState;
@@ -83,58 +96,54 @@ mod tests {
     fn given_empty_tile_try_get_value_via_index() {
         let board = Board::blank();
 
-        let result = board[(File::new(0),Rank::new(0))];
+        let result = board[Coordinate::A1];
 
-        assert!(result.is_none())
+        assert_eq!(result, Tile::EMPTY)
     }
 
     #[test]
     fn insert_piece_into_board_via_index() {
         let mut board = Board::blank();
 
-        board[(File::new(0),Rank::new(0))] = Some(Piece::new(true, PieceType::King));
-        let result = board[(File::new(0),Rank::new(0))];
+        board[Coordinate::A1] = Tile::FIRST_KING;
+        let result = board[Coordinate::A1];
 
-        assert!(!result.is_none());
-        let result = result.unwrap();
-        assert_that!(&result.piece_type, eq(PieceType::King));
+        assert_eq!(result, Tile::FIRST_KING);
     }
 
     #[test]
     fn index_outermost_corner_of_board() {
         let mut board = Board::blank();
 
-        board[(File::new(7),Rank::new(7))] = Some(Piece::new(true, PieceType::King));
-        let result = board[(File::new(7),Rank::new(7))];
+        board[Coordinate::H8] = Tile::FIRST_KING;
+        let result = board[Coordinate::H8];
 
-        assert!(!result.is_none());
-        let result = result.unwrap();
-        assert_that!(&result.piece_type, eq(PieceType::King));
+        assert_eq!(result, Tile::FIRST_KING);
     }
 
     #[test]
-    fn get_all_pieces_of_type_and_ownership() {
+    fn get_all_pieces_from_ownership() {
         let board = GameState::new().board;
 
         let result = board.get_all_pieces_belonging_to_player(true);
 
         assert_that!(&result, contains_in_any_order(vec![
-            (PieceType::Pawn,File::new(0),Rank::new(1)),
-            (PieceType::Pawn,File::new(1),Rank::new(1)),
-            (PieceType::Pawn,File::new(2),Rank::new(1)),
-            (PieceType::Pawn,File::new(3),Rank::new(1)),
-            (PieceType::Pawn,File::new(4),Rank::new(1)),
-            (PieceType::Pawn,File::new(5),Rank::new(1)),
-            (PieceType::Pawn,File::new(6),Rank::new(1)),
-            (PieceType::Pawn,File::new(7),Rank::new(1)),
-            (PieceType::Rook,File::new(0),Rank::new(0)),
-            (PieceType::Rook,File::new(7),Rank::new(0)),
-            (PieceType::Knight,File::new(1),Rank::new(0)),
-            (PieceType::Knight,File::new(6),Rank::new(0)),
-            (PieceType::Bishop,File::new(5),Rank::new(0)),
-            (PieceType::Bishop,File::new(2),Rank::new(0)),
-            (PieceType::Queen,File::new(3),Rank::new(0)),
-            (PieceType::King,File::new(4),Rank::new(0)),
+            (Tile::FIRST_PAWN,Coordinate::A2),
+            (Tile::FIRST_PAWN,Coordinate::B2),
+            (Tile::FIRST_PAWN,Coordinate::C2),
+            (Tile::FIRST_PAWN,Coordinate::D2),
+            (Tile::FIRST_PAWN,Coordinate::E2),
+            (Tile::FIRST_PAWN,Coordinate::F2),
+            (Tile::FIRST_PAWN,Coordinate::G2),
+            (Tile::FIRST_PAWN,Coordinate::H2),
+            (Tile::FIRST_ROOK,Coordinate::A1),
+            (Tile::FIRST_ROOK,Coordinate::H1),
+            (Tile::FIRST_KNIGHT,Coordinate::B1),
+            (Tile::FIRST_KNIGHT,Coordinate::G1),
+            (Tile::FIRST_BISHOP,Coordinate::F1),
+            (Tile::FIRST_BISHOP,Coordinate::C1),
+            (Tile::FIRST_QUEEN,Coordinate::D1),
+            (Tile::FIRST_KING,Coordinate::E1),
         ]));
     }
 }

@@ -10,7 +10,6 @@ use cache::HeuristicsCache;
 use crate::heuristics::attacks::AttacksHeuristic;
 use crate::heuristics::checkmates::InCheckmateHeuristic;
 use crate::heuristics::checks::InCheckHeuristic;
-use crate::heuristics::HeuristicType::CheckMate;
 use crate::heuristics::material::MaterialHeuristic;
 use crate::heuristics::mobility::MobilityHeuristic;
 use crate::heuristics::weightings::Weightings;
@@ -61,7 +60,7 @@ impl Heuristics {
         Heuristics { weightings, ..Default::default() }
     }
 
-    pub fn evaluate(&self, state: &GameState) -> i32 {
+    pub fn evaluate(&self, state: &mut GameState) -> i32 {
         let mut result = 0;
         let heuristics_cache = HeuristicsCache::from(state);
         for heuristic in self.heuristics.iter() {

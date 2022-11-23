@@ -1,13 +1,14 @@
-use crate::moves::{KING_STATIC_TRANSFORMS, KNIGHT_STATIC_TRANSFORMS, Move};
-use crate::state::coordinates::{File, Rank};
+use crate::moves::{Move};
+use crate::moves::coordinate_transformers::{KING_STATIC_TRANSFORMERS, KNIGHT_STATIC_TRANSFORMERS};
+use crate::state::coordinates::Coordinate;
 use crate::state::GameState;
-use crate::state::piece::PieceType;
+use crate::state::tile::{Tile};
 
-pub fn generate_knight_moves(available_moves: &mut Vec<Move>, knight: (PieceType, File, Rank), game_state: &GameState, is_for_first_player: bool) {
-    KNIGHT_STATIC_TRANSFORMS.map(|transform| {
+pub fn generate_knight_moves(available_moves: &mut Vec<Move>, knight: (Tile, Coordinate), game_state: &GameState, is_for_first_player: bool) {
+    KNIGHT_STATIC_TRANSFORMERS.map(|transformer| {
         if let Some(m) = generate_static_move_if_legal(
             knight,
-            transform,
+            transformer,
             game_state,
             is_for_first_player) {
             available_moves.push(m)
@@ -15,11 +16,11 @@ pub fn generate_knight_moves(available_moves: &mut Vec<Move>, knight: (PieceType
     });
 }
 
-pub fn generate_king_moves(available_moves: &mut Vec<Move>, knight: (PieceType, File, Rank), game_state: &GameState, is_for_first_player: bool) {
-    KING_STATIC_TRANSFORMS.map(|transform| {
+pub fn generate_king_moves(available_moves: &mut Vec<Move>, king: (Tile, Coordinate), game_state: &GameState, is_for_first_player: bool) {
+    KING_STATIC_TRANSFORMERS.map(|transformer| {
         if let Some(m) = generate_static_move_if_legal(
-            knight,
-            transform,
+            king,
+            transformer,
             game_state,
             is_for_first_player) {
             available_moves.push(m)
@@ -27,25 +28,25 @@ pub fn generate_king_moves(available_moves: &mut Vec<Move>, knight: (PieceType, 
     });
 }
 
-fn generate_static_move_if_legal(piece: (PieceType, File, Rank), transformation: (isize, isize), game_state: &GameState, is_for_first_player: bool) -> Option<Move> {
-    let target_file = piece.1.transform(transformation.0);
-    let target_rank = piece.2.transform(transformation.1);
+fn generate_static_move_if_legal(origin: (Tile, Coordinate), transformer: fn(Coordinate) -> Option<Coordinate>, game_state: &GameState, is_for_first_player: bool) -> Option<Move> {
+    let target_coordinate = transformer(origin.1);
 
-    if let (Some(target_file), Some(target_rank)) = (target_file, target_rank) {
-        if let Some(target_piece) = game_state.board[(target_file, target_rank)] {
-            if target_piece.is_owned_by_first_player != is_for_first_player {
+    if let Some(target_coordinate) = target_coordinate {
+        let tile = game_state.board[target_coordinate];
+        if tile.is_occupied() {
+            if tile.is_owned_by_first_player() != is_for_first_player {
                 Some(Move::AttackMove (
-                    (piece.1, piece.2),
-                    (target_file, target_rank),
-                    piece.0
+                    origin.1,
+                    target_coordinate,
+                    origin.0
                 ))
             }
             else {None}
         } else {
             Some(Move::RegularMove (
-                (piece.1, piece.2),
-                (target_file, target_rank),
-                piece.0
+                origin.1,
+                target_coordinate,
+                origin.0
             ))
         }
     } else {None}
