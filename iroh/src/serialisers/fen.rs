@@ -7,8 +7,8 @@ fn coordinate_from_rank_and_file(rank: u8, file: u8) -> Coordinate {
 }
 
 pub fn parse_fen(fen: &str, game_state: &mut GameState) {
-    let mut rank = 7 as u8;
-    let mut file = 0 as u8;
+    let mut rank = 7_u8;
+    let mut file = 0_u8;
     let mut blocks = fen.split_whitespace();
 
     for char in blocks.next().expect("Invalid FEN syntax").chars() {
@@ -65,8 +65,8 @@ pub fn generate_fen(game_state: &GameState) -> String {
     let mut result = String::new();
     let mut blank_tiles_count = 0;
 
-    for rank in (0 as u8..8).rev() {
-        for file in 0 as u8..8 {
+    for rank in (0_u8..8).rev() {
+        for file in 0_u8..8 {
             let coordinate = coordinate_from_rank_and_file(rank,file);
             let tile = game_state.board[coordinate];
             if tile.is_occupied() {

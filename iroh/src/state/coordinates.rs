@@ -155,7 +155,7 @@ impl Coordinate {
 
     fn checked_sub(&self, input: u8) -> Option<Coordinate> {
         let result = self.0.checked_sub(input)
-            .map(|x| Coordinate(x));
+            .map(Coordinate);
         if let Some(coordinate) = result {
             if coordinate.is_on_board() { Some(coordinate) }
             else { None }

@@ -86,7 +86,7 @@ pub fn perform_move_for<'a>(requested_move: &'a Move, game_state: &mut GameState
             let from = (if tile.is_owned_by_first_player() {target.south()} else {target.north()})
                 .expect("Cannot resolve pawn promotion, given invalid move");
             game_state.board[from] = Tile::EMPTY;
-            game_state.board[target] = tile.clone();
+            game_state.board[target] = *tile;
             ResolvedMoveMemento::new(requested_move, Tile::EMPTY, is_first_player, castle_state)
         }
         Move::Castle(is_kingside) => {

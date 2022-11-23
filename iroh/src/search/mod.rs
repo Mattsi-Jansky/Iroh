@@ -16,7 +16,7 @@ pub fn search(game: &mut Game) -> Evaluation {
     let is_first_player = state.is_first_player_turn;
 
     for possible_move in state.possible_moves.iter() {
-        let mut move_result = state.make_move(&possible_move);
+        let mut move_result = state.make_move(possible_move);
         #[cfg(debug_assertions)]
         println!("Possible move START: {possible_move}");
         let value = minmax(&mut move_result, 0, !is_first_player, &heuristics, i32::MIN, i32::MAX);
@@ -36,7 +36,7 @@ fn minmax(game:&mut Game, depth: u8, is_maximising: bool, heuristics: &Heuristic
     else {
         let mut best_value = if is_maximising { i32::MIN } else { i32::MAX };
         for possible_move in state.possible_moves.iter() {
-            let mut move_result = state.make_move(&possible_move);
+            let mut move_result = state.make_move(possible_move);
             let value = minmax(&mut move_result, depth + 1, !is_maximising, heuristics, alpha, beta);
             if (is_maximising && value > best_value)
                 || (!is_maximising && value < best_value) {

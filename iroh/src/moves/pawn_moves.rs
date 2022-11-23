@@ -44,10 +44,8 @@ fn generate_attack_moves(game_state: &GameState, available_moves: &mut Vec<Move>
 fn generate_attack_move(game_state: &GameState, available_moves: &mut Vec<Move>, start: Coordinate, target: Option<Coordinate>, is_for_first_player: bool) {
     if let Some(target) = target {
         let tile = game_state.board[target];
-        if tile.is_occupied() {
-            if tile.is_owned_by_first_player() != is_for_first_player {
+        if tile.is_occupied() && tile.is_owned_by_first_player() != is_for_first_player {
                 available_moves.push(Move::PawnAttackMove(start, target))
-            }
         }
     }
 }

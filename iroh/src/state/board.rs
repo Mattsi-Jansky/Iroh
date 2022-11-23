@@ -43,7 +43,7 @@ impl Board {
                 index += 1;
                 let tile = self[coordinate];
                 if tile.is_occupied() && tile.is_owned_by_first_player() == is_owned_by_first_player{
-                    result.push((tile.clone(), coordinate));
+                    result.push((tile, coordinate));
                 }
             }
         }

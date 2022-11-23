@@ -14,17 +14,16 @@ pub fn generate_castling_moves(available_moves: &mut Vec<Move>, game_state: &mut
             let f1 = game_state.board[Coordinate::F1];
             let h1 = game_state.board[Coordinate::H1];
 
-            if e1.is_occupied() && h1.is_occupied() {
-                if e1 == Tile::FIRST_KING
-                    && h1 == Tile::FIRST_ROOK
-                    && !f1.is_occupied()
-                    && !g1.is_occupied() {
-                    let f1_would_be_check = would_be_check_first_player(Coordinate::F1, game_state);
-                    //Do not need to check g1 because castling there would result in check anyway
+            if e1.is_occupied() && h1.is_occupied()
+                && e1 == Tile::FIRST_KING
+                && h1 == Tile::FIRST_ROOK
+                && !f1.is_occupied()
+                && !g1.is_occupied() {
+                let f1_would_be_check = would_be_check_first_player(Coordinate::F1, game_state);
+                //Do not need to check g1 because castling there would result in check anyway
 
-                    if !f1_would_be_check {
-                        available_moves.push(Move::Castle(true))
-                    }
+                if !f1_would_be_check {
+                    available_moves.push(Move::Castle(true))
                 }
             }
         }
@@ -35,19 +34,19 @@ pub fn generate_castling_moves(available_moves: &mut Vec<Move>, game_state: &mut
             let c1 = game_state.board[Coordinate::C1];
             let d1 = game_state.board[Coordinate::D1];
 
-            if a1.is_occupied() && e1.is_occupied() {
-                if e1 == Tile::FIRST_KING
+            if a1.is_occupied() && e1.is_occupied()
+                && e1 == Tile::FIRST_KING
                     && a1 == Tile::FIRST_ROOK
                     && !b1.is_occupied()
                     && !c1.is_occupied()
                     && !d1.is_occupied() {
-                    let d1_would_be_check = would_be_check_first_player(Coordinate::D1, game_state);
-                    //Do not need to check c1 because castling there would result in check anyway
+                let d1_would_be_check = would_be_check_first_player(Coordinate::D1, game_state);
+                //Do not need to check c1 because castling there would result in check anyway
 
-                    if !d1_would_be_check {
-                        available_moves.push(Move::Castle(false))
-                    }
+                if !d1_would_be_check {
+                    available_moves.push(Move::Castle(false))
                 }
+
             }
         }
     } else {
@@ -58,17 +57,16 @@ pub fn generate_castling_moves(available_moves: &mut Vec<Move>, game_state: &mut
             let g8 = game_state.board[Coordinate::G8];
             let h8 = game_state.board[Coordinate::H8];
 
-            if e8.is_occupied() && h8.is_occupied() {
-                if e8 == Tile::SECOND_KING
-                    && h8 == Tile::SECOND_ROOK
-                    && !f8.is_occupied()
-                    && !g8.is_occupied() {
-                    let f8_would_be_check = would_be_check_second_player(Coordinate::F8, game_state);
-                    //Do not need to check g8 because castling there would result in check anyway
+            if e8.is_occupied() && h8.is_occupied()
+                && e8 == Tile::SECOND_KING
+                && h8 == Tile::SECOND_ROOK
+                && !f8.is_occupied()
+                && !g8.is_occupied() {
+                let f8_would_be_check = would_be_check_second_player(Coordinate::F8, game_state);
+                //Do not need to check g8 because castling there would result in check anyway
 
-                    if !f8_would_be_check {
-                        available_moves.push(Move::Castle(true))
-                    }
+                if !f8_would_be_check {
+                    available_moves.push(Move::Castle(true))
                 }
             }
         }
@@ -79,18 +77,17 @@ pub fn generate_castling_moves(available_moves: &mut Vec<Move>, game_state: &mut
             let c8 = game_state.board[Coordinate::C8];
             let d8 = game_state.board[Coordinate::D8];
 
-            if a8.is_occupied() && e8.is_occupied() {
-                if e8 == Tile::SECOND_KING
-                    && a8 == Tile::SECOND_ROOK
-                    && !b8.is_occupied()
-                    && !c8.is_occupied()
-                    && !d8.is_occupied() {
-                    let d8_would_be_check = would_be_check_second_player(Coordinate::D8, game_state);
-                    //Do not need to check c8 because castling there would result in check anyway
+            if a8.is_occupied() && e8.is_occupied()
+                && e8 == Tile::SECOND_KING
+                && a8 == Tile::SECOND_ROOK
+                && !b8.is_occupied()
+                && !c8.is_occupied()
+                && !d8.is_occupied() {
+                let d8_would_be_check = would_be_check_second_player(Coordinate::D8, game_state);
+                //Do not need to check c8 because castling there would result in check anyway
 
-                    if !d8_would_be_check {
-                        available_moves.push(Move::Castle(false))
-                    }
+                if !d8_would_be_check {
+                    available_moves.push(Move::Castle(false))
                 }
             }
         }
