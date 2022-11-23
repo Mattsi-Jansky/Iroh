@@ -113,7 +113,7 @@ pub fn perform_move_for<'a>(requested_move: &'a Move, game_state: &mut GameState
     }
 }
 
-pub fn undo_move_for(memento: ResolvedMoveMemento, game_state: &mut GameState) {
+pub fn undo_move(memento: ResolvedMoveMemento, game_state: &mut GameState) {
     let ResolvedMoveMemento { last_move, captured_piece, is_first_player, castling_state } = memento;
     castling_state.apply(game_state);
 
@@ -210,7 +210,7 @@ mod tests {
 
         assert_eq!("rnbqkbnr/pppppppp/8/8/8/5N2/PPPPPPPP/RNBQKB1R w KQkq - 0 1", state.generate_fen());
 
-        undo_move_for(memento, &mut state);
+        undo_move(memento, &mut state);
 
         assert_eq!("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1", state.generate_fen());
     }
@@ -225,7 +225,7 @@ mod tests {
         assert_eq!("3k4/8/8/8/2K5/8/8/8 w - - 0 1", state.generate_fen());
         assert_eq!(state.captured_pieces.second_player.len(), 0);
 
-        undo_move_for(memento, &mut state);
+        undo_move(memento, &mut state);
 
         assert_eq!("3k4/8/8/8/2p5/3K4/8/8 w - - 0 1", state.generate_fen());
     }
@@ -239,7 +239,7 @@ mod tests {
 
         assert_eq!("4k3/8/2P5/8/1K6/8/8/8 w - - 0 1", state.generate_fen());
 
-        undo_move_for(memento, &mut state);
+        undo_move(memento, &mut state);
 
         assert_eq!("4k3/8/8/2P5/1K6/8/8/8 w - - 0 1", state.generate_fen());
     }
@@ -253,7 +253,7 @@ mod tests {
 
         assert_eq!("4k3/8/3P4/8/1K6/8/8/8 w - - 0 1", state.generate_fen());
 
-        undo_move_for(memento, &mut state);
+        undo_move(memento, &mut state);
 
         assert_eq!("4k3/8/3p4/2P5/1K6/8/8/8 w - - 0 1", state.generate_fen());
     }
@@ -267,7 +267,7 @@ mod tests {
 
         assert_eq!("2Q3k1/8/8/8/1K6/8/8/8 w - - 0 1", state.generate_fen());
 
-        undo_move_for(memento, &mut state);
+        undo_move(memento, &mut state);
 
         assert_eq!("6k1/2P5/8/8/1K6/8/8/8 w - - 0 1", state.generate_fen());
     }
@@ -281,7 +281,7 @@ mod tests {
 
         assert_eq!("4k3/8/8/8/8/8/8/5RK1 w - - 0 1", state.generate_fen());
 
-        undo_move_for(memento, &mut state);
+        undo_move(memento, &mut state);
 
         assert_eq!("4k3/8/8/8/8/8/8/4K2R w K - 0 1", state.generate_fen());
     }

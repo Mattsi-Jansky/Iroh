@@ -6,9 +6,9 @@ macro_rules! search_test_inner {
     ($name:ident,$fen:expr,$expected_san:expr) => {
         #[test]
         fn $name() {
-            let state = Game::from_fen($fen);
+            let mut state = Game::from_fen($fen);
 
-            let result = search(&state);
+            let result = search(&mut state);
 
             assert_eq!(String::from($expected_san), result.best_move);
         }

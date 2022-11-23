@@ -1,10 +1,10 @@
 use crate::moves::Move;
-use crate::moves::resolve_move::resolve_move;
+use crate::moves::resolve_move::{perform_move_for, resolve_move, undo_move};
 use crate::state::coordinates::Coordinate;
 use crate::state::GameState;
 use crate::state::tile::{Tile};
 
-pub fn generate_castling_moves(available_moves: &mut Vec<Move>, game_state: &GameState, is_for_first_player: bool) {
+pub fn generate_castling_moves(available_moves: &mut Vec<Move>, game_state: &mut GameState, is_for_first_player: bool) {
 
     if is_for_first_player {
         let e1 = game_state.board[Coordinate::E1];
@@ -97,24 +97,26 @@ pub fn generate_castling_moves(available_moves: &mut Vec<Move>, game_state: &Gam
     }
 }
 
-fn would_be_check_first_player(target: Coordinate, game_state: &GameState) -> bool {
+fn would_be_check_first_player(target: Coordinate, game_state: &mut GameState) -> bool {
     let skipped_move = Move::RegularMove (
         Coordinate::E1,
         target,
         Tile::FIRST_KING
     );
-    let mut temp_state = game_state.clone();
-    resolve_move(&skipped_move, &mut temp_state);
-    temp_state.is_check(true)
+    let memento = perform_move_for(&skipped_move, game_state, true);
+    let result = game_state.is_check(true);
+    undo_move(memento, game_state);
+    result
 }
 
-fn would_be_check_second_player(target: Coordinate, game_state: &GameState) -> bool {
+fn would_be_check_second_player(target: Coordinate, game_state: &mut GameState) -> bool {
     let skipped_move = Move::RegularMove (
         Coordinate::E8,
         target,
         Tile::SECOND_KING
     );
-    let mut temp_state = game_state.clone();
-    resolve_move(&skipped_move, &mut temp_state);
-    temp_state.is_check(false)
+    let memento = perform_move_for(&skipped_move, game_state, false);
+    let result = game_state.is_check(false);
+    undo_move(memento, game_state);
+    result
 }

@@ -49,7 +49,8 @@ impl GameState {
             sans: vec![]
         };
         parse_fen(fen, &mut state);
-        state.possible_moves = generate_moves(&state, state.is_first_player_turn);
+        let is_first_player_turn = state.is_first_player_turn;
+        state.possible_moves = generate_moves(&mut state, is_first_player_turn);
 
         state
     }
@@ -100,7 +101,8 @@ impl GameState {
         sans.push(String::from(requested_move.generate_san()));
         let mut game_state = self.clone();
         resolve_move(&requested_move, &mut game_state);
-        let possible_moves = generate_moves(&game_state, game_state.is_first_player_turn);
+        let is_first_player_turn = game_state.is_first_player_turn;
+        let possible_moves = generate_moves(&mut game_state, is_first_player_turn);
         let state = GameState {
             sans,
             possible_moves,

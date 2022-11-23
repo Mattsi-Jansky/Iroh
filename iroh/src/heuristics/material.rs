@@ -43,54 +43,60 @@ mod tests {
 
     #[test]
     fn pawn_is_worth_one() {
-        let state = GameState::from_fen("8/8/8/3P4/8/8/8/8 w - - 0 1");
+        let mut state = GameState::from_fen("8/8/8/3P4/8/8/8/8 w - - 0 1");
 
-        let result = MaterialHeuristic{}.evaluate(&state, &HeuristicsCache::from(&state));
+        let cache = HeuristicsCache::from(&mut state);
+        let result = MaterialHeuristic{}.evaluate(&state, &cache);
 
         assert_eq!(1, result);
     }
 
     #[test]
     fn given_multiple_pawns_count_all() {
-        let state = GameState::from_fen("8/8/8/3PP3/8/8/8/8 w - - 0 1");
+        let mut state = GameState::from_fen("8/8/8/3PP3/8/8/8/8 w - - 0 1");
 
-        let result = MaterialHeuristic{}.evaluate(&state, &HeuristicsCache::from(&state));
+        let cache = HeuristicsCache::from(&mut state);
+        let result = MaterialHeuristic{}.evaluate(&state, &cache);
 
         assert_eq!(2, result);
     }
 
     #[test]
     fn knight_and_bishop_worth_three_each() {
-        let state= GameState::from_fen("8/8/8/3NB3/8/8/8/8 w - - 0 1");
+        let mut state = GameState::from_fen("8/8/8/3NB3/8/8/8/8 w - - 0 1");
 
-        let result = MaterialHeuristic{}.evaluate(&state, &HeuristicsCache::from(&state));
+        let cache = HeuristicsCache::from(&mut state);
+        let result = MaterialHeuristic{}.evaluate(&state, &cache);
 
         assert_eq!(6, result);
     }
 
     #[test]
     fn rook_is_worth_five() {
-        let state= GameState::from_fen("8/8/8/3R4/8/8/8/8 w - - 0 1");
+        let mut state = GameState::from_fen("8/8/8/3R4/8/8/8/8 w - - 0 1");
 
-        let result = MaterialHeuristic{}.evaluate(&state, &HeuristicsCache::from(&state));
+        let cache = HeuristicsCache::from(&mut state);
+        let result = MaterialHeuristic{}.evaluate(&state, &cache);
 
         assert_eq!(5, result);
     }
 
     #[test]
     fn queen_is_worth_nine() {
-        let state= GameState::from_fen("8/8/8/3Q4/8/8/8/8 w - - 0 1");
+        let mut state = GameState::from_fen("8/8/8/3Q4/8/8/8/8 w - - 0 1");
 
-        let result = MaterialHeuristic{}.evaluate(&state, &HeuristicsCache::from(&state));
+        let cache = HeuristicsCache::from(&mut state);
+        let result = MaterialHeuristic{}.evaluate(&state, &cache);
 
         assert_eq!(9, result);
     }
 
     #[test]
     fn minus_enemy_material_from_own_material() {
-        let state= GameState::from_fen("8/8/8/3Qq3/8/8/8/8 w - - 0 1");
+        let mut state= GameState::from_fen("8/8/8/3Qq3/8/8/8/8 w - - 0 1");
 
-        let result = MaterialHeuristic{}.evaluate(&state, &HeuristicsCache::from(&state));
+        let cache = HeuristicsCache::from(&mut state);
+        let result = MaterialHeuristic{}.evaluate(&state, &cache);
 
         assert_eq!(0, result);
     }

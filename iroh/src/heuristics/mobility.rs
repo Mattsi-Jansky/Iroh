@@ -31,27 +31,30 @@ mod tests {
 
     #[test]
     fn returns_number_of_moves_as_heuristic() {
-      let state = GameState::new();
+      let mut state = GameState::new();
 
-      let result = MobilityHeuristic {}.evaluate(&state, &HeuristicsCache::from(&state));
+      let cache = HeuristicsCache::from(&mut state);
+      let result = MobilityHeuristic {}.evaluate(&state, &cache);
 
       assert_eq!(0, result)
     }
 
     #[test]
     fn given_first_player_is_more_developed_result_is_positive() {
-        let state = GameState::from_fen("rnbqkbnr/pppppppp/8/8/8/1NBQ1BN1/PPPPPPPP/R3K2R w KQkq - 0 1");
+        let mut state = GameState::from_fen("rnbqkbnr/pppppppp/8/8/8/1NBQ1BN1/PPPPPPPP/R3K2R w KQkq - 0 1");
 
-        let result = MobilityHeuristic {}.evaluate(&state, &HeuristicsCache::from(&state));
+        let cache = HeuristicsCache::from(&mut state);
+        let result = MobilityHeuristic {}.evaluate(&state, &cache);
 
         assert_eq!(27, result)
     }
 
     #[test]
     fn given_second_player_is_more_developed_result_is_negative() {
-        let state = GameState::from_fen("r3k2r/pppppppp/1nbq1bn1/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+        let mut state = GameState::from_fen("r3k2r/pppppppp/1nbq1bn1/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
 
-        let result = MobilityHeuristic {}.evaluate(&state, &HeuristicsCache::from(&state));
+        let cache = HeuristicsCache::from(&mut state);
+        let result = MobilityHeuristic {}.evaluate(&state, &cache);
 
         assert_eq!(-27, result)
     }

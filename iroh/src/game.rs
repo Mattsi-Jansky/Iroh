@@ -36,6 +36,15 @@ impl Game {
         }
     }
 
+    pub fn unwrap_mut(&mut self) -> &mut GameState {
+        match self {
+            Game::Ongoing { state, .. } => { state }
+            Game::IllegalMove { state } => { state }
+            Game::Draw { state } => { state }
+            Game::Win { state, .. } => { state }
+        }
+    }
+
     pub fn make_move(&self, san: &str) -> Game {
         match self {
             Game::Ongoing { state } => { state.make_move_san(san) }

@@ -1,10 +1,10 @@
 use crate::moves::{dynamic_moves, Move, pawn_moves, static_moves};
 use crate::moves::castling_moves::generate_castling_moves;
-use crate::moves::resolve_move::{perform_move_for};
+use crate::moves::resolve_move::{perform_move_for, undo_move};
 use crate::state::GameState;
 use crate::state::tile::{Tile};
 
-pub fn generate_moves(game_state: &GameState, is_for_first_player: bool) -> Vec<Move> {
+pub fn generate_moves(game_state: &mut GameState, is_for_first_player: bool) -> Vec<Move> {
     let mut available_moves = vec![];
 
     let tiles = game_state.board.get_all_pieces_belonging_to_player(is_for_first_player);
@@ -26,12 +26,12 @@ pub fn generate_moves(game_state: &GameState, is_for_first_player: bool) -> Vec<
     available_moves
 }
 
-fn remove_moves_that_result_in_check(available_moves: Vec<Move>, game_state: &GameState, is_for_first_player: bool) -> Vec<Move>{
+fn remove_moves_that_result_in_check(available_moves: Vec<Move>, game_state: &mut GameState, is_for_first_player: bool) -> Vec<Move>{
     available_moves.into_iter().filter(|requested_move| {
-        let mut temp_state = game_state.clone();
-        perform_move_for(requested_move, &mut temp_state, is_for_first_player);
-
-        !temp_state.is_check(is_for_first_player)
+        let memento = perform_move_for(requested_move, game_state, is_for_first_player);
+        let is_check = game_state.is_check((is_for_first_player));
+        undo_move(memento, game_state);
+        !is_check
     }).collect()
 }
 
@@ -41,15 +41,15 @@ mod tests {
 
     #[test]
     fn generates_moves_for_either_player() {
-        let state = GameState::from_fen("8/2nk4/3q4/8/2P1P3/2K5/8/8 w - - 0 1");
+        let mut state = GameState::from_fen("8/2nk4/3q4/8/2P1P3/2K5/8/8 w - - 0 1");
 
-        let n_moves_for_first_player = generate_moves(&state, true)
+        let n_moves_for_first_player = generate_moves(&mut state, true)
             .iter().count();
-        let n_moves_for_second_player = generate_moves(&state, false)
+        let n_moves_for_second_player = generate_moves(&mut state, false)
             .iter().count();
 
         assert_eq!(5, n_moves_for_first_player);
-        let result = generate_moves(&state, false);
+        let result = generate_moves(&mut state, false);
         for possible_move in result {
             match possible_move {
                 Move::RegularMove(from, to, tile) => {
@@ -63,11 +63,11 @@ mod tests {
 
     #[test]
     fn generate_castling_moves_for_either_player() {
-        let state = GameState::from_fen("rnbqk2r/ppppppbp/5np1/8/8/1P3NP1/P1PPPP1P/RNBQKB1R w KQkq - 0 1");
+        let mut state = GameState::from_fen("rnbqk2r/ppppppbp/5np1/8/8/1P3NP1/P1PPPP1P/RNBQKB1R w KQkq - 0 1");
 
-        let n_castle_moves_for_first_player = generate_moves(&state, true)
+        let n_castle_moves_for_first_player = generate_moves(&mut state, true)
             .iter().filter(|m| matches!(m, Move::Castle(_))).count();
-        let n_castle_moves_for_second_player = generate_moves(&state, false)
+        let n_castle_moves_for_second_player = generate_moves(&mut state, false)
             .iter().filter(|m| matches!(m, Move::Castle(_))).count();
 
         assert_eq!(0, n_castle_moves_for_first_player);
