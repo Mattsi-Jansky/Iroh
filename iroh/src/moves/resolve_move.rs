@@ -1,22 +1,27 @@
 use crate::moves::Move;
 use crate::state::coordinates::Coordinate;
+use crate::state::tile::Tile;
 use crate::state::GameState;
-use crate::state::tile::{Tile};
 
 pub struct ResolvedMoveMemento<'a> {
     last_move: &'a Move,
     captured_piece: Tile,
     is_first_player: bool,
-    castling_state: CastlingStateMemento
+    castling_state: CastlingStateMemento,
 }
 
 impl<'a> ResolvedMoveMemento<'a> {
-    fn new(last_move: &'a Move, captured_piece: Tile, is_first_player: bool, castling_state: CastlingStateMemento) -> ResolvedMoveMemento<'a> {
+    fn new(
+        last_move: &'a Move,
+        captured_piece: Tile,
+        is_first_player: bool,
+        castling_state: CastlingStateMemento,
+    ) -> ResolvedMoveMemento<'a> {
         ResolvedMoveMemento {
             last_move,
             captured_piece,
             is_first_player,
-            castling_state
+            castling_state,
         }
     }
 }
@@ -25,7 +30,7 @@ struct CastlingStateMemento {
     first_player_can_castle_kingside: bool,
     first_player_can_castle_queenside: bool,
     second_player_can_castle_kingside: bool,
-    second_player_can_castle_queenside: bool
+    second_player_can_castle_queenside: bool,
 }
 
 impl CastlingStateMemento {
@@ -34,7 +39,7 @@ impl CastlingStateMemento {
             first_player_can_castle_kingside: game_state.first_player_can_castle_kingside,
             first_player_can_castle_queenside: game_state.first_player_can_castle_queenside,
             second_player_can_castle_kingside: game_state.second_player_can_castle_kingside,
-            second_player_can_castle_queenside: game_state.second_player_can_castle_queenside
+            second_player_can_castle_queenside: game_state.second_player_can_castle_queenside,
         }
     }
 
@@ -50,13 +55,24 @@ pub fn resolve_move(requested_move: &Move, game_state: &mut GameState) {
     let is_first_player_turn = game_state.is_first_player_turn;
     let memento = perform_move_for(requested_move, game_state, is_first_player_turn);
     if memento.captured_piece != Tile::EMPTY {
-        if is_first_player_turn {game_state.captured_pieces.captured_second_player(memento.captured_piece, game_state.turn_number);}
-        else {game_state.captured_pieces.captured_first_player(memento.captured_piece, game_state.turn_number);}
+        if is_first_player_turn {
+            game_state
+                .captured_pieces
+                .captured_second_player(memento.captured_piece, game_state.turn_number);
+        } else {
+            game_state
+                .captured_pieces
+                .captured_first_player(memento.captured_piece, game_state.turn_number);
+        }
     }
     game_state.next_turn();
 }
 
-pub fn perform_move_for<'a>(requested_move: &'a Move, game_state: &mut GameState, is_first_player: bool) -> ResolvedMoveMemento<'a>  {
+pub fn perform_move_for<'a>(
+    requested_move: &'a Move,
+    game_state: &mut GameState,
+    is_first_player: bool,
+) -> ResolvedMoveMemento<'a> {
     let castle_state = CastlingStateMemento::new(game_state);
 
     match requested_move {
@@ -70,21 +86,31 @@ pub fn perform_move_for<'a>(requested_move: &'a Move, game_state: &mut GameState
         }
         Move::AttackMove(from, to, _) => {
             let target_tile = game_state.board[to];
-            assert!(target_tile.is_occupied(), "Illegal move, no target to attack");
+            assert!(
+                target_tile.is_occupied(),
+                "Illegal move, no target to attack"
+            );
 
             move_piece(game_state, from, to);
             ResolvedMoveMemento::new(requested_move, target_tile, is_first_player, castle_state)
         }
         Move::PawnAttackMove(from, to) => {
             let target_tile = game_state.board[(to)];
-            assert!(target_tile.is_occupied(), "Illegal move, no target to attack");
+            assert!(
+                target_tile.is_occupied(),
+                "Illegal move, no target to attack"
+            );
 
             move_piece(game_state, from, to);
             ResolvedMoveMemento::new(requested_move, target_tile, is_first_player, castle_state)
         }
         Move::PawnPromotion(target, tile) => {
-            let from = (if tile.is_owned_by_first_player() {target.south()} else {target.north()})
-                .expect("Cannot resolve pawn promotion, given invalid move");
+            let from = (if tile.is_owned_by_first_player() {
+                target.south()
+            } else {
+                target.north()
+            })
+            .expect("Cannot resolve pawn promotion, given invalid move");
             game_state.board[from] = Tile::EMPTY;
             game_state.board[target] = *tile;
             ResolvedMoveMemento::new(requested_move, Tile::EMPTY, is_first_player, castle_state)
@@ -93,7 +119,7 @@ pub fn perform_move_for<'a>(requested_move: &'a Move, game_state: &mut GameState
             match (is_first_player, is_kingside) {
                 (true, true) => {
                     move_piece(game_state, &Coordinate::E1, &Coordinate::G1);
-                    move_piece(game_state, &Coordinate::H1,&Coordinate::F1);
+                    move_piece(game_state, &Coordinate::H1, &Coordinate::F1);
                 }
                 (true, false) => {
                     move_piece(game_state, &Coordinate::E1, &Coordinate::C1);
@@ -114,7 +140,12 @@ pub fn perform_move_for<'a>(requested_move: &'a Move, game_state: &mut GameState
 }
 
 pub fn undo_move(memento: ResolvedMoveMemento, game_state: &mut GameState) {
-    let ResolvedMoveMemento { last_move, captured_piece, is_first_player, castling_state } = memento;
+    let ResolvedMoveMemento {
+        last_move,
+        captured_piece,
+        is_first_player,
+        castling_state,
+    } = memento;
 
     match last_move {
         Move::RegularMove(from, to, _) => {
@@ -133,29 +164,35 @@ pub fn undo_move(memento: ResolvedMoveMemento, game_state: &mut GameState) {
         }
         Move::PawnPromotion(to, _) => {
             game_state.board[to] = Tile::EMPTY;
-            let from = if is_first_player { to.south().unwrap() } else { to.north().unwrap() };
-            game_state.board[from] = if is_first_player { Tile::FIRST_PAWN } else { Tile::SECOND_PAWN };
+            let from = if is_first_player {
+                to.south().unwrap()
+            } else {
+                to.north().unwrap()
+            };
+            game_state.board[from] = if is_first_player {
+                Tile::FIRST_PAWN
+            } else {
+                Tile::SECOND_PAWN
+            };
         }
-        Move::Castle(is_kingside) => {
-            match (is_first_player, is_kingside) {
-                (true, true) => {
-                    move_piece(game_state, &Coordinate::G1, &Coordinate::E1);
-                    move_piece(game_state, &Coordinate::F1,&Coordinate::H1);
-                }
-                (true, false) => {
-                    move_piece(game_state,  &Coordinate::C1,&Coordinate::E1);
-                    move_piece(game_state,  &Coordinate::D1,&Coordinate::A1);
-                }
-                (false, true) => {
-                    move_piece(game_state,  &Coordinate::G8,&Coordinate::E8);
-                    move_piece(game_state,  &Coordinate::F8,&Coordinate::H8);
-                }
-                (false, false) => {
-                    move_piece(game_state,  &Coordinate::C8,&Coordinate::E8);
-                    move_piece(game_state,  &Coordinate::D8,&Coordinate::A8);
-                }
+        Move::Castle(is_kingside) => match (is_first_player, is_kingside) {
+            (true, true) => {
+                move_piece(game_state, &Coordinate::G1, &Coordinate::E1);
+                move_piece(game_state, &Coordinate::F1, &Coordinate::H1);
             }
-        }
+            (true, false) => {
+                move_piece(game_state, &Coordinate::C1, &Coordinate::E1);
+                move_piece(game_state, &Coordinate::D1, &Coordinate::A1);
+            }
+            (false, true) => {
+                move_piece(game_state, &Coordinate::G8, &Coordinate::E8);
+                move_piece(game_state, &Coordinate::F8, &Coordinate::H8);
+            }
+            (false, false) => {
+                move_piece(game_state, &Coordinate::C8, &Coordinate::E8);
+                move_piece(game_state, &Coordinate::D8, &Coordinate::A8);
+            }
+        },
     }
     castling_state.apply(game_state);
 }
@@ -168,30 +205,20 @@ fn move_piece(game_state: &mut GameState, from: &Coordinate, to: &Coordinate) {
 }
 
 fn update_castling_state(game_state: &mut GameState, from: &Coordinate, tile: Tile) {
-    if tile == Tile::FIRST_ROOK
-        && from == &Coordinate::H1 {
+    if tile == Tile::FIRST_ROOK && from == &Coordinate::H1 {
         game_state.first_player_can_castle_kingside = false;
-    }
-    else if tile == Tile::FIRST_ROOK
-        && from == &Coordinate::A1 {
+    } else if tile == Tile::FIRST_ROOK && from == &Coordinate::A1 {
         game_state.first_player_can_castle_queenside = false;
-    }
-    else if tile == Tile::FIRST_KING
-        && from == &Coordinate::E1 {
+    } else if tile == Tile::FIRST_KING && from == &Coordinate::E1 {
         game_state.first_player_can_castle_kingside = false;
         game_state.first_player_can_castle_queenside = false;
     }
 
-    if tile == Tile::SECOND_ROOK
-        && from == &Coordinate::H8 {
+    if tile == Tile::SECOND_ROOK && from == &Coordinate::H8 {
         game_state.second_player_can_castle_kingside = false;
-    }
-    else if tile == Tile::SECOND_ROOK
-        && from == &Coordinate::A8 {
+    } else if tile == Tile::SECOND_ROOK && from == &Coordinate::A8 {
         game_state.second_player_can_castle_queenside = false;
-    }
-    else if tile == Tile::SECOND_KING
-        && from == &Coordinate::E8 {
+    } else if tile == Tile::SECOND_KING && from == &Coordinate::E8 {
         game_state.second_player_can_castle_kingside = false;
         game_state.second_player_can_castle_queenside = false;
     }
@@ -199,21 +226,28 @@ fn update_castling_state(game_state: &mut GameState, from: &Coordinate, tile: Ti
 
 #[cfg(test)]
 mod tests {
-    use crate::moves::Move::*;
     use super::*;
-    
+    use crate::moves::Move::*;
+
     #[test]
     fn undo_regular_move() {
-        let mut state = GameState::from_fen("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+        let mut state =
+            GameState::from_fen("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
         let requested_move = RegularMove(Coordinate::G1, Coordinate::F3, Tile::FIRST_KNIGHT);
 
         let memento = perform_move_for(&requested_move, &mut state, true);
 
-        assert_eq!("rnbqkbnr/pppppppp/8/8/8/5N2/PPPPPPPP/RNBQKB1R w KQkq - 0 1", state.generate_fen());
+        assert_eq!(
+            "rnbqkbnr/pppppppp/8/8/8/5N2/PPPPPPPP/RNBQKB1R w KQkq - 0 1",
+            state.generate_fen()
+        );
 
         undo_move(memento, &mut state);
 
-        assert_eq!("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1", state.generate_fen());
+        assert_eq!(
+            "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+            state.generate_fen()
+        );
     }
 
     #[test]

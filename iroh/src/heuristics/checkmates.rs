@@ -10,11 +10,11 @@ impl Heuristic for InCheckmateHeuristic {
     fn evaluate(&self, state: &GameState, cache: &HeuristicsCache) -> i32 {
         if cache.is_check_first_player && cache.has_no_moves {
             -VERY_BIG_NUMBER + (state.turn_number * 10) as i32
-        }
-        else if cache.is_check_second_player && cache.has_no_moves {
+        } else if cache.is_check_second_player && cache.has_no_moves {
             VERY_BIG_NUMBER - (state.turn_number * 10) as i32
+        } else {
+            0
         }
-        else {0}
     }
 
     fn get_type(&self) -> HeuristicType {

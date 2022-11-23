@@ -1,12 +1,11 @@
+pub mod attacks;
 mod cache;
+pub mod checkmates;
+pub mod checks;
 pub mod material;
 pub mod mobility;
 pub mod weightings;
-pub mod attacks;
-pub mod checks;
-pub mod checkmates;
 
-use cache::HeuristicsCache;
 use crate::heuristics::attacks::AttacksHeuristic;
 use crate::heuristics::checkmates::InCheckmateHeuristic;
 use crate::heuristics::checks::InCheckHeuristic;
@@ -14,14 +13,15 @@ use crate::heuristics::material::MaterialHeuristic;
 use crate::heuristics::mobility::MobilityHeuristic;
 use crate::heuristics::weightings::Weightings;
 use crate::state::GameState;
+use cache::HeuristicsCache;
 
-#[derive(Hash,PartialEq,Eq,Debug)]
+#[derive(Hash, PartialEq, Eq, Debug)]
 pub enum HeuristicType {
     Material,
     Mobility,
     Attacks,
     InCheck,
-    CheckMate
+    CheckMate,
 }
 
 pub trait Heuristic {
@@ -31,7 +31,7 @@ pub trait Heuristic {
 
 pub struct Heuristics {
     heuristics: Vec<Box<dyn Heuristic>>,
-    weightings: Weightings
+    weightings: Weightings,
 }
 
 impl Default for Heuristics {
@@ -41,9 +41,12 @@ impl Default for Heuristics {
             Box::new(MobilityHeuristic {}),
             Box::new(AttacksHeuristic {}),
             Box::new(InCheckHeuristic {}),
-            Box::new(InCheckmateHeuristic {})
+            Box::new(InCheckmateHeuristic {}),
         ];
-        Heuristics { heuristics, weightings: Weightings::new() }
+        Heuristics {
+            heuristics,
+            weightings: Weightings::new(),
+        }
     }
 }
 
@@ -53,11 +56,17 @@ impl Heuristics {
     }
 
     pub fn blank() -> Self {
-        Heuristics { heuristics: vec![], weightings: Weightings::new() }
+        Heuristics {
+            heuristics: vec![],
+            weightings: Weightings::new(),
+        }
     }
 
     pub fn with_weighting(weightings: Weightings) -> Self {
-        Heuristics { weightings, ..Default::default() }
+        Heuristics {
+            weightings,
+            ..Default::default()
+        }
     }
 
     pub fn evaluate(&self, state: &mut GameState) -> i32 {
@@ -78,7 +87,7 @@ impl Heuristics {
         result
     }
 
-    pub fn push<T : Heuristic + 'static>(&mut self, heuristic: T) {
+    pub fn push<T: Heuristic + 'static>(&mut self, heuristic: T) {
         self.heuristics.push(Box::new(heuristic));
     }
 }

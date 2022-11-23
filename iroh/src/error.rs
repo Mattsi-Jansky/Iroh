@@ -1,4 +1,2 @@
 #[derive(Debug)]
-pub struct IllegalMoveError {
-
-}
+pub struct IllegalMoveError {}

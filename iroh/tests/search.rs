@@ -1,5 +1,5 @@
-use iroh::search::search;
 use iroh::game::Game;
+use iroh::search::search;
 
 macro_rules! search_test_inner {
     ($name:ident,$fen:expr,$expected_san:expr) => {
@@ -11,7 +11,7 @@ macro_rules! search_test_inner {
 
             assert_eq!(String::from($expected_san), result.best_move);
         }
-    }
+    };
 }
 
 macro_rules! search_tests {

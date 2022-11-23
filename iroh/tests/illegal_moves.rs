@@ -1,5 +1,5 @@
-use test_case::test_case;
 use iroh::game::Game;
+use test_case::test_case;
 
 #[test_case("e7")]
 #[test_case("ng3")]
@@ -100,7 +100,6 @@ fn pawns_cannot_jump() {
 
     assert!(result.is_err());
 }
-
 
 #[test_case("8/8/8/8/8/1q2K3/2Q5/8 w - - 0 1", "Qc4")]
 #[test_case("8/8/8/2b5/1B6/4K3/8/8 w - - 0 1", "Ba3")]

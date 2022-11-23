@@ -62,7 +62,7 @@ fn glyph_for(c: char) -> char {
         'k' => '♚',
         'p' => '♟',
 
-        _ => panic!("Unknown chess notation, cannot render")
+        _ => panic!("Unknown chess notation, cannot render"),
     }
 }
 
@@ -72,37 +72,46 @@ mod tests {
 
     #[test]
     fn generate_starting_game_view() {
-        let result = generate_display_from_fen("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+        let result =
+            generate_display_from_fen("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
 
-        assert_eq!(result, [
-            String::from("8| ♜ ♞ ♝ ♛ ♚ ♝ ♞ ♜"),
-            String::from("7| ♟ ♟ ♟ ♟ ♟ ♟ ♟ ♟"),
-            String::from("6| ◻ ◼ ◻ ◼ ◻ ◼ ◻ ◼"),
-            String::from("5| ◼ ◻ ◼ ◻ ◼ ◻ ◼ ◻"),
-            String::from("4| ◻ ◼ ◻ ◼ ◻ ◼ ◻ ◼"),
-            String::from("3| ◼ ◻ ◼ ◻ ◼ ◻ ◼ ◻"),
-            String::from("2| ♙ ♙ ♙ ♙ ♙ ♙ ♙ ♙"),
-            String::from("1| ♖ ♘ ♗ ♕ ♔ ♗ ♘ ♖"),
-            String::from("   _______________"),
-            String::from("   a b c d e f g h"),
-        ]);
+        assert_eq!(
+            result,
+            [
+                String::from("8| ♜ ♞ ♝ ♛ ♚ ♝ ♞ ♜"),
+                String::from("7| ♟ ♟ ♟ ♟ ♟ ♟ ♟ ♟"),
+                String::from("6| ◻ ◼ ◻ ◼ ◻ ◼ ◻ ◼"),
+                String::from("5| ◼ ◻ ◼ ◻ ◼ ◻ ◼ ◻"),
+                String::from("4| ◻ ◼ ◻ ◼ ◻ ◼ ◻ ◼"),
+                String::from("3| ◼ ◻ ◼ ◻ ◼ ◻ ◼ ◻"),
+                String::from("2| ♙ ♙ ♙ ♙ ♙ ♙ ♙ ♙"),
+                String::from("1| ♖ ♘ ♗ ♕ ♔ ♗ ♘ ♖"),
+                String::from("   _______________"),
+                String::from("   a b c d e f g h"),
+            ]
+        );
     }
 
     #[test]
     fn generate_game_view_with_different_meta_info_length() {
-        let result = generate_display_from_fen("rnbqk2r/pppp1ppp/3b1n2/4p3/4P3/3B1N2/PPPP1PPP/RNBQ1RK1 b kq - 0 1");
+        let result = generate_display_from_fen(
+            "rnbqk2r/pppp1ppp/3b1n2/4p3/4P3/3B1N2/PPPP1PPP/RNBQ1RK1 b kq - 0 1",
+        );
 
-        assert_eq!(result, [
-        String::from("8| ♜ ♞ ♝ ♛ ♚ ◼ ◻ ♜"),
-        String::from("7| ♟ ♟ ♟ ♟ ◼ ♟ ♟ ♟"),
-        String::from("6| ◻ ◼ ◻ ♝ ◻ ♞ ◻ ◼"),
-        String::from("5| ◼ ◻ ◼ ◻ ♟ ◻ ◼ ◻"),
-        String::from("4| ◻ ◼ ◻ ◼ ♙ ◼ ◻ ◼"),
-        String::from("3| ◼ ◻ ◼ ♗ ◼ ♘ ◼ ◻"),
-        String::from("2| ♙ ♙ ♙ ♙ ◻ ♙ ♙ ♙"),
-        String::from("1| ♖ ♘ ♗ ♕ ◼ ♖ ♔ ◻"),
-        String::from("   _______________"),
-        String::from("   a b c d e f g h"),
-        ]);
+        assert_eq!(
+            result,
+            [
+                String::from("8| ♜ ♞ ♝ ♛ ♚ ◼ ◻ ♜"),
+                String::from("7| ♟ ♟ ♟ ♟ ◼ ♟ ♟ ♟"),
+                String::from("6| ◻ ◼ ◻ ♝ ◻ ♞ ◻ ◼"),
+                String::from("5| ◼ ◻ ◼ ◻ ♟ ◻ ◼ ◻"),
+                String::from("4| ◻ ◼ ◻ ◼ ♙ ◼ ◻ ◼"),
+                String::from("3| ◼ ◻ ◼ ♗ ◼ ♘ ◼ ◻"),
+                String::from("2| ♙ ♙ ♙ ♙ ◻ ♙ ♙ ♙"),
+                String::from("1| ♖ ♘ ♗ ♕ ◼ ♖ ♔ ◻"),
+                String::from("   _______________"),
+                String::from("   a b c d e f g h"),
+            ]
+        );
     }
 }

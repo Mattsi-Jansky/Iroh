@@ -4,15 +4,26 @@ use crate::state::GameState;
 
 #[derive(Clone)]
 pub enum Game {
-    Ongoing { state: GameState },
-    IllegalMove{ state: GameState },
-    Draw{ state: GameState },
-    Win{ is_first_player_win: bool, state: GameState }
+    Ongoing {
+        state: GameState,
+    },
+    IllegalMove {
+        state: GameState,
+    },
+    Draw {
+        state: GameState,
+    },
+    Win {
+        is_first_player_win: bool,
+        state: GameState,
+    },
 }
 
 impl Game {
     pub fn new() -> Game {
-        Game::Ongoing { state: GameState::new() }
+        Game::Ongoing {
+            state: GameState::new(),
+        }
     }
 
     pub fn from_fen(fen: &str) -> Game {
@@ -22,68 +33,64 @@ impl Game {
 
     pub fn unwrap_if_ongoing(self) -> GameState {
         match self {
-            Game::Ongoing { state, .. } => { state }
-            _ => panic!("Game is not ongoing, cannot unwrap")
+            Game::Ongoing { state, .. } => state,
+            _ => panic!("Game is not ongoing, cannot unwrap"),
         }
     }
 
     pub fn unwrap(&self) -> &GameState {
         match self {
-            Game::Ongoing { state, .. } => { state }
-            Game::IllegalMove { state } => { state }
-            Game::Draw { state } => { state }
-            Game::Win { state, .. } => { state }
+            Game::Ongoing { state, .. } => state,
+            Game::IllegalMove { state } => state,
+            Game::Draw { state } => state,
+            Game::Win { state, .. } => state,
         }
     }
 
     pub fn unwrap_mut(&mut self) -> &mut GameState {
         match self {
-            Game::Ongoing { state, .. } => { state }
-            Game::IllegalMove { state } => { state }
-            Game::Draw { state } => { state }
-            Game::Win { state, .. } => { state }
+            Game::Ongoing { state, .. } => state,
+            Game::IllegalMove { state } => state,
+            Game::Draw { state } => state,
+            Game::Win { state, .. } => state,
         }
     }
 
     pub fn make_move(&self, san: &str) -> Game {
         match self {
-            Game::Ongoing { state } => { state.make_move_san(san) }
-            Game::IllegalMove { state } => { state.make_move_san(san) }
-            Game::Draw { .. } | Game::Win { .. } => { panic!("Cannot make move on a finished game") }
+            Game::Ongoing { state } => state.make_move_san(san),
+            Game::IllegalMove { state } => state.make_move_san(san),
+            Game::Draw { .. } | Game::Win { .. } => {
+                panic!("Cannot make move on a finished game")
+            }
         }
     }
 
     pub fn is_err(&self) -> bool {
-        matches!(self, Game::IllegalMove {..})
+        matches!(self, Game::IllegalMove { .. })
     }
 
-    pub fn generate_pgn(&self) -> Result<String,String> {
+    pub fn generate_pgn(&self) -> Result<String, String> {
         match self {
             Game::Ongoing { state, .. } | Game::Draw { state } => {
                 Ok(generate_pgn(&state.sans, self))
             }
-            Game::Win{ state, ..} => {
-                Ok(generate_pgn(&state.sans, self))
-            }
-            Game::IllegalMove {..} => { Err(String::from("An illegal move cannot generate a PGN")) }
+            Game::Win { state, .. } => Ok(generate_pgn(&state.sans, self)),
+            Game::IllegalMove { .. } => Err(String::from("An illegal move cannot generate a PGN")),
         }
     }
 
-    pub fn generate_fen(&self) -> Result<String,String> {
+    pub fn generate_fen(&self) -> Result<String, String> {
         match self {
-            Game::Ongoing { state, .. } | Game::Draw { state } => {
-                Ok(state.generate_fen())
-            },
-            _ => { Err(String::from("Cannot generate a FEN from an illegal move")) }
+            Game::Ongoing { state, .. } | Game::Draw { state } => Ok(state.generate_fen()),
+            _ => Err(String::from("Cannot generate a FEN from an illegal move")),
         }
     }
 
-    pub fn captured_pieces(&self) -> Result<&CapturedPieces,String> {
+    pub fn captured_pieces(&self) -> Result<&CapturedPieces, String> {
         match self {
-            Game::Ongoing { state, .. } | Game::Draw{ state } => {
-                Ok(state.captured_pieces())
-            }
-            _ => { Err(String::from("Cannot get captured pieces from illegal move")) }
+            Game::Ongoing { state, .. } | Game::Draw { state } => Ok(state.captured_pieces()),
+            _ => Err(String::from("Cannot get captured pieces from illegal move")),
         }
     }
 }
@@ -107,7 +114,7 @@ mod tests {
 
         let result = result.unwrap_if_ongoing();
 
-        assert_eq!(expected,result);
+        assert_eq!(expected, result);
     }
 
     #[test]
@@ -132,7 +139,10 @@ mod tests {
     #[should_panic(expected = "Game is not ongoing, cannot unwrap")]
     fn given_win_unwrap_should_panic() {
         let game = Game::new().unwrap_if_ongoing();
-        let result = Win { is_first_player_win: true, state: game };
+        let result = Win {
+            is_first_player_win: true,
+            state: game,
+        };
 
         result.unwrap_if_ongoing();
     }
@@ -150,6 +160,6 @@ mod tests {
         let game = Game::new().unwrap_if_ongoing();
         let move_result = Ongoing { state: game };
 
-        assert_eq!(false,move_result.is_err());
+        assert_eq!(false, move_result.is_err());
     }
 }

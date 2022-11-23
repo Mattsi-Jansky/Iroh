@@ -1,37 +1,152 @@
-use std::ops::{Index, IndexMut};
 use crate::state::coordinates::Coordinate;
-use crate::state::tile::{Tile};
+use crate::state::tile::Tile;
+use std::ops::{Index, IndexMut};
 
 #[derive(Debug, Copy, Clone, PartialEq, Eq)]
 pub struct Board {
-    state: [Tile; 8*8*2]
+    state: [Tile; 8 * 8 * 2],
 }
 
 impl Board {
     pub fn blank() -> Board {
         Board {
             state: [
-                Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY,
-                Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,
-                Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY,
-                Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,
-                Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY,
-                Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,
-                Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY,
-                Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,
-                Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY,
-                Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,
-                Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY,
-                Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,
-                Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY,
-                Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,
-                Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY, Tile::EMPTY,
-                Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,Tile::SENTINEL,
-            ]
+                Tile::EMPTY,
+                Tile::EMPTY,
+                Tile::EMPTY,
+                Tile::EMPTY,
+                Tile::EMPTY,
+                Tile::EMPTY,
+                Tile::EMPTY,
+                Tile::EMPTY,
+                Tile::SENTINEL,
+                Tile::SENTINEL,
+                Tile::SENTINEL,
+                Tile::SENTINEL,
+                Tile::SENTINEL,
+                Tile::SENTINEL,
+                Tile::SENTINEL,
+                Tile::SENTINEL,
+                Tile::EMPTY,
+                Tile::EMPTY,
+                Tile::EMPTY,
+                Tile::EMPTY,
+                Tile::EMPTY,
+                Tile::EMPTY,
+                Tile::EMPTY,
+                Tile::EMPTY,
+                Tile::SENTINEL,
+                Tile::SENTINEL,
+                Tile::SENTINEL,
+                Tile::SENTINEL,
+                Tile::SENTINEL,
+                Tile::SENTINEL,
+                Tile::SENTINEL,
+                Tile::SENTINEL,
+                Tile::EMPTY,
+                Tile::EMPTY,
+                Tile::EMPTY,
+                Tile::EMPTY,
+                Tile::EMPTY,
+                Tile::EMPTY,
+                Tile::EMPTY,
+                Tile::EMPTY,
+                Tile::SENTINEL,
+                Tile::SENTINEL,
+                Tile::SENTINEL,
+                Tile::SENTINEL,
+                Tile::SENTINEL,
+                Tile::SENTINEL,
+                Tile::SENTINEL,
+                Tile::SENTINEL,
+                Tile::EMPTY,
+                Tile::EMPTY,
+                Tile::EMPTY,
+                Tile::EMPTY,
+                Tile::EMPTY,
+                Tile::EMPTY,
+                Tile::EMPTY,
+                Tile::EMPTY,
+                Tile::SENTINEL,
+                Tile::SENTINEL,
+                Tile::SENTINEL,
+                Tile::SENTINEL,
+                Tile::SENTINEL,
+                Tile::SENTINEL,
+                Tile::SENTINEL,
+                Tile::SENTINEL,
+                Tile::EMPTY,
+                Tile::EMPTY,
+                Tile::EMPTY,
+                Tile::EMPTY,
+                Tile::EMPTY,
+                Tile::EMPTY,
+                Tile::EMPTY,
+                Tile::EMPTY,
+                Tile::SENTINEL,
+                Tile::SENTINEL,
+                Tile::SENTINEL,
+                Tile::SENTINEL,
+                Tile::SENTINEL,
+                Tile::SENTINEL,
+                Tile::SENTINEL,
+                Tile::SENTINEL,
+                Tile::EMPTY,
+                Tile::EMPTY,
+                Tile::EMPTY,
+                Tile::EMPTY,
+                Tile::EMPTY,
+                Tile::EMPTY,
+                Tile::EMPTY,
+                Tile::EMPTY,
+                Tile::SENTINEL,
+                Tile::SENTINEL,
+                Tile::SENTINEL,
+                Tile::SENTINEL,
+                Tile::SENTINEL,
+                Tile::SENTINEL,
+                Tile::SENTINEL,
+                Tile::SENTINEL,
+                Tile::EMPTY,
+                Tile::EMPTY,
+                Tile::EMPTY,
+                Tile::EMPTY,
+                Tile::EMPTY,
+                Tile::EMPTY,
+                Tile::EMPTY,
+                Tile::EMPTY,
+                Tile::SENTINEL,
+                Tile::SENTINEL,
+                Tile::SENTINEL,
+                Tile::SENTINEL,
+                Tile::SENTINEL,
+                Tile::SENTINEL,
+                Tile::SENTINEL,
+                Tile::SENTINEL,
+                Tile::EMPTY,
+                Tile::EMPTY,
+                Tile::EMPTY,
+                Tile::EMPTY,
+                Tile::EMPTY,
+                Tile::EMPTY,
+                Tile::EMPTY,
+                Tile::EMPTY,
+                Tile::SENTINEL,
+                Tile::SENTINEL,
+                Tile::SENTINEL,
+                Tile::SENTINEL,
+                Tile::SENTINEL,
+                Tile::SENTINEL,
+                Tile::SENTINEL,
+                Tile::SENTINEL,
+            ],
         }
     }
 
-    pub(crate) fn get_all_pieces_belonging_to_player(&self, is_owned_by_first_player: bool) -> Vec<(Tile, Coordinate)> {
+    pub(crate) fn get_all_pieces_belonging_to_player(
+        &self,
+        is_owned_by_first_player: bool,
+    ) -> Vec<(Tile, Coordinate)> {
         let mut result = vec![];
 
         let mut index = 0;
@@ -42,7 +157,8 @@ impl Board {
             } else {
                 index += 1;
                 let tile = self[coordinate];
-                if tile.is_occupied() && tile.is_owned_by_first_player() == is_owned_by_first_player{
+                if tile.is_occupied() && tile.is_owned_by_first_player() == is_owned_by_first_player
+                {
                     result.push((tile, coordinate));
                 }
             }
@@ -89,8 +205,8 @@ mod tests {
     use galvanic_assert::assert_that;
     use galvanic_assert::matchers::collection::*;
 
-    use crate::state::GameState;
     use super::*;
+    use crate::state::GameState;
 
     #[test]
     fn given_empty_tile_try_get_value_via_index() {
@@ -127,23 +243,26 @@ mod tests {
 
         let result = board.get_all_pieces_belonging_to_player(true);
 
-        assert_that!(&result, contains_in_any_order(vec![
-            (Tile::FIRST_PAWN,Coordinate::A2),
-            (Tile::FIRST_PAWN,Coordinate::B2),
-            (Tile::FIRST_PAWN,Coordinate::C2),
-            (Tile::FIRST_PAWN,Coordinate::D2),
-            (Tile::FIRST_PAWN,Coordinate::E2),
-            (Tile::FIRST_PAWN,Coordinate::F2),
-            (Tile::FIRST_PAWN,Coordinate::G2),
-            (Tile::FIRST_PAWN,Coordinate::H2),
-            (Tile::FIRST_ROOK,Coordinate::A1),
-            (Tile::FIRST_ROOK,Coordinate::H1),
-            (Tile::FIRST_KNIGHT,Coordinate::B1),
-            (Tile::FIRST_KNIGHT,Coordinate::G1),
-            (Tile::FIRST_BISHOP,Coordinate::F1),
-            (Tile::FIRST_BISHOP,Coordinate::C1),
-            (Tile::FIRST_QUEEN,Coordinate::D1),
-            (Tile::FIRST_KING,Coordinate::E1),
-        ]));
+        assert_that!(
+            &result,
+            contains_in_any_order(vec![
+                (Tile::FIRST_PAWN, Coordinate::A2),
+                (Tile::FIRST_PAWN, Coordinate::B2),
+                (Tile::FIRST_PAWN, Coordinate::C2),
+                (Tile::FIRST_PAWN, Coordinate::D2),
+                (Tile::FIRST_PAWN, Coordinate::E2),
+                (Tile::FIRST_PAWN, Coordinate::F2),
+                (Tile::FIRST_PAWN, Coordinate::G2),
+                (Tile::FIRST_PAWN, Coordinate::H2),
+                (Tile::FIRST_ROOK, Coordinate::A1),
+                (Tile::FIRST_ROOK, Coordinate::H1),
+                (Tile::FIRST_KNIGHT, Coordinate::B1),
+                (Tile::FIRST_KNIGHT, Coordinate::G1),
+                (Tile::FIRST_BISHOP, Coordinate::F1),
+                (Tile::FIRST_BISHOP, Coordinate::C1),
+                (Tile::FIRST_QUEEN, Coordinate::D1),
+                (Tile::FIRST_KING, Coordinate::E1),
+            ])
+        );
     }
 }

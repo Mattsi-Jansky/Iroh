@@ -3,9 +3,9 @@ extern crate galvanic_assert;
 extern crate core;
 
 use galvanic_assert::matchers::collection::*;
-use test_case::test_case;
 use iroh::game::Game;
 use iroh::state::tile::Tile;
+use test_case::test_case;
 
 mod generators;
 
@@ -15,7 +15,7 @@ fn new_game_pgn_has_asterisk_only() {
 
     let result = game.generate_pgn().unwrap();
 
-    assert_eq!(result,"*");
+    assert_eq!(result, "*");
 }
 
 #[test_case("a3")]
@@ -97,12 +97,14 @@ fn attack_move_from_dynamic_movement_piece() {
     let result_game = game;
 
     assert_eq!("1. Rxe5 Rxd4 2. Rd5 *", result_pgn);
-    assert_that!(&result_game.captured_pieces().unwrap().second_player, contains_in_any_order(vec![
-        Tile::SECOND_ROOK
-    ]));
-    assert_that!(&result_game.captured_pieces().unwrap().first_player, contains_in_any_order(vec![
-        Tile::FIRST_ROOK
-    ]));
+    assert_that!(
+        &result_game.captured_pieces().unwrap().second_player,
+        contains_in_any_order(vec![Tile::SECOND_ROOK])
+    );
+    assert_that!(
+        &result_game.captured_pieces().unwrap().first_player,
+        contains_in_any_order(vec![Tile::FIRST_ROOK])
+    );
 }
 
 #[test]
@@ -116,12 +118,14 @@ fn attack_move_from_static_movement_piece() {
     let result_game = game;
 
     assert_eq!("1. Nxb7 Nxg7 2. Nc5 *", result);
-    assert_that!(&result_game.captured_pieces().unwrap().second_player, contains_in_any_order(vec![
-        Tile::SECOND_KNIGHT
-    ]));
-    assert_that!(&result_game.captured_pieces().unwrap().first_player, contains_in_any_order(vec![
-        Tile::FIRST_KNIGHT
-    ]));
+    assert_that!(
+        &result_game.captured_pieces().unwrap().second_player,
+        contains_in_any_order(vec![Tile::SECOND_KNIGHT])
+    );
+    assert_that!(
+        &result_game.captured_pieces().unwrap().first_player,
+        contains_in_any_order(vec![Tile::FIRST_KNIGHT])
+    );
 }
 
 #[test]
@@ -136,12 +140,14 @@ fn attack_move_from_pawn() {
     let result_game = game;
 
     assert_eq!("1. cxd6 gxf5 2. d7 f4 *", result);
-    assert_that!(&result_game.captured_pieces().unwrap().second_player, contains_in_any_order(vec![
-        Tile::SECOND_PAWN
-    ]));
-    assert_that!(&result_game.captured_pieces().unwrap().first_player, contains_in_any_order(vec![
-        Tile::FIRST_PAWN
-    ]));
+    assert_that!(
+        &result_game.captured_pieces().unwrap().second_player,
+        contains_in_any_order(vec![Tile::SECOND_PAWN])
+    );
+    assert_that!(
+        &result_game.captured_pieces().unwrap().first_player,
+        contains_in_any_order(vec![Tile::FIRST_PAWN])
+    );
 }
 
 #[test]
@@ -150,43 +156,58 @@ fn generate_fen_from_game() {
 
     let result = game.generate_fen().unwrap();
 
-    assert_eq!("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1", result);
+    assert_eq!(
+        "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+        result
+    );
 }
 
 #[test]
 fn given_current_player_can_move_game_is_ongoing() {
     let game = Game::from_fen("5k2/R7/8/8/8/8/8/1R2K3 w - - 0 1");
 
-    assert!(matches!(game, Game::Ongoing {..}));
+    assert!(matches!(game, Game::Ongoing { .. }));
 }
 
 #[test]
 fn checkmate_second_player() {
     let game = Game::from_fen("5k2/R7/8/8/8/8/8/1R2K3 w - - 0 1");
-    assert!(matches!(game, Game::Ongoing {..}));
+    assert!(matches!(game, Game::Ongoing { .. }));
 
     let result = game.make_move("Rb8");
 
     assert_eq!("1. Rb8 1-0", result.generate_pgn().unwrap());
-    assert!(matches!(result, Game::Win {is_first_player_win: true,..}));
+    assert!(matches!(
+        result,
+        Game::Win {
+            is_first_player_win: true,
+            ..
+        }
+    ));
 }
 
 #[test]
 fn checkmate_first_player() {
     let game = Game::from_fen("1r3k2/8/8/8/8/8/r7/4K3 b - - 0 1");
-    assert!(matches!(game, Game::Ongoing {..}));
+    assert!(matches!(game, Game::Ongoing { .. }));
 
     let game = game.make_move("Rb1");
 
     assert_eq!("1. Rb1 0-1", game.generate_pgn().unwrap());
-    assert!(matches!(game, Game::Win {is_first_player_win: false,..}));
+    assert!(matches!(
+        game,
+        Game::Win {
+            is_first_player_win: false,
+            ..
+        }
+    ));
 }
 
 #[test]
 fn given_stalemate_should_automatically_draw() {
     let game = Game::from_fen("1N6/8/2R5/3k4/4R3/8/5N2/3K4 b - - 0 1");
 
-    assert!(matches!(game, Game::Draw {..}));
+    assert!(matches!(game, Game::Draw { .. }));
     assert_eq!("1/2-1/2", game.generate_pgn().unwrap());
 }
 
@@ -205,8 +226,11 @@ fn given_five_fold_repetition_from_second_player_should_automatically_draw() {
     game = game.make_move("Kb1");
     game = game.make_move("Rd1");
 
-    assert!(matches!(game, Game::Draw {..}));
-    assert_eq!("1. Rd1 Kb2 2. Rd2 Kb1 3. Rd1 Kc2 4. Rd2 Kb1 5. Rd1 1/2-1/2", game.generate_pgn().unwrap());
+    assert!(matches!(game, Game::Draw { .. }));
+    assert_eq!(
+        "1. Rd1 Kb2 2. Rd2 Kb1 3. Rd1 Kc2 4. Rd2 Kb1 5. Rd1 1/2-1/2",
+        game.generate_pgn().unwrap()
+    );
 }
 
 #[test]
@@ -223,22 +247,27 @@ fn given_five_fold_repetition_from_first_player_should_automatically_draw() {
     game = game.make_move("Kb1");
     game = game.make_move("Rd1");
 
-    assert!(matches!(game, Game::Draw {..}));
-    assert_eq!("1. Rd1 Kb2 2. Rd2 Kb1 3. Rd1 Kc2 4. Rd2 Kb1 5. Rd1 1/2-1/2", game.generate_pgn().unwrap());
+    assert!(matches!(game, Game::Draw { .. }));
+    assert_eq!(
+        "1. Rd1 Kb2 2. Rd2 Kb1 3. Rd1 Kc2 4. Rd2 Kb1 5. Rd1 1/2-1/2",
+        game.generate_pgn().unwrap()
+    );
 }
 
 #[test]
 fn given_seventy_five_turns_without_pawn_move_or_capture_should_automatically_draw() {
     let mut game = Game::from_fen("4k3/3rr3/8/8/8/8/3RR3/4K3 w - - 0 1");
 
-    let moves = vec!["Rc2", "Rc7", "Rb2","Rb7","Ra2","Ra7"];
+    let moves = vec!["Rc2", "Rc7", "Rb2", "Rb7", "Ra2", "Ra7"];
     let mut index = 0;
 
     for _ in 0..74 {
-        if index == moves.len() { index = 0; }
+        if index == moves.len() {
+            index = 0;
+        }
         game = game.make_move(moves[index]);
         index += 1;
     }
 
-    assert!(matches!(game, Game::Draw {..}));
+    assert!(matches!(game, Game::Draw { .. }));
 }

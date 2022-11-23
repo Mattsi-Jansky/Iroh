@@ -1,5 +1,5 @@
-use crate::heuristics::{Heuristic, HeuristicType};
 use crate::heuristics::cache::HeuristicsCache;
+use crate::heuristics::{Heuristic, HeuristicType};
 use crate::moves::Move;
 use crate::state::GameState;
 
@@ -9,8 +9,16 @@ impl Heuristic for AttacksHeuristic {
     fn evaluate(&self, state: &GameState, cache: &HeuristicsCache) -> i32 {
         let current_player_attacks = evaluate_attacks(&state.possible_moves);
         let opponent_attacks = evaluate_attacks(&cache.opponents_possible_moves);
-        let first_player_attacks = if state.is_first_player_turn {current_player_attacks} else {opponent_attacks};
-        let second_player_attacks = if state.is_first_player_turn {opponent_attacks} else {current_player_attacks};
+        let first_player_attacks = if state.is_first_player_turn {
+            current_player_attacks
+        } else {
+            opponent_attacks
+        };
+        let second_player_attacks = if state.is_first_player_turn {
+            opponent_attacks
+        } else {
+            current_player_attacks
+        };
 
         let mut result = 0;
         result += first_player_attacks;
@@ -24,7 +32,8 @@ impl Heuristic for AttacksHeuristic {
 }
 
 fn evaluate_attacks(possible_moves: &[Move]) -> i32 {
-    possible_moves.iter()
+    possible_moves
+        .iter()
         .filter(|m| matches!(m, Move::AttackMove(..)))
         .count() as i32
 }

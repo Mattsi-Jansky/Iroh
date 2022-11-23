@@ -1,18 +1,18 @@
-use std::collections::HashMap;
 use crate::game::Game;
-use crate::moves::Move;
 use crate::moves::move_generation::generate_moves;
 use crate::moves::resolve_move::resolve_move;
+use crate::moves::Move;
 use crate::serialisers::fen::{generate_fen, parse_fen};
 use crate::state::board::Board;
 use crate::state::captured_pieces::CapturedPieces;
 use crate::state::check::is_check;
+use std::collections::HashMap;
 
 pub mod board;
-pub mod tile;
-pub mod coordinates;
 pub mod captured_pieces;
 pub(crate) mod check;
+pub mod coordinates;
+pub mod tile;
 
 const STARTING_POSITION_FEN: &str = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
@@ -27,7 +27,7 @@ pub struct GameState {
     pub first_player_can_castle_kingside: bool,
     pub first_player_can_castle_queenside: bool,
     pub second_player_can_castle_kingside: bool,
-    pub second_player_can_castle_queenside: bool
+    pub second_player_can_castle_queenside: bool,
 }
 
 impl GameState {
@@ -46,7 +46,7 @@ impl GameState {
             second_player_can_castle_kingside: false,
             second_player_can_castle_queenside: false,
             possible_moves: vec![],
-            sans: vec![]
+            sans: vec![],
         };
         parse_fen(fen, &mut state);
         let is_first_player_turn = state.is_first_player_turn;
@@ -80,19 +80,25 @@ impl GameState {
         if self.possible_moves.contains(requested_move) {
             self.make_move_inner(requested_move)
         } else {
-            Game::IllegalMove { state: self.clone() }
+            Game::IllegalMove {
+                state: self.clone(),
+            }
         }
     }
 
     pub fn make_move_san(&self, san: &str) -> Game {
-        let mut possible_moves: HashMap<String, &Move> = self.possible_moves.iter()
+        let mut possible_moves: HashMap<String, &Move> = self
+            .possible_moves
+            .iter()
             .map(|m| (m.generate_san(), m))
             .collect();
 
         if let Some(requested_move) = possible_moves.remove(&san.to_string()) {
             self.make_move_inner(requested_move)
         } else {
-            Game::IllegalMove { state: self.clone() }
+            Game::IllegalMove {
+                state: self.clone(),
+            }
         }
     }
 
@@ -115,11 +121,14 @@ impl GameState {
     pub(crate) fn determine_status(self) -> Game {
         if self.possible_moves.is_empty() {
             if self.is_check(self.is_first_player_turn) {
-                Game::Win{ is_first_player_win: !self.is_first_player_turn(), state: self }
+                Game::Win {
+                    is_first_player_win: !self.is_first_player_turn(),
+                    state: self,
+                }
+            } else {
+                Game::Draw { state: self }
             }
-            else { Game::Draw{ state: self} }
-        }
-        else {
+        } else {
             let mut is_first_player_turn = !self.is_first_player_turn;
             let mut first_player_sans = vec![];
             let mut second_player_sans = vec![];
@@ -134,9 +143,12 @@ impl GameState {
 
             if (!self.is_first_player_turn && self.is_fivefold_repetition(&first_player_sans))
                 || self.is_fivefold_repetition(&second_player_sans)
-                || self.turn_number - self.captured_pieces.last_capture_turn >= 75{
-                Game::Draw{ state: self }
-            } else { Game::Ongoing { state: self } }
+                || self.turn_number - self.captured_pieces.last_capture_turn >= 75
+            {
+                Game::Draw { state: self }
+            } else {
+                Game::Ongoing { state: self }
+            }
         }
     }
 
@@ -160,12 +172,12 @@ impl Default for GameState {
 
 #[cfg(test)]
 mod tests {
-    use galvanic_assert::assert_that;
     use crate::moves::Move::PawnMove;
     use crate::state::coordinates::Coordinate;
+    use galvanic_assert::assert_that;
 
-    use crate::state::tile::{Tile};
     use super::*;
+    use crate::state::tile::Tile;
 
     #[test]
     fn odd_numbered_turns_are_first_player_turns() {
@@ -267,7 +279,7 @@ mod tests {
 
         let result = state.make_move(&legal_move);
 
-        assert_that!(matches!(result, Game::Ongoing {..}))
+        assert_that!(matches!(result, Game::Ongoing { .. }))
     }
 
     #[test]
@@ -277,6 +289,6 @@ mod tests {
 
         let result = state.make_move(&illegal_move);
 
-        assert_that!(matches!(result, Game::IllegalMove {..}))
+        assert_that!(matches!(result, Game::IllegalMove { .. }))
     }
 }

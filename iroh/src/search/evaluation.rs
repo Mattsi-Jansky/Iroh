@@ -1,3 +1,3 @@
 pub struct Evaluation {
-    pub best_move: String
+    pub best_move: String,
 }

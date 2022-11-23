@@ -1,17 +1,19 @@
-use std::collections::HashMap;
 use crate::heuristics::HeuristicType;
+use std::collections::HashMap;
 
 pub struct Weightings {
-    weights: HashMap<HeuristicType,f32>
+    weights: HashMap<HeuristicType, f32>,
 }
 
 impl Weightings {
     pub fn new() -> Weightings {
-        Weightings { weights: HashMap::new() }
-            .push(HeuristicType::Material, 11.0)
-            .push(HeuristicType::Mobility, 0.25)
-            .push(HeuristicType::Mobility, 0.5)
-            .push(HeuristicType::InCheck, 2.0)
+        Weightings {
+            weights: HashMap::new(),
+        }
+        .push(HeuristicType::Material, 11.0)
+        .push(HeuristicType::Mobility, 0.25)
+        .push(HeuristicType::Mobility, 0.5)
+        .push(HeuristicType::InCheck, 2.0)
     }
 
     pub fn push(mut self, heuristic_type: HeuristicType, weight: f32) -> Self {
@@ -20,7 +22,9 @@ impl Weightings {
     }
 
     pub fn get(&self, heuristic_type: HeuristicType) -> Option<f32> {
-        self.weights.get(&heuristic_type).map(|weight| weight.to_owned())
+        self.weights
+            .get(&heuristic_type)
+            .map(|weight| weight.to_owned())
     }
 }
 

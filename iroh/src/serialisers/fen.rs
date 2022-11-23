@@ -1,5 +1,5 @@
 use crate::state::coordinates::Coordinate;
-use crate::state::tile::{Tile};
+use crate::state::tile::Tile;
 use crate::state::GameState;
 
 fn coordinate_from_rank_and_file(rank: u8, file: u8) -> Coordinate {
@@ -35,7 +35,7 @@ pub fn parse_fen(fen: &str, game_state: &mut GameState) {
             'k' => Tile::SECOND_KING,
             'P' => Tile::FIRST_PAWN,
             'p' => Tile::SECOND_PAWN,
-            _ => Tile::EMPTY
+            _ => Tile::EMPTY,
         };
         game_state.board[coordinate_from_rank_and_file(rank, file)] = tile;
 
@@ -44,19 +44,31 @@ pub fn parse_fen(fen: &str, game_state: &mut GameState) {
 
     let player_to_move = blocks.next().expect("Invalid FEN syntax");
     match player_to_move {
-        "w" => { game_state.is_first_player_turn = true; },
-        "b" => { game_state.is_first_player_turn = false; },
-        _ => panic!("Invalid FEN syntax")
+        "w" => {
+            game_state.is_first_player_turn = true;
+        }
+        "b" => {
+            game_state.is_first_player_turn = false;
+        }
+        _ => panic!("Invalid FEN syntax"),
     }
 
     for char in blocks.next().expect("Invalid FEN syntax").chars() {
         match char {
-            'K' => { game_state.first_player_can_castle_kingside = true; }
-            'Q' => { game_state.first_player_can_castle_queenside = true; }
-            'k' => { game_state.second_player_can_castle_kingside = true; }
-            'q' => { game_state.second_player_can_castle_queenside = true; }
+            'K' => {
+                game_state.first_player_can_castle_kingside = true;
+            }
+            'Q' => {
+                game_state.first_player_can_castle_queenside = true;
+            }
+            'k' => {
+                game_state.second_player_can_castle_kingside = true;
+            }
+            'q' => {
+                game_state.second_player_can_castle_queenside = true;
+            }
             '-' => { /* Do nothing */ }
-            _ => panic!("Invalid FEN syntax")
+            _ => panic!("Invalid FEN syntax"),
         };
     }
 }
@@ -67,7 +79,7 @@ pub fn generate_fen(game_state: &GameState) -> String {
 
     for rank in (0_u8..8).rev() {
         for file in 0_u8..8 {
-            let coordinate = coordinate_from_rank_and_file(rank,file);
+            let coordinate = coordinate_from_rank_and_file(rank, file);
             let tile = game_state.board[coordinate];
             if tile.is_occupied() {
                 if blank_tiles_count > 0 {
@@ -76,35 +88,53 @@ pub fn generate_fen(game_state: &GameState) -> String {
                 };
                 let glyph = generate_fen_piece(tile);
                 result.push(glyph);
-            } else { blank_tiles_count += 1; }
+            } else {
+                blank_tiles_count += 1;
+            }
 
             if file == 7 {
                 if blank_tiles_count > 0 {
                     result.push(char::from_digit(blank_tiles_count, 10).unwrap());
                     blank_tiles_count = 0;
                 };
-                if rank != 0 { result.push('/') }
+                if rank != 0 {
+                    result.push('/')
+                }
             };
         }
     }
 
     result.push_str(&*format!(
         " {} {} - 0 1",
-        if game_state.is_first_player_turn {"w"} else {"b"},
-        generate_castling_metadata(game_state))
-    );
+        if game_state.is_first_player_turn {
+            "w"
+        } else {
+            "b"
+        },
+        generate_castling_metadata(game_state)
+    ));
     result
 }
 
 fn generate_castling_metadata(game_state: &GameState) -> String {
     let mut result = String::new();
 
-    if game_state.first_player_can_castle_kingside { result.push('K')}
-    if game_state.first_player_can_castle_queenside { result.push('Q')}
-    if game_state.second_player_can_castle_kingside { result.push('k')}
-    if game_state.second_player_can_castle_queenside { result.push('q')}
+    if game_state.first_player_can_castle_kingside {
+        result.push('K')
+    }
+    if game_state.first_player_can_castle_queenside {
+        result.push('Q')
+    }
+    if game_state.second_player_can_castle_kingside {
+        result.push('k')
+    }
+    if game_state.second_player_can_castle_queenside {
+        result.push('q')
+    }
 
-    if result.is_empty() { result = String::from("-") }
+    if result.is_empty() {
+        result = String::from("-")
+    }
 
     result
 }
@@ -117,15 +147,21 @@ fn generate_fen_piece(tile: Tile) -> char {
         Tile::FIRST_QUEEN | Tile::SECOND_QUEEN => 'q',
         Tile::FIRST_KING | Tile::SECOND_KING => 'k',
         Tile::FIRST_PAWN | Tile::SECOND_PAWN => 'p',
-        _ => { panic!("This should never happen - piece is not a valid recognised chesspiece") }
+        _ => {
+            panic!("This should never happen - piece is not a valid recognised chesspiece")
+        }
     };
-    if tile.is_owned_by_first_player() { piece_type.to_uppercase().next().unwrap() } else {piece_type}
+    if tile.is_owned_by_first_player() {
+        piece_type.to_uppercase().next().unwrap()
+    } else {
+        piece_type
+    }
 }
 
 #[cfg(test)]
 mod tests {
-    use crate::state::coordinates::Coordinate;
     use super::*;
+    use crate::state::coordinates::Coordinate;
 
     #[test]
     fn parse_fen_from_top_of_board_not_bottom() {
@@ -145,7 +181,10 @@ mod tests {
 
         parse_fen(fen_with_uppercase_king, &mut game_state);
 
-        assert_eq!(true, game_state.board[Coordinate::E8].is_owned_by_first_player());
+        assert_eq!(
+            true,
+            game_state.board[Coordinate::E8].is_owned_by_first_player()
+        );
     }
 
     #[test]
@@ -155,7 +194,10 @@ mod tests {
 
         parse_fen(fen_with_lowercase_king, &mut game_state);
 
-        assert_eq!(false, game_state.board[Coordinate::E8].is_owned_by_first_player());
+        assert_eq!(
+            false,
+            game_state.board[Coordinate::E8].is_owned_by_first_player()
+        );
     }
 
     #[test]
@@ -164,7 +206,10 @@ mod tests {
 
         let result = generate_fen(&state);
 
-        assert_eq!("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1", result);
+        assert_eq!(
+            "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+            result
+        );
     }
 
     #[test]
