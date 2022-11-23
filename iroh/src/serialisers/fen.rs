@@ -170,7 +170,7 @@ mod tests {
     #[test]
     fn generate_complex_fen() {
         let test_fen = "rnBNkQn1/ppppNRpp/1PP2p2/2B1p3/2q2Kb1/5r2/2PPPPPP/R7 w KQkq - 0 1";
-        let mut state = GameState::from_fen(test_fen);
+        let state = GameState::from_fen(test_fen);
 
         let result = generate_fen(&state);
 
@@ -209,7 +209,7 @@ mod tests {
 
     #[test]
     fn given_no_player_can_castle_show_hyphen() {
-        let mut state = GameState::from_fen("8/8/8/8/8/8/8/8 w - - 0 1");
+        let state = GameState::from_fen("8/8/8/8/8/8/8/8 w - - 0 1");
 
         let result = generate_fen(&state);
 
@@ -218,14 +218,14 @@ mod tests {
 
     #[test]
     fn given_metadata_says_so_first_player_starts() {
-        let mut state = GameState::from_fen("8/8/8/8/8/8/8/8 w - - 0 1");
+        let state = GameState::from_fen("8/8/8/8/8/8/8/8 w - - 0 1");
 
         assert_eq!(true, state.is_first_player_turn);
     }
 
     #[test]
     fn given_metadata_says_so_second_player_starts() {
-        let mut state = GameState::from_fen("8/8/8/8/8/8/8/8 b - - 0 1");
+        let state = GameState::from_fen("8/8/8/8/8/8/8/8 b - - 0 1");
 
         assert_eq!(false, state.is_first_player_turn);
     }

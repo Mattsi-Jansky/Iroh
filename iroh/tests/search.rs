@@ -1,5 +1,4 @@
 use iroh::search::search;
-use iroh::state::GameState;
 use iroh::game::Game;
 
 macro_rules! search_test_inner {

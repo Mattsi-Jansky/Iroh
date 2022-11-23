@@ -161,7 +161,6 @@ impl Default for GameState {
 #[cfg(test)]
 mod tests {
     use galvanic_assert::assert_that;
-    use galvanic_assert::matchers::*;
     use crate::moves::Move::PawnMove;
     use crate::state::coordinates::Coordinate;
 

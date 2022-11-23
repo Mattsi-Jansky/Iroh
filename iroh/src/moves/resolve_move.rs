@@ -131,7 +131,7 @@ pub fn undo_move(memento: ResolvedMoveMemento, game_state: &mut GameState) {
             move_piece(game_state, to, from);
             game_state.board[to] = captured_piece;
         }
-        Move::PawnPromotion(to, tile) => {
+        Move::PawnPromotion(to, _) => {
             game_state.board[to] = Tile::EMPTY;
             let from = if is_first_player { to.south().unwrap() } else { to.north().unwrap() };
             game_state.board[from] = if is_first_player { Tile::FIRST_PAWN } else { Tile::SECOND_PAWN };

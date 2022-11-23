@@ -1,11 +1,8 @@
-use std::cmp::Ordering;
-use std::collections::{BinaryHeap, BTreeMap};
+use std::collections::{BinaryHeap};
 use evaluation::Evaluation;
 use possible_move::PossibleMove;
 use crate::game::Game;
 use crate::heuristics::Heuristics;
-use crate::moves::Move;
-use crate::state::GameState;
 
 mod possible_move;
 pub mod evaluation;
@@ -34,7 +31,7 @@ pub fn search(game: &mut Game) -> Evaluation {
 
 fn minmax(game:&mut Game, depth: u8, is_maximising: bool, heuristics: &Heuristics, mut alpha: i32, mut beta: i32) -> i32 {
     let is_ongoing = !matches!(game, Game::Ongoing {..});
-    let mut state = game.unwrap_mut();
+    let state = game.unwrap_mut();
     if depth == MAX_DEPTH || is_ongoing { heuristics.evaluate(state) }
     else {
         let mut best_value = if is_maximising { i32::MIN } else { i32::MAX };

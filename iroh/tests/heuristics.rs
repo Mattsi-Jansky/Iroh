@@ -1,8 +1,5 @@
 use galvanic_assert::assert_that;
-use iroh::game::Game;
 use iroh::heuristics::{Heuristics, HeuristicType};
-use iroh::heuristics::attacks::AttacksHeuristic;
-use iroh::heuristics::material::MaterialHeuristic;
 use iroh::heuristics::mobility::MobilityHeuristic;
 use iroh::heuristics::weightings::Weightings;
 use iroh::state::GameState;
@@ -55,8 +52,8 @@ fn given_weighting_configuration_should_multiply_results_by_weights() {
     let weightings_double_move_weight = Weightings::new()
         .push(HeuristicType::Material,0.0)
         .push(HeuristicType::Mobility, 2.0);
-    let mut heuristics = Heuristics::with_weighting(weightings);
-    let mut heuristics_double_move_weight = Heuristics::with_weighting(weightings_double_move_weight);
+    let heuristics = Heuristics::with_weighting(weightings);
+    let heuristics_double_move_weight = Heuristics::with_weighting(weightings_double_move_weight);
 
     let moves_weighted_one = heuristics.evaluate(&mut state);
     let moves_weighted_two = heuristics_double_move_weight.evaluate(&mut state);

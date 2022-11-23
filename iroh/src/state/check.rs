@@ -1,4 +1,3 @@
-use std::cmp::PartialEq;
 use crate::moves::coordinate_transformers::{DIAGONAL_DYNAMIC_TRANSFORMERS, KING_STATIC_TRANSFORMERS, KNIGHT_STATIC_TRANSFORMERS, PAWN_STATIC_TRANSFORMERS_FIRST_PLAYER, PAWN_STATIC_TRANSFORMERS_SECOND_PLAYER, STRAIGHT_DYNAMIC_TRANSFORMERS};
 use crate::state::board::Board;
 use crate::state::coordinates::Coordinate;
@@ -22,7 +21,7 @@ pub fn would_be_check(king: (Tile, Coordinate), game_state: &GameState) -> bool 
     let enemy_king = if is_first_player { Tile::SECOND_KING } else { Tile::FIRST_KING };
     let enemy_knight = if is_first_player { Tile::SECOND_KNIGHT } else { Tile::FIRST_KNIGHT };
     let enemy_pawn = if is_first_player { Tile::SECOND_PAWN } else { Tile::FIRST_PAWN };
-    let mut static_check = StaticCheckTester::new(&mut result, is_first_player, &game_state.board, &king);
+    let mut static_check = StaticCheckTester::new(&mut result, &game_state.board, &king);
 
     static_check.test(enemy_king, &KING_STATIC_TRANSFORMERS);
     static_check.test(enemy_knight, &KNIGHT_STATIC_TRANSFORMERS);
@@ -89,17 +88,15 @@ impl<'a> DynamicCheckTester<'a> {
 
 struct StaticCheckTester<'a> {
     result: &'a mut bool,
-    is_first_player: bool,
     board: &'a Board,
     king: &'a (Tile, Coordinate)
 }
 
 impl<'a> StaticCheckTester<'a> {
     fn new(result: &'a mut bool,
-           is_first_player: bool,
            board: &'a Board,
            king: &'a (Tile, Coordinate)) -> StaticCheckTester<'a> {
-        StaticCheckTester { result, is_first_player, board, king }
+        StaticCheckTester { result, board, king }
     }
 
     fn test(&mut self, attacking_tile: Tile, transformers: &[fn(Coordinate) -> Option<Coordinate>]) {

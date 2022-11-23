@@ -234,7 +234,7 @@ fn given_seventy_five_turns_without_pawn_move_or_capture_should_automatically_dr
     let moves = vec!["Rc2", "Rc7", "Rb2","Rb7","Ra2","Ra7"];
     let mut index = 0;
 
-    for i in 0..74 {
+    for _ in 0..74 {
         if index == moves.len() { index = 0; }
         game = game.make_move(moves[index]);
         index += 1;

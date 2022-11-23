@@ -31,7 +31,6 @@ fn evaluate_attacks(possible_moves: &[Move]) -> i32 {
 
 #[cfg(test)]
 mod tests {
-    use galvanic_assert::assert_that;
     use super::*;
 
     #[test]

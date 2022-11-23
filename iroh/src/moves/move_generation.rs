@@ -29,7 +29,7 @@ pub fn generate_moves(game_state: &mut GameState, is_for_first_player: bool) -> 
 fn remove_moves_that_result_in_check(available_moves: Vec<Move>, game_state: &mut GameState, is_for_first_player: bool) -> Vec<Move>{
     available_moves.into_iter().filter(|requested_move| {
         let memento = perform_move_for(requested_move, game_state, is_for_first_player);
-        let is_check = game_state.is_check((is_for_first_player));
+        let is_check = game_state.is_check(is_for_first_player);
         undo_move(memento, game_state);
         !is_check
     }).collect()

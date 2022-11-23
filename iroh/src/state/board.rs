@@ -87,7 +87,6 @@ impl Default for Board {
 #[cfg(test)]
 mod tests {
     use galvanic_assert::assert_that;
-    use galvanic_assert::matchers::*;
     use galvanic_assert::matchers::collection::*;
 
     use crate::state::GameState;

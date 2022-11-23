@@ -31,14 +31,14 @@ impl Move {
     pub fn generate_san(&self) -> String
     {
         match *self {
-            Move::RegularMove(_,Coordinate, piece_type) => {
-                generate_san(piece_type,Coordinate)
-            },
-            Move::PawnMove(from, to) => {
+            Move::RegularMove(_, coordinate, piece_type) => {
+                generate_san(piece_type, coordinate)
+            }
+            Move::PawnMove(_, to) => {
                 generate_pawn_san(to)
             }
-            Move::AttackMove(_,Coordinate, piece_type) => {
-                generate_attack_san(piece_type,Coordinate)
+            Move::AttackMove(_, coordinate, piece_type) => {
+                generate_attack_san(piece_type, coordinate)
             }
             Move::PawnAttackMove(from, to) => {
                 generate_pawn_attack_san(from, to)

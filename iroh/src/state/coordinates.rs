@@ -1,6 +1,5 @@
 use std::fmt::{Display, Formatter};
-use std::ops::{Add, AddAssign, Mul, Sub, SubAssign};
-use derive_more::{Deref, Display};
+use derive_more::{Deref};
 
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Deref, Hash)]
 pub struct Coordinate(u8);
@@ -23,7 +22,6 @@ const SAN_LOOKUP: [&str; 8*8*2] = [
     "a8","b8","c8","d8","e8","f8","g8","h8",
     "X","X","X","X","X","X","X","X",
 ];
-const MAX_INDEX: u8 = 8*8;
 
 impl Coordinate {
     pub const A1: Coordinate = Coordinate(0);
@@ -503,7 +501,7 @@ mod tests {
     }
 
     #[test]
-    fn given_h1_is__first_rank() {
+    fn given_h1_is_first_rank() {
         let coordinate = Coordinate::H1;
 
         let result = coordinate.is_first_rank();

@@ -5,7 +5,7 @@ use crate::state::GameState;
 pub struct InCheckHeuristic {}
 
 impl Heuristic for InCheckHeuristic {
-    fn evaluate(&self, state: &GameState, cache: &HeuristicsCache) -> i32 {
+    fn evaluate(&self, _: &GameState, cache: &HeuristicsCache) -> i32 {
         if cache.is_check_first_player {-10}
         else if cache.is_check_second_player {10}
         else {0}

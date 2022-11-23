@@ -10,7 +10,6 @@ use cache::HeuristicsCache;
 use crate::heuristics::attacks::AttacksHeuristic;
 use crate::heuristics::checkmates::InCheckmateHeuristic;
 use crate::heuristics::checks::InCheckHeuristic;
-use crate::heuristics::HeuristicType::CheckMate;
 use crate::heuristics::material::MaterialHeuristic;
 use crate::heuristics::mobility::MobilityHeuristic;
 use crate::heuristics::weightings::Weightings;

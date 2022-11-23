@@ -1,5 +1,5 @@
 use crate::moves::Move;
-use crate::moves::resolve_move::{perform_move_for, resolve_move, undo_move};
+use crate::moves::resolve_move::{perform_move_for, undo_move};
 use crate::state::coordinates::Coordinate;
 use crate::state::GameState;
 use crate::state::tile::{Tile};
