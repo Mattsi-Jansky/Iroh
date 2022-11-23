@@ -59,4 +59,3 @@ Start the CLI interface in your terminal with `cargo run`.
 * Optimisations
   * When in check only search king moves, and moves that would place a piece between the attacker and king or capture the attacker.  
   * When in double check only search king moves
-  * 

@@ -115,7 +115,6 @@ pub fn perform_move_for<'a>(requested_move: &'a Move, game_state: &mut GameState
 
 pub fn undo_move(memento: ResolvedMoveMemento, game_state: &mut GameState) {
     let ResolvedMoveMemento { last_move, captured_piece, is_first_player, castling_state } = memento;
-    castling_state.apply(game_state);
 
     match last_move {
         Move::RegularMove(from, to, _) => {
@@ -134,7 +133,8 @@ pub fn undo_move(memento: ResolvedMoveMemento, game_state: &mut GameState) {
         }
         Move::PawnPromotion(to, tile) => {
             game_state.board[to] = Tile::EMPTY;
-            game_state.board[to.south().unwrap()] = if is_first_player { Tile::FIRST_PAWN } else { Tile::SECOND_PAWN };
+            let from = if is_first_player { to.south().unwrap() } else { to.north().unwrap() };
+            game_state.board[from] = if is_first_player { Tile::FIRST_PAWN } else { Tile::SECOND_PAWN };
         }
         Move::Castle(is_kingside) => {
             match (is_first_player, is_kingside) {
@@ -157,6 +157,7 @@ pub fn undo_move(memento: ResolvedMoveMemento, game_state: &mut GameState) {
             }
         }
     }
+    castling_state.apply(game_state);
 }
 
 fn move_piece(game_state: &mut GameState, from: &Coordinate, to: &Coordinate) {
