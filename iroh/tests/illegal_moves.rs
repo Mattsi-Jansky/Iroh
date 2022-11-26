@@ -9,7 +9,7 @@ use test_case::test_case;
 fn cannot_make_illegal_move(illegal_move: &str) {
     let game = Game::new();
 
-    let result = game.make_move(illegal_move);
+    let result = game.make_move_san(illegal_move);
 
     assert!(result.is_err());
 }
@@ -18,8 +18,8 @@ fn cannot_make_illegal_move(illegal_move: &str) {
 fn cannot_move_off_board() {
     let game = Game::from_fen("8/8/8/8/8/8/8/3Q4 w - - 0 1");
 
-    let result = game.make_move("qd9");
-    let result2 = game.make_move("qd-1");
+    let result = game.make_move_san("qd9");
+    let result2 = game.make_move_san("qd-1");
 
     assert!(result.is_err());
     assert!(result2.is_err());
@@ -35,7 +35,7 @@ fn cannot_move_off_board() {
 fn cannot_take_friendly_piece(fen: &str, illegal_move: &str) {
     let game = Game::from_fen(fen);
 
-    let result = game.make_move(illegal_move);
+    let result = game.make_move_san(illegal_move);
 
     assert!(result.is_err());
 }
@@ -44,8 +44,8 @@ fn cannot_take_friendly_piece(fen: &str, illegal_move: &str) {
 fn pawn_cannot_capture_forwards() {
     let game = Game::from_fen("1k6/8/8/3p4/3P4/8/8/1K6 w - - 0 1");
 
-    let result = game.make_move("d5");
-    let result2 = game.make_move("dxd5");
+    let result = game.make_move_san("d5");
+    let result2 = game.make_move_san("dxd5");
 
     assert!(result.is_err());
     assert!(result2.is_err());
@@ -55,11 +55,11 @@ fn pawn_cannot_capture_forwards() {
 fn pawns_only_move_two_if_they_have_not_moved_yet() {
     let mut game = Game::new();
 
-    game = game.make_move("d4");
-    game = game.make_move("e5");
-    let result = game.make_move("d6");
-    game = game.make_move("d5");
-    let result2 = game.make_move("e3");
+    game = game.make_move_san("d4");
+    game = game.make_move_san("e5");
+    let result = game.make_move_san("d6");
+    game = game.make_move_san("d5");
+    let result2 = game.make_move_san("e3");
 
     assert!(result.is_err());
     assert!(result2.is_err());
@@ -69,7 +69,7 @@ fn pawns_only_move_two_if_they_have_not_moved_yet() {
 fn rooks_cannot_jump() {
     let game = Game::new();
 
-    let result = game.make_move("Rh3");
+    let result = game.make_move_san("Rh3");
 
     assert!(result.is_err());
 }
@@ -78,7 +78,7 @@ fn rooks_cannot_jump() {
 fn queens_cannot_jump() {
     let game = Game::new();
 
-    let result = game.make_move("Qd3");
+    let result = game.make_move_san("Qd3");
 
     assert!(result.is_err());
 }
@@ -87,7 +87,7 @@ fn queens_cannot_jump() {
 fn bishops_cannot_jump() {
     let game = Game::new();
 
-    let result = game.make_move("Be3");
+    let result = game.make_move_san("Be3");
 
     assert!(result.is_err());
 }
@@ -96,7 +96,7 @@ fn bishops_cannot_jump() {
 fn pawns_cannot_jump() {
     let game = Game::from_fen("k7/8/8/8/8/3p4/3P4/7K w - - 0 1");
 
-    let result = game.make_move("d4");
+    let result = game.make_move_san("d4");
 
     assert!(result.is_err());
 }
@@ -107,7 +107,7 @@ fn pawns_cannot_jump() {
 #[test_case("8/3k4/3r4/8/8/8/3KR3/8 w - - 0 1", "Re6")]
 fn cannot_move_when_in_check(fen: &str, illegal_move: &str) {
     let game = Game::from_fen(fen);
-    let result = game.make_move(illegal_move);
+    let result = game.make_move_san(illegal_move);
 
     assert!(result.is_err());
 }

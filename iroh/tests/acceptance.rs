@@ -29,7 +29,7 @@ fn new_game_pgn_has_asterisk_only() {
 fn first_pawn_move(san: &str) {
     let game = Game::new();
 
-    let game = game.make_move(san);
+    let game = game.make_move_san(san);
     let result = game.generate_pgn().unwrap();
 
     assert_eq!(format!("1. {} *", san), result);
@@ -54,8 +54,8 @@ fn first_pawn_move(san: &str) {
 fn second_pawn_move(san: &str) {
     let mut game = Game::new();
 
-    game = game.make_move("e4");
-    let game = game.make_move(san);
+    game = game.make_move_san("e4");
+    let game = game.make_move_san(san);
     let result = game.generate_pgn().unwrap();
 
     assert_eq!(format!("1. e4 {} *", san), result);
@@ -90,9 +90,9 @@ chess_test! {
 fn attack_move_from_dynamic_movement_piece() {
     let mut game = Game::from_fen("8/8/8/3Rr3/3Rr3/8/8/8 w KQkq - 0 1");
 
-    game = game.make_move("Rxe5");
-    game = game.make_move("Rxd4");
-    let game = game.make_move("Rd5");
+    game = game.make_move_san("Rxe5");
+    game = game.make_move_san("Rxd4");
+    let game = game.make_move_san("Rd5");
     let result_pgn = game.generate_pgn().unwrap();
     let result_game = game;
 
@@ -111,9 +111,9 @@ fn attack_move_from_dynamic_movement_piece() {
 fn attack_move_from_static_movement_piece() {
     let mut game = Game::from_fen("8/1n4N1/8/2N2n2/8/8/8/8 w - - 0 1");
 
-    game = game.make_move("Nxb7");
-    game = game.make_move("Nxg7");
-    let game = game.make_move("Nc5");
+    game = game.make_move_san("Nxb7");
+    game = game.make_move_san("Nxg7");
+    let game = game.make_move_san("Nc5");
     let result = game.generate_pgn().unwrap();
     let result_game = game;
 
@@ -132,10 +132,10 @@ fn attack_move_from_static_movement_piece() {
 fn attack_move_from_pawn() {
     let mut game = Game::from_fen("8/8/3p2p1/2P2P2/8/8/8/8 w - - 0 1");
 
-    game = game.make_move("cxd6");
-    game = game.make_move("gxf5");
-    game = game.make_move("d7");
-    let game = game.make_move("f4");
+    game = game.make_move_san("cxd6");
+    game = game.make_move_san("gxf5");
+    game = game.make_move_san("d7");
+    let game = game.make_move_san("f4");
     let result = game.generate_pgn().unwrap();
     let result_game = game;
 
@@ -174,7 +174,7 @@ fn checkmate_second_player() {
     let game = Game::from_fen("5k2/R7/8/8/8/8/8/1R2K3 w - - 0 1");
     assert!(matches!(game, Game::Ongoing { .. }));
 
-    let result = game.make_move("Rb8");
+    let result = game.make_move_san("Rb8");
 
     assert_eq!("1. Rb8 1-0", result.generate_pgn().unwrap());
     assert!(matches!(
@@ -191,7 +191,7 @@ fn checkmate_first_player() {
     let game = Game::from_fen("1r3k2/8/8/8/8/8/r7/4K3 b - - 0 1");
     assert!(matches!(game, Game::Ongoing { .. }));
 
-    let game = game.make_move("Rb1");
+    let game = game.make_move_san("Rb1");
 
     assert_eq!("1. Rb1 0-1", game.generate_pgn().unwrap());
     assert!(matches!(
@@ -216,15 +216,15 @@ fn given_five_fold_repetition_from_second_player_should_automatically_draw() {
     //Example from Kasparov versus Deep Blue, 1997
     let mut game = Game::from_fen("6Q1/pp6/8/8/1kp2N2/1n2R1P1/3r4/1K6 b - - 21 12");
 
-    game = game.make_move("Rd1");
-    game = game.make_move("Kb2");
-    game = game.make_move("Rd2");
-    game = game.make_move("Kb1");
-    game = game.make_move("Rd1");
-    game = game.make_move("Kc2");
-    game = game.make_move("Rd2");
-    game = game.make_move("Kb1");
-    game = game.make_move("Rd1");
+    game = game.make_move_san("Rd1");
+    game = game.make_move_san("Kb2");
+    game = game.make_move_san("Rd2");
+    game = game.make_move_san("Kb1");
+    game = game.make_move_san("Rd1");
+    game = game.make_move_san("Kc2");
+    game = game.make_move_san("Rd2");
+    game = game.make_move_san("Kb1");
+    game = game.make_move_san("Rd1");
 
     assert!(matches!(game, Game::Draw { .. }));
     assert_eq!(
@@ -237,15 +237,15 @@ fn given_five_fold_repetition_from_second_player_should_automatically_draw() {
 fn given_five_fold_repetition_from_first_player_should_automatically_draw() {
     let mut game = Game::from_fen("6q1/PP6/8/8/1KP2n2/1N2r1p1/3R4/1k6 w - - 21 12");
 
-    game = game.make_move("Rd1");
-    game = game.make_move("Kb2");
-    game = game.make_move("Rd2");
-    game = game.make_move("Kb1");
-    game = game.make_move("Rd1");
-    game = game.make_move("Kc2");
-    game = game.make_move("Rd2");
-    game = game.make_move("Kb1");
-    game = game.make_move("Rd1");
+    game = game.make_move_san("Rd1");
+    game = game.make_move_san("Kb2");
+    game = game.make_move_san("Rd2");
+    game = game.make_move_san("Kb1");
+    game = game.make_move_san("Rd1");
+    game = game.make_move_san("Kc2");
+    game = game.make_move_san("Rd2");
+    game = game.make_move_san("Kb1");
+    game = game.make_move_san("Rd1");
 
     assert!(matches!(game, Game::Draw { .. }));
     assert_eq!(
@@ -265,7 +265,7 @@ fn given_seventy_five_turns_without_pawn_move_or_capture_should_automatically_dr
         if index == moves.len() {
             index = 0;
         }
-        game = game.make_move(moves[index]);
+        game = game.make_move_san(moves[index]);
         index += 1;
     }
 

@@ -12,11 +12,10 @@ const MAX_DEPTH: u8 = 2;
 pub fn search(game: &mut Game) -> Evaluation {
     let heuristics = Heuristics::new();
     let mut results: BinaryHeap<PossibleMove> = BinaryHeap::new();
-    let state = game.unwrap();
-    let is_first_player = state.is_first_player_turn;
+    let is_first_player = game.unwrap().is_first_player_turn;
 
-    for possible_move in state.possible_moves.iter() {
-        let mut move_result = state.make_move(possible_move);
+    for possible_move in game.unwrap().possible_moves.iter() {
+        let mut move_result = game.make_move(possible_move);
         #[cfg(debug_assertions)]
         println!("Possible move START: {possible_move}");
         let value = minmax(
@@ -51,13 +50,12 @@ fn minmax(
     mut beta: i32,
 ) -> i32 {
     let is_ongoing = !matches!(game, Game::Ongoing { .. });
-    let state = game.unwrap_mut();
     if depth == MAX_DEPTH || is_ongoing {
-        heuristics.evaluate(state)
+        heuristics.evaluate(game.unwrap_mut())
     } else {
         let mut best_value = if is_maximising { i32::MIN } else { i32::MAX };
-        for possible_move in state.possible_moves.iter() {
-            let mut move_result = state.make_move(possible_move);
+        for possible_move in game.unwrap().possible_moves.iter() {
+            let mut move_result = game.make_move(possible_move);
             let value = minmax(
                 &mut move_result,
                 depth + 1,

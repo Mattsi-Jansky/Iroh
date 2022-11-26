@@ -1,3 +1,4 @@
+use crate::moves::Move;
 use crate::serialisers::pgn::generate_pgn;
 use crate::state::captured_pieces::CapturedPieces;
 use crate::state::GameState;
@@ -56,13 +57,61 @@ impl Game {
         }
     }
 
-    pub fn make_move(&self, san: &str) -> Game {
-        match self {
+    pub fn make_move_san(&self, san: &str) -> Game {
+        self.determine_status(match self {
             Game::Ongoing { state } => state.make_move_san(san),
             Game::IllegalMove { state } => state.make_move_san(san),
             Game::Draw { .. } | Game::Win { .. } => {
                 panic!("Cannot make move on a finished game")
             }
+        })
+    }
+
+    pub fn make_move(&self, requested_move: &Move) -> Game {
+        self.determine_status(match self {
+            Game::Ongoing { state } => state.make_move(requested_move),
+            Game::IllegalMove { state } => state.make_move(requested_move),
+            Game::Draw { .. } | Game::Win { .. } => {
+                panic!("Cannot make move on a finished game")
+            }
+        })
+    }
+
+    fn determine_status(&self, state: Option<GameState>) -> Game {
+        if let Some(state) = state {
+            if state.possible_moves.is_empty() {
+                if state.is_check(state.is_first_player_turn) {
+                    Game::Win {
+                        is_first_player_win: !state.is_first_player_turn(),
+                        state,
+                    }
+                } else {
+                    Game::Draw { state }
+                }
+            } else {
+                let mut is_first_player_turn = !state.is_first_player_turn;
+                let mut first_player_sans = vec![];
+                let mut second_player_sans = vec![];
+                for san in state.sans.clone().into_iter().rev() {
+                    if is_first_player_turn {
+                        first_player_sans.push(san);
+                    } else {
+                        second_player_sans.push(san);
+                    }
+                    is_first_player_turn = !is_first_player_turn;
+                }
+
+                if (!state.is_first_player_turn && state.is_fivefold_repetition(&first_player_sans))
+                    || state.is_fivefold_repetition(&second_player_sans)
+                    || state.turn_number - state.captured_pieces.last_capture_turn >= 75
+                {
+                    Game::Draw { state }
+                } else {
+                    Game::Ongoing { state }
+                }
+            }
+        } else {
+            Game::IllegalMove { state: self.unwrap().clone() }
         }
     }
 
@@ -103,6 +152,9 @@ impl Default for Game {
 
 #[cfg(test)]
 mod tests {
+    use galvanic_assert::assert_that;
+    use crate::moves::Move::PawnMove;
+    use crate::state::coordinates::Coordinate;
     use super::Game::*;
     use super::*;
 
@@ -161,5 +213,25 @@ mod tests {
         let move_result = Ongoing { state: game };
 
         assert_eq!(false, move_result.is_err());
+    }
+
+    #[test]
+    fn make_move_from_struct_not_san() {
+        let game = Game::new();
+        let legal_move = PawnMove(Coordinate::E2, Coordinate::E4);
+
+        let result = game.make_move(&legal_move);
+
+        assert_that!(matches!(result, Game::Ongoing {..}))
+    }
+
+    #[test]
+    fn given_move_not_in_possible_moves_returns_none() {
+        let game = Game::new();
+        let illegal_move = PawnMove(Coordinate::A8, Coordinate::A6);
+
+        let result = game.make_move(&illegal_move);
+
+        assert_that!(matches!(result, Game::IllegalMove {..}))
     }
 }

@@ -76,17 +76,15 @@ impl GameState {
         self.is_first_player_turn
     }
 
-    pub fn make_move(&self, requested_move: &Move) -> Game {
+    pub fn make_move(&self, requested_move: &Move) -> Option<Self> {
         if self.possible_moves.contains(requested_move) {
-            self.make_move_inner(requested_move)
+            Some(self.make_move_inner(requested_move))
         } else {
-            Game::IllegalMove {
-                state: self.clone(),
-            }
+            None
         }
     }
 
-    pub fn make_move_san(&self, san: &str) -> Game {
+    pub fn make_move_san(&self, san: &str) -> Option<Self> {
         let mut possible_moves: HashMap<String, &Move> = self
             .possible_moves
             .iter()
@@ -94,28 +92,24 @@ impl GameState {
             .collect();
 
         if let Some(requested_move) = possible_moves.remove(&san.to_string()) {
-            self.make_move_inner(requested_move)
+            Some(self.make_move_inner(requested_move))
         } else {
-            Game::IllegalMove {
-                state: self.clone(),
-            }
+            None
         }
     }
 
-    fn make_move_inner(&self, requested_move: &Move) -> Game {
+    fn make_move_inner(&self, requested_move: &Move) -> Self {
         let mut sans = self.sans.clone();
         sans.push(requested_move.generate_san());
         let mut game_state = self.clone();
         resolve_move(requested_move, &mut game_state);
         let is_first_player_turn = game_state.is_first_player_turn;
         let possible_moves = generate_moves(&mut game_state, is_first_player_turn);
-        let state = GameState {
+        GameState {
             sans,
             possible_moves,
             ..game_state
-        };
-
-        state.determine_status()
+        }
     }
 
     pub(crate) fn determine_status(self) -> Game {
@@ -152,7 +146,7 @@ impl GameState {
         }
     }
 
-    fn is_fivefold_repetition(&self, first_player_sans: &Vec<String>) -> bool {
+    pub(crate) fn is_fivefold_repetition(&self, first_player_sans: &Vec<String>) -> bool {
         first_player_sans.len() >= 5
             && first_player_sans[0] == first_player_sans[2]
             && first_player_sans[2] == first_player_sans[4]
@@ -279,16 +273,16 @@ mod tests {
 
         let result = state.make_move(&legal_move);
 
-        assert_that!(matches!(result, Game::Ongoing { .. }))
+        assert_that!(matches!(result, Some(_)))
     }
 
     #[test]
-    fn given_move_not_in_possible_moves_returns_illegal_move() {
+    fn given_move_not_in_possible_moves_returns_none() {
         let state = GameState::new();
         let illegal_move = PawnMove(Coordinate::A8, Coordinate::A6);
 
         let result = state.make_move(&illegal_move);
 
-        assert_that!(matches!(result, Game::IllegalMove { .. }))
+        assert_that!(matches!(result, None))
     }
 }
