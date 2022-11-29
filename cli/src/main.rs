@@ -18,13 +18,13 @@ fn main() {
             Game::Ongoing { state: inner_game } => {
                 render(&term, &game, inner_game);
                 ask_for_next_move(&mut term, &mut input);
-                game = inner_game.make_move_san(&*input);
+                game = game.make_move_san(&*input);
             }
             Game::IllegalMove { state: inner_game } => {
                 term.write_line(&*format!("Sorry, {} is not a legal move.", input))
                     .unwrap();
                 ask_for_next_move(&mut term, &mut input);
-                game = inner_game.make_move_san(&*input);
+                game = game.make_move_san(&*input);
             }
             Game::Draw { state: inner_game }
             | Game::Win {
