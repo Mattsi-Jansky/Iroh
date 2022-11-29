@@ -22,6 +22,7 @@ pub enum Move {
     PawnAttackMove(Coordinate, Coordinate),
     PawnPromotion(Coordinate, Tile),
     Castle(bool),
+    EnPassant(Coordinate, Coordinate)
 }
 
 impl Display for Move {
@@ -41,6 +42,7 @@ impl Move {
             Move::PawnAttackMove(from, to) => generate_pawn_attack_san(from, to),
             Move::PawnPromotion(file, piece) => generate_pawn_promotion_san(file, piece),
             Move::Castle(is_kingside) => generate_castling_san(is_kingside),
+            Move::EnPassant(from, to) => unimplemented!()
         }
     }
 }

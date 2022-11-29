@@ -169,6 +169,10 @@ impl Coordinate {
         (self.0 >> 4) == 6
     }
 
+    pub fn is_rank_5(&self) -> bool {
+        (self.0 >> 4) == 4
+    }
+
     pub fn is_rank_2(&self) -> bool {
         (self.0 >> 4) == 1
     }

@@ -44,7 +44,8 @@ pub fn generate_pawn_moves(
             }
         }
     }
-    generate_attack_moves(game_state, available_moves, pawn, is_for_first_player)
+    generate_attack_moves(game_state, available_moves, pawn, is_for_first_player);
+    generate_en_passant(game_state, available_moves, pawn, is_for_first_player);
 }
 
 ///**Invariant**: Only call function if pawn is on their starting rank
@@ -151,4 +152,21 @@ fn generate_promotion_moves(
             Tile::SECOND_KNIGHT
         },
     ));
+}
+
+fn generate_en_passant(
+    game_state: &GameState,
+    available_moves: &mut Vec<Move>,
+    pawn: (Tile, Coordinate),
+    is_for_first_player: bool,
+) {
+    if is_for_first_player && pawn.1.is_rank_5() {
+        let move_target = pawn.1.north_east();
+        let attack_target = move_target.and_then(|t| t.north());
+        if let (Some(move_target), Some(attack_target)) = (move_target, attack_target) {
+            if game_state.board[attack_target] == Tile::SECOND_PAWN {
+                available_moves.push(Move::EnPassant(pawn.1, move_target))
+            }
+        }
+    }
 }

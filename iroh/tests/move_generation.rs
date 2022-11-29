@@ -500,3 +500,21 @@ fn pawn_attack_moves() {
         ])
     );
 }
+
+#[test]
+fn en_passant() {
+    let mut game = Game::from_fen("3k4/2p5/8/1P6/8/8/8/3K4 b - - 0 1");
+
+    let game = game.make_move_san("c5").unwrap_if_ongoing();
+    // let available_moves = game.get_available_moves();
+
+    assert_that!(
+        &game.possible_moves,
+        contains_in_any_order(vec![
+            Move::EnPassant {
+                0: Coordinate::B5,
+                1: Coordinate::C6
+            }
+        ])
+    )
+}

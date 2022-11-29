@@ -135,7 +135,8 @@ pub fn perform_move_for<'a>(
                 }
             }
             ResolvedMoveMemento::new(requested_move, Tile::EMPTY, is_first_player, castle_state)
-        }
+        },
+        Move::EnPassant(from,to) => unimplemented!()
     }
 }
 
@@ -193,6 +194,7 @@ pub fn undo_move(memento: ResolvedMoveMemento, game_state: &mut GameState) {
                 move_piece(game_state, &Coordinate::D8, &Coordinate::A8);
             }
         },
+        Move::EnPassant(from,to) => unimplemented!()
     }
     castling_state.apply(game_state);
 }
