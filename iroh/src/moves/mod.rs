@@ -42,7 +42,7 @@ impl Move {
             Move::PawnAttackMove(from, to) => generate_pawn_attack_san(from, to),
             Move::PawnPromotion(file, piece) => generate_pawn_promotion_san(file, piece),
             Move::Castle(is_kingside) => generate_castling_san(is_kingside),
-            Move::EnPassant(from, to) => unimplemented!()
+            Move::EnPassant(from, to) => generate_pawn_attack_san(from, to)
         }
     }
 }
@@ -67,5 +67,14 @@ mod tests {
         let result = test_move.generate_san();
 
         assert_eq!("c4", result);
+    }
+
+    #[test]
+    fn given_en_passant_move_should_generate_san() {
+        let test_move = Move::EnPassant(Coordinate::B5, Coordinate::C6);
+
+        let result = test_move.generate_san();
+
+        assert_eq!("bxc6", result);
     }
 }
