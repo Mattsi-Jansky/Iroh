@@ -162,9 +162,17 @@ fn generate_en_passant(
 ) {
     if is_for_first_player && pawn.1.is_rank_5() {
         let move_target = pawn.1.north_east();
-        let attack_target = move_target.and_then(|t| t.north());
+        let attack_target = pawn.1.east();
         if let (Some(move_target), Some(attack_target)) = (move_target, attack_target) {
-            if game_state.board[attack_target] == Tile::SECOND_PAWN {
+            if game_state.sans.last() == Some(&format!("{}",attack_target)) {
+                available_moves.push(Move::EnPassant(pawn.1, move_target))
+            }
+        }
+    } else if !is_for_first_player && pawn.1.is_rank_4() {
+        let move_target = pawn.1.south_west();
+        let attack_target = pawn.1.west();
+        if let (Some(move_target), Some(attack_target)) = (move_target, attack_target) {
+            if game_state.board[attack_target] == Tile::FIRST_PAWN {
                 available_moves.push(Move::EnPassant(pawn.1, move_target))
             }
         }

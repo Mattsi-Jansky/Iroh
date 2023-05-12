@@ -99,14 +99,12 @@ impl GameState {
     }
 
     fn make_move_inner(&self, requested_move: &Move) -> Self {
-        let mut sans = self.sans.clone();
-        sans.push(requested_move.generate_san());
         let mut game_state = self.clone();
+        game_state.sans.push(requested_move.generate_san());
         resolve_move(requested_move, &mut game_state);
         let is_first_player_turn = game_state.is_first_player_turn;
         let possible_moves = generate_moves(&mut game_state, is_first_player_turn);
         GameState {
-            sans,
             possible_moves,
             ..game_state
         }

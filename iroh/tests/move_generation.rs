@@ -1,6 +1,7 @@
 #[macro_use]
 extern crate galvanic_assert;
 use galvanic_assert::matchers::collection::*;
+use galvanic_assert::matchers::not;
 use iroh::game::Game;
 use test_case::test_case;
 
@@ -502,19 +503,50 @@ fn pawn_attack_moves() {
 }
 
 #[test]
-fn en_passant() {
+fn en_passant_first_player_east() {
     let mut game = Game::from_fen("3k4/2p5/8/1P6/8/8/8/3K4 b - - 0 1");
 
     let game = game.make_move_san("c5").unwrap_if_ongoing();
-    // let available_moves = game.get_available_moves();
 
     assert_that!(
         &game.possible_moves,
-        contains_in_any_order(vec![
+        contains_subset(vec![
             Move::EnPassant {
                 0: Coordinate::B5,
                 1: Coordinate::C6
             }
         ])
+    )
+}
+
+#[test]
+fn en_passant_second_player_west() {
+    let mut game = Game::from_fen("3k4/8/8/8/2p5/8/1P6/3K4 w - - 0 1");
+
+    let game = game.make_move_san("b4").unwrap_if_ongoing();
+
+    assert_that!(
+        &game.possible_moves,
+        contains_subset(vec![
+            Move::EnPassant {
+                0: Coordinate::C4,
+                1: Coordinate::B3
+            }
+        ])
+    )
+}
+
+#[test]
+fn given_target_pawn_did_not_move_last_turn_cannot_en_passant() {
+    let mut game = Game::from_fen("3k4/8/8/1Pp5/8/8/8/3K4 w - - 0 1").unwrap_if_ongoing();
+
+    assert_that!(
+        &game.possible_moves,
+        not(contains_subset(vec![
+            Move::EnPassant {
+                0: Coordinate::B5,
+                1: Coordinate::C6
+            }
+        ]))
     )
 }

@@ -136,7 +136,11 @@ pub fn perform_move_for<'a>(
             }
             ResolvedMoveMemento::new(requested_move, Tile::EMPTY, is_first_player, castle_state)
         },
-        Move::EnPassant(from,to) => unimplemented!()
+        Move::EnPassant(from,to) => {
+            move_piece(game_state, from, to);
+            game_state.board[to.south().unwrap()] = Tile::EMPTY;
+            ResolvedMoveMemento::new(requested_move, Tile::SECOND_PAWN, is_first_player, castle_state)
+        }
     }
 }
 
@@ -194,7 +198,14 @@ pub fn undo_move(memento: ResolvedMoveMemento, game_state: &mut GameState) {
                 move_piece(game_state, &Coordinate::D8, &Coordinate::A8);
             }
         },
-        Move::EnPassant(from,to) => unimplemented!()
+        Move::EnPassant(from,to) => {
+            move_piece(game_state, to, from);
+            if is_first_player {
+                game_state.board[to.south().unwrap()] = memento.captured_piece;
+            } else {
+                game_state.board[to.north().unwrap()] = memento.captured_piece;
+            }
+        }
     }
     castling_state.apply(game_state);
 }
@@ -321,5 +332,21 @@ mod tests {
         undo_move(memento, &mut state);
 
         assert_eq!("4k3/8/8/8/8/8/8/4K2R w K - 0 1", state.generate_fen());
+    }
+
+    #[test]
+    fn undo_en_passant() {
+        let mut state = GameState::from_fen("3k4/2p5/8/1P6/8/8/8/3K4 b - - 0 1");
+        state = state.make_move_san("c5").unwrap();
+        assert_eq!("3k4/8/8/1Pp5/8/8/8/3K4 w - - 0 1", state.generate_fen());
+        let requested_move = EnPassant(Coordinate::B5, Coordinate::C6);
+
+        let memento = perform_move_for(&requested_move, &mut state, true);
+
+        assert_eq!("3k4/8/2P5/8/8/8/8/3K4 w - - 0 1", state.generate_fen());
+
+        undo_move(memento, &mut state);
+
+        assert_eq!("3k4/8/8/1Pp5/8/8/8/3K4 w - - 0 1", state.generate_fen());
     }
 }

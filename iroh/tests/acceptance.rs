@@ -271,3 +271,14 @@ fn given_seventy_five_turns_without_pawn_move_or_capture_should_automatically_dr
 
     assert!(matches!(game, Game::Draw { .. }));
 }
+
+#[test]
+fn en_passant() {
+    let mut game = Game::from_fen("3k4/2p5/8/1P6/8/8/8/3K4 b - - 0 1");
+
+    let game = game.make_move_san("c5");
+    let game = game.make_move_san("bxc6");
+
+    assert_eq!(game.generate_fen().unwrap(), "3k4/8/2P5/8/8/8/8/3K4 b - - 0 1");
+    assert_eq!(game.generate_pgn().unwrap(), "1. c5 bxc6 *");
+}

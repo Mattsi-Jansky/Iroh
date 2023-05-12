@@ -74,9 +74,7 @@ fn taking_rook_beats_returning_to_e5() {
         GameState::from_fen("r4b1r/ppqk1ppp/2p5/3pN3/3P4/8/PPPQ1PPP/R3R1K1 b - - 0 1");
     let heuristics = Heuristics::new();
 
-    println!("Better value");
     let better_value = heuristics.evaluate(&mut better_state);
-    println!("Worse value");
     let worse_value = heuristics.evaluate(&mut worse_state);
 
     assert_that!(better_value > worse_value, otherwise format!("Better position evaluates to {better_value}, but worse evaluated to {worse_value}"));
