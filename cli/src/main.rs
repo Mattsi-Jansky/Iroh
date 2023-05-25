@@ -15,14 +15,14 @@ fn main() {
 
     loop {
         match &game {
-            Game::Ongoing { state: inner_game } => {
-                render(&term, &game, inner_game);
+            Game::Ongoing { .. } => {
+                render(&term, &game, game.generate_fen().unwrap());
                 ask_for_next_move(&mut term, &mut input);
                 game = game.make_move_san(&*input);
             }
             Game::IllegalMove { state: inner_game } => {
-                term.write_line(&*format!("Sorry, {} is not a legal move.", input))
-                    .unwrap();
+                println!("Sorry, that isn't a legal move. Make sure you write your move using Standard Algebraic Notation.");
+                println!("I recognise the following valid moves: {:?}", inner_game.get_available_moves());
                 ask_for_next_move(&mut term, &mut input);
                 game = game.make_move_san(&*input);
             }
@@ -44,7 +44,7 @@ fn ask_for_next_move(term: &mut Term, input: &mut String) {
 
 fn end_game(term: &mut Term, game: &Game, game_state: &GameState) {
     term.write_line("").unwrap();
-    render(term, game, game_state);
+    render(term, game, game_state.generate_fen());
     term.write_line("----------------------").unwrap();
     match game {
         Game::Draw { .. } => term.write_line("It is a draw!").unwrap(),
@@ -66,9 +66,8 @@ fn end_game(term: &mut Term, game: &Game, game_state: &GameState) {
     };
 }
 
-fn render(term: &Term, game: &Game, game_state: &GameState) {
+fn render(term: &Term, game: &Game, fen: String) {
     term.clear_screen().unwrap();
-    let fen = game_state.generate_fen();
     let display = generate_display_from_fen(&fen[..]);
 
     for line in display {
