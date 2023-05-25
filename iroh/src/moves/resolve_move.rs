@@ -95,7 +95,7 @@ pub fn perform_move_for<'a>(
             ResolvedMoveMemento::new(requested_move, target_tile, is_first_player, castle_state)
         }
         Move::PawnAttackMove(from, to) => {
-            let target_tile = game_state.board[(to)];
+            let target_tile = game_state.board[to];
             assert!(
                 target_tile.is_occupied(),
                 "Illegal move, no target to attack"

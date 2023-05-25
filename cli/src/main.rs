@@ -22,7 +22,10 @@ fn main() {
             }
             Game::IllegalMove { state: inner_game } => {
                 println!("Sorry, that isn't a legal move. Make sure you write your move using Standard Algebraic Notation.");
-                println!("The following moves are available: {:?}", inner_game.get_available_moves().iter().map(|m| m.generate_san()).collect::<Vec<String>>());
+                println!("The following moves are available: {:?}",
+                         inner_game.get_available_moves().iter()
+                             .map(|m| m.generate_san())
+                             .collect::<Vec<String>>());
                 ask_for_next_move(&mut term, &mut input);
                 game = game.make_move_san(&*input);
             }
