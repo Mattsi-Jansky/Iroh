@@ -1,6 +1,10 @@
 # Iroh
 
-![wat](./banner.png)
+<p align="center">
+  <img src="https://raw.githubusercontent.com/Mattsi-Jansky/Iroh/master/banner.png" alt="Uncle Iroh from The Last Airbender holding a chess piece and smiling widely">
+</p>
+
+
 
 [![Tests](https://github.com/Mattsi-Jansky/Iroh/actions/workflows/tests.yml/badge.svg)](https://github.com/Mattsi-Jansky/Iroh/actions/workflows/tests.yml)
 
