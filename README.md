@@ -1,12 +1,12 @@
-# Iroh
-
 <p align="center">
   <img src="https://raw.githubusercontent.com/Mattsi-Jansky/Iroh/master/banner.png" alt="Uncle Iroh from The Last Airbender holding a chess piece and smiling widely">
 </p>
 
+<p align="center">
+<a href="https://github.com/Mattsi-Jansky/Iroh/actions/workflows/tests.yml"><img src="https://github.com/Mattsi-Jansky/Iroh/actions/workflows/tests.yml/badge.svg" alt="Tests" style="max-width: 100%;"></a>
+</p>
 
-
-[![Tests](https://github.com/Mattsi-Jansky/Iroh/actions/workflows/tests.yml/badge.svg)](https://github.com/Mattsi-Jansky/Iroh/actions/workflows/tests.yml)
+# Iroh
 
 Iroh is an in-progress [chess engine](https://en.wikipedia.org/wiki/Chess_engine) written in Rust. It is affectionately named after a fictional character that wished to play board games every day.
 
