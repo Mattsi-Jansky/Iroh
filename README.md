@@ -1,8 +1,8 @@
 <p align="center">
   <img src="https://raw.githubusercontent.com/Mattsi-Jansky/Iroh/master/banner.png" alt="Uncle Iroh from The Last Airbender holding a chess piece and smiling widely">
-<br/><span align="center" style="font-size: 0.65em">
+<br/><small align="center">
   (Original image from Avatar The Last Airbender, chess piece via seifmohamed52 on Behance, and thanks to Dall-e and Gimp)
-</span>
+</small>
 </p>
 
 
