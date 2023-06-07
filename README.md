@@ -1,6 +1,10 @@
 <p align="center">
   <img src="https://raw.githubusercontent.com/Mattsi-Jansky/Iroh/master/banner.png" alt="Uncle Iroh from The Last Airbender holding a chess piece and smiling widely">
+<br/><span align="center" style="font-size: 0.65em">
+  (Original image from Avatar The Last Airbender, chess piece via seifmohamed52 on Behance, and thanks to Dall-e and Gimp)
+</span>
 </p>
+
 
 <p align="center">
 <a href="https://github.com/Mattsi-Jansky/Iroh/actions/workflows/tests.yml"><img src="https://github.com/Mattsi-Jansky/Iroh/actions/workflows/tests.yml/badge.svg" alt="Tests" style="max-width: 100%;"></a>
