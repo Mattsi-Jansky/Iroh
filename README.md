@@ -29,8 +29,6 @@ Start the CLI interface in your terminal with `cargo run`.
 
 ## TODO
 
-* Pawn nuance
-    * En Passant
 * Draws and draw offers
   * Mutual agreement
   * Three-fold and fifty-move rules (non-automatic variants of five and seventyfive-move rules)
@@ -65,7 +63,7 @@ Start the CLI interface in your terminal with `cargo run`.
   * Replace some of these tuples with types, particularly in `board.rs`
   * Searching/evaluating more than needs be in some places
     * `check.rs` should stop further checks if result is true
-  * Remove the specific pawn moves, not sure we need them anymore. Could just generate RegularMove/AttackMove
+  * Remove the specific pawn moves, not sure they are needed anymore. Could just generate RegularMove/AttackMove
   * `CapturedPieces` struct could do with better encapsulation
 * Optimisations
   * When in check only search king moves, and moves that would place a piece between the attacker and king or capture the attacker.  
