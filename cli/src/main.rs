@@ -12,13 +12,14 @@ fn main() {
     term.clear_screen().unwrap();
     let mut game = Game::new();
     let mut input = String::new();
+    render(&term, &game, game.generate_fen().unwrap());
 
     loop {
+        ask_for_next_move(&mut term, &mut input);
+        game = game.make_move_san(&*input);
         match &game {
             Game::Ongoing { .. } => {
                 render(&term, &game, game.generate_fen().unwrap());
-                ask_for_next_move(&mut term, &mut input);
-                game = game.make_move_san(&*input);
             }
             Game::IllegalMove { state: inner_game } => {
                 println!("Sorry, that isn't a legal move. Make sure you write your move using Standard Algebraic Notation.");
@@ -26,8 +27,6 @@ fn main() {
                          inner_game.get_available_moves().iter()
                              .map(|m| m.generate_san())
                              .collect::<Vec<String>>());
-                ask_for_next_move(&mut term, &mut input);
-                game = game.make_move_san(&*input);
             }
             Game::Draw { state: inner_game }
             | Game::Win {
