@@ -6,7 +6,7 @@ use crate::state::GameState;
 pub struct ResolvedMoveMemento<'a> {
     last_move: &'a Move,
     captured_piece: Tile,
-    is_first_player: bool,
+    is_first_player: bool, //TODO So long as we only go 1 level deep we can calculate this
     castling_state: CastlingStateMemento,
 }
 

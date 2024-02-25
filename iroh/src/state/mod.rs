@@ -1,6 +1,6 @@
 use crate::game::Game;
 use crate::moves::move_generation::generate_moves;
-use crate::moves::resolve_move::resolve_move;
+use crate::moves::resolve_move::{resolve_move, ResolvedMoveMemento};
 use crate::moves::Move;
 use crate::serialisers::fen::{generate_fen, parse_fen};
 use crate::state::board::Board;
@@ -98,6 +98,15 @@ impl GameState {
         }
     }
 
+    pub(crate) fn make_move_mut<'a>(&mut self, requested_move: &'a Move) -> Option<ResolvedMoveMemento<'a>> {
+        if self.possible_moves.contains(requested_move) {
+            let memento = self.make_move_mut_inner(requested_move);
+            Some(memento)
+        } else {
+            None
+        }
+    }
+
     fn make_move_inner(&self, requested_move: &Move) -> Self {
         let mut game_state = self.clone();
         game_state.sans.push(requested_move.generate_san());
@@ -108,6 +117,14 @@ impl GameState {
             possible_moves,
             ..game_state
         }
+    }
+
+    fn make_move_mut_inner<'a>(&mut self, requested_move: &'a Move) -> ResolvedMoveMemento<'a> {
+        self.sans.push(requested_move.generate_san());
+        let memento = resolve_move(requested_move, self);
+        let is_first_player_turn = self.is_first_player_turn;
+        self.possible_moves = generate_moves(self, is_first_player_turn);
+        memento
     }
 
     pub(crate) fn determine_status(self) -> Game {
@@ -280,6 +297,26 @@ mod tests {
         let illegal_move = PawnMove(Coordinate::A8, Coordinate::A6);
 
         let result = state.make_move(&illegal_move);
+
+        assert_that!(matches!(result, None))
+    }
+
+    #[test]
+    fn make_move_mutably_from_struct_not_san() {
+        let mut state = GameState::new();
+        let legal_move = PawnMove(Coordinate::E2, Coordinate::E4);
+
+        let result = state.make_move_mut(&legal_move);
+
+        assert_that!(matches!(result, Some(_)))
+    }
+
+    #[test]
+    fn given_move_not_in_possible_moves_move_mutably_returns_none() {
+        let mut state = GameState::new();
+        let illegal_move = PawnMove(Coordinate::A8, Coordinate::A6);
+
+        let result = state.make_move_mut(&illegal_move);
 
         assert_that!(matches!(result, None))
     }
