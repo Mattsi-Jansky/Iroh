@@ -2,6 +2,7 @@ use crate::heuristics::Heuristics;
 use evaluation::Evaluation;
 use possible_move::PossibleMove;
 use std::collections::BinaryHeap;
+use crate::moves::resolve_move::{undo_move, undo_turn_including_turn_number};
 use crate::state::GameState;
 use crate::state::status::{determine_status_inner, GameStatus};
 
@@ -52,20 +53,21 @@ fn minmax(
 ) -> i32 {
     let status = determine_status_inner(game_state);
     let is_ongoing = !matches!(status, GameStatus::Ongoing);
-    if depth == MAX_DEPTH || is_ongoing {
+    if depth == MAX_DEPTH || !is_ongoing {
         heuristics.evaluate(game_state)
     } else {
         let mut best_value = if is_maximising { i32::MIN } else { i32::MAX };
-        for possible_move in game_state.possible_moves.iter() {
-            let mut move_result = game_state.make_move(possible_move).unwrap();
+        for possible_move in game_state.possible_moves.clone().iter() {
+            let memento = game_state.make_move_mut(possible_move).unwrap();
             let value = minmax(
-                &mut move_result,
+                game_state,
                 depth + 1,
                 !is_maximising,
                 heuristics,
                 alpha,
                 beta,
             );
+            undo_turn_including_turn_number(memento, game_state);
             if (is_maximising && value > best_value) || (!is_maximising && value < best_value) {
                 best_value = value;
             }

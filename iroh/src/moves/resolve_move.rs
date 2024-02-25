@@ -1,4 +1,5 @@
 use crate::moves::Move;
+use crate::moves::move_generation::generate_moves;
 use crate::state::coordinates::Coordinate;
 use crate::state::tile::Tile;
 use crate::state::GameState;
@@ -209,6 +210,19 @@ pub fn undo_move(memento: ResolvedMoveMemento, game_state: &mut GameState) {
         }
     }
     castling_state.apply(game_state);
+}
+
+pub fn undo_turn_including_turn_number(memento: ResolvedMoveMemento, game_state: &mut GameState) {
+    game_state.is_first_player_turn = !game_state.is_first_player_turn;
+    if memento.captured_piece != Tile::EMPTY {
+        if game_state.is_first_player_turn {
+            game_state.captured_pieces.second_player.pop();
+        } else {
+            game_state.captured_pieces.first_player.pop();
+        }
+    }
+    game_state.turn_number -= 1;
+    undo_move(memento, game_state);
 }
 
 fn move_piece(game_state: &mut GameState, from: &Coordinate, to: &Coordinate) {
