@@ -13,6 +13,7 @@ pub mod captured_pieces;
 pub(crate) mod check;
 pub mod coordinates;
 pub mod tile;
+pub(crate) mod status;
 
 const STARTING_POSITION_FEN: &str = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
