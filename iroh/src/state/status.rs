@@ -6,7 +6,7 @@ pub enum GameStatus {
     Draw
 }
 
-pub fn determine_status_inner(state: &GameState) -> GameStatus {
+pub fn determine_status(state: &GameState) -> GameStatus {
     if state.possible_moves.is_empty() {
         if state.is_check(state.is_first_player_turn) {
             GameStatus::Win

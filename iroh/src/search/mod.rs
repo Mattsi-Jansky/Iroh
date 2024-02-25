@@ -4,7 +4,7 @@ use possible_move::PossibleMove;
 use std::collections::BinaryHeap;
 use crate::moves::resolve_move::{undo_move, undo_turn_including_turn_number};
 use crate::state::GameState;
-use crate::state::status::{determine_status_inner, GameStatus};
+use crate::state::status::{determine_status, GameStatus};
 
 pub mod evaluation;
 mod possible_move;
@@ -51,7 +51,7 @@ fn minmax(
     mut alpha: i32,
     mut beta: i32,
 ) -> i32 {
-    let status = determine_status_inner(game_state);
+    let status = determine_status(game_state);
     let is_ongoing = !matches!(status, GameStatus::Ongoing);
     if depth == MAX_DEPTH || !is_ongoing {
         heuristics.evaluate(game_state)

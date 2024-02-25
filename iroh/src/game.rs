@@ -200,7 +200,7 @@ mod tests {
 }
 
 pub fn into_game(state: GameState) -> Game {
-    let status = status::determine_status_inner(&state);
+    let status = status::determine_status(&state);
     match status {
         GameStatus::Ongoing => { Game::Ongoing { state } }
         GameStatus::Win => { Game::Win {
