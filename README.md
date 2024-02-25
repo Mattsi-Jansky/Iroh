@@ -71,3 +71,4 @@ Start the CLI interface in your terminal with `cargo run`.
   * When in check only search king moves, and moves that would place a piece between the attacker and king or capture the attacker.  
   * When in double check only search king moves
   * Do not update castling state when moving pieces from undo function (`resolve_move.rs`)
+  * Replace sans tracking in game state with less memory-intensive method
