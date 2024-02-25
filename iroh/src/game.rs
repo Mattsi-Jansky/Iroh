@@ -29,7 +29,7 @@ impl Game {
 
     pub fn from_fen(fen: &str) -> Game {
         let game_state = GameState::from_fen(fen);
-        game_state.determine_status()
+        Self::determine_status(game_state)
     }
 
     pub fn unwrap_if_ongoing(self) -> GameState {
@@ -58,7 +58,7 @@ impl Game {
     }
 
     pub fn make_move_san(&self, san: &str) -> Game {
-        self.determine_status(match self {
+        self.determine_status_or_illegal_move(match self {
             Game::Ongoing { state } => state.make_move_san(san),
             Game::IllegalMove { state } => state.make_move_san(san),
             Game::Draw { .. } | Game::Win { .. } => {
@@ -68,7 +68,7 @@ impl Game {
     }
 
     pub fn make_move(&self, requested_move: &Move) -> Game {
-        self.determine_status(match self {
+        self.determine_status_or_illegal_move(match self {
             Game::Ongoing { state } => state.make_move(requested_move),
             Game::IllegalMove { state } => state.make_move(requested_move),
             Game::Draw { .. } | Game::Win { .. } => {
@@ -77,41 +77,45 @@ impl Game {
         })
     }
 
-    fn determine_status(&self, state: Option<GameState>) -> Game {
+    fn determine_status_or_illegal_move(&self, state: Option<GameState>) -> Game {
         if let Some(state) = state {
-            if state.possible_moves.is_empty() {
-                if state.is_check(state.is_first_player_turn) {
-                    Game::Win {
-                        is_first_player_win: !state.is_first_player_turn(),
-                        state,
-                    }
-                } else {
-                    Game::Draw { state }
-                }
-            } else {
-                let mut is_first_player_turn = !state.is_first_player_turn;
-                let mut first_player_sans = vec![];
-                let mut second_player_sans = vec![];
-                for san in state.sans.clone().into_iter().rev() {
-                    if is_first_player_turn {
-                        first_player_sans.push(san);
-                    } else {
-                        second_player_sans.push(san);
-                    }
-                    is_first_player_turn = !is_first_player_turn;
-                }
-
-                if (!state.is_first_player_turn && state.is_fivefold_repetition(&first_player_sans))
-                    || state.is_fivefold_repetition(&second_player_sans)
-                    || state.turn_number - state.captured_pieces.last_capture_turn >= 75
-                {
-                    Game::Draw { state }
-                } else {
-                    Game::Ongoing { state }
-                }
-            }
+            Self::determine_status(state)
         } else {
             Game::IllegalMove { state: self.unwrap().clone() }
+        }
+    }
+
+    fn determine_status(state: GameState) -> Game {
+        if state.possible_moves.is_empty() {
+            if state.is_check(state.is_first_player_turn) {
+                Game::Win {
+                    is_first_player_win: !state.is_first_player_turn(),
+                    state,
+                }
+            } else {
+                Game::Draw { state }
+            }
+        } else {
+            let mut is_first_player_turn = !state.is_first_player_turn;
+            let mut first_player_sans = vec![];
+            let mut second_player_sans = vec![];
+            for san in state.sans.clone().into_iter().rev() {
+                if is_first_player_turn {
+                    first_player_sans.push(san);
+                } else {
+                    second_player_sans.push(san);
+                }
+                is_first_player_turn = !is_first_player_turn;
+            }
+
+            if (!state.is_first_player_turn && state.is_fivefold_repetition(&first_player_sans))
+                || state.is_fivefold_repetition(&second_player_sans)
+                || state.turn_number - state.captured_pieces.last_capture_turn >= 75
+            {
+                Game::Draw { state }
+            } else {
+                Game::Ongoing { state }
+            }
         }
     }
 

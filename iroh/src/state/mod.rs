@@ -127,40 +127,6 @@ impl GameState {
         memento
     }
 
-    pub(crate) fn determine_status(self) -> Game {
-        if self.possible_moves.is_empty() {
-            if self.is_check(self.is_first_player_turn) {
-                Game::Win {
-                    is_first_player_win: !self.is_first_player_turn(),
-                    state: self,
-                }
-            } else {
-                Game::Draw { state: self }
-            }
-        } else {
-            let mut is_first_player_turn = !self.is_first_player_turn;
-            let mut first_player_sans = vec![];
-            let mut second_player_sans = vec![];
-            for san in self.sans.clone().into_iter().rev() {
-                if is_first_player_turn {
-                    first_player_sans.push(san);
-                } else {
-                    second_player_sans.push(san);
-                }
-                is_first_player_turn = !is_first_player_turn;
-            }
-
-            if (!self.is_first_player_turn && self.is_fivefold_repetition(&first_player_sans))
-                || self.is_fivefold_repetition(&second_player_sans)
-                || self.turn_number - self.captured_pieces.last_capture_turn >= 75
-            {
-                Game::Draw { state: self }
-            } else {
-                Game::Ongoing { state: self }
-            }
-        }
-    }
-
     pub(crate) fn is_fivefold_repetition(&self, first_player_sans: &Vec<String>) -> bool {
         first_player_sans.len() >= 5
             && first_player_sans[0] == first_player_sans[2]
