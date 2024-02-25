@@ -32,7 +32,5 @@ search_tests! {
     {second_player_gain_9_material_better_than_gaining_5,"k7/8/8/3q4/2Q5/5R2/K7/8 b - - 0 1","Qxc4"}
     {checkmate_in_one,"3k4/7R/8/R7/8/8/8/3K4 w - - 0 1","Ra8"}
     {checkmate_in_one_as_second_player,"3k4/8/8/r7/8/8/7r/3K4 b - - 0 1","Ra1"}
-    {discovered_check,"r3kb1r/ppq2ppp/2p5/3pN3/3P4/8/PPPQ1PPP/R3R1K1 w kq - 0 1","Nxc6"}
-    // ^ NB this is technically not the best move (Ng6+) but it does utilise the discovered check
-    // Hopefully can get to Ng6 when heuristics are improved
+    {discovered_check,"r3kb1r/ppq2ppp/2p5/3pN3/3P4/8/PPPQ1PPP/R3R1K1 w kq - 0 1","Ng6"}
 }

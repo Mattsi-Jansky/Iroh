@@ -105,13 +105,9 @@ impl GameState {
         }
     }
 
-    pub(crate) fn make_move_mut<'a>(&mut self, requested_move: &'a Move) -> Option<ResolvedMoveMemento<'a>> {
-        if self.possible_moves.contains(requested_move) {
-            let memento = self.make_move_mut_inner(requested_move);
-            Some(memento)
-        } else {
-            None
-        }
+    pub(crate) fn make_legal_move_mut_no_check<'a>(&mut self, requested_move: &'a Move) -> Option<ResolvedMoveMemento<'a>> {
+        let memento = self.make_move_mut_inner(requested_move);
+        Some(memento)
     }
 
     fn make_move_inner(&self, requested_move: &Move) -> Self {
@@ -279,18 +275,8 @@ mod tests {
         let mut state = GameState::new();
         let legal_move = PawnMove(Coordinate::E2, Coordinate::E4);
 
-        let result = state.make_move_mut(&legal_move);
+        let result = state.make_legal_move_mut_no_check(&legal_move);
 
         assert_that!(matches!(result, Some(_)))
-    }
-
-    #[test]
-    fn given_move_not_in_possible_moves_move_mutably_returns_none() {
-        let mut state = GameState::new();
-        let illegal_move = PawnMove(Coordinate::A8, Coordinate::A6);
-
-        let result = state.make_move_mut(&illegal_move);
-
-        assert_that!(matches!(result, None))
     }
 }
