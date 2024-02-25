@@ -77,6 +77,12 @@ impl GameState {
         self.is_first_player_turn
     }
 
+    pub fn pop_possible_moves(&mut self) -> Vec<Move> {
+        let mut possible_moves = vec![];
+        while !self.possible_moves.is_empty() { possible_moves.push(self.possible_moves.pop().unwrap()) }
+        possible_moves
+    }
+
     pub fn make_move(&self, requested_move: &Move) -> Option<Self> {
         if self.possible_moves.contains(requested_move) {
             Some(self.make_move_inner(requested_move))
@@ -128,7 +134,7 @@ impl GameState {
         memento
     }
 
-    pub(crate) fn is_fivefold_repetition(&self, first_player_sans: &Vec<String>) -> bool {
+    pub(crate) fn is_fivefold_repetition(&self, first_player_sans: Vec<&String>) -> bool {
         first_player_sans.len() >= 5
             && first_player_sans[0] == first_player_sans[2]
             && first_player_sans[2] == first_player_sans[4]

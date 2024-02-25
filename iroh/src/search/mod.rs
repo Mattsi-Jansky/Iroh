@@ -57,8 +57,9 @@ fn minmax(
         heuristics.evaluate(game_state)
     } else {
         let mut best_value = if is_maximising { i32::MIN } else { i32::MAX };
-        for possible_move in game_state.possible_moves.clone().iter() {
-            let memento = game_state.make_move_mut(possible_move).unwrap();
+        let possible_moves = game_state.pop_possible_moves();
+        for possible_move in possible_moves {
+            let memento = game_state.make_move_mut(&possible_move).unwrap();
             let value = minmax(
                 game_state,
                 depth + 1,
