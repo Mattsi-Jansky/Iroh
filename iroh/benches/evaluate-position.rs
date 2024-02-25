@@ -2,7 +2,6 @@ use criterion::{black_box, criterion_group, criterion_main, Criterion};
 
 use iroh::game::Game;
 use iroh::search::search;
-use iroh::state::GameState;
 
 fn search_basic(c: &mut Criterion) {
     let mut game = Game::from_fen("3k4/8/8/3p4/4P3/8/8/3K4 w - - 0 1");

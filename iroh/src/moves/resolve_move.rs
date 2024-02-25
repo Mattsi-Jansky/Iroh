@@ -51,7 +51,7 @@ impl CastlingStateMemento {
     }
 }
 
-pub fn resolve_move(requested_move: &Move, game_state: &mut GameState) {
+pub fn resolve_move<'a>(requested_move: &'a Move, game_state: &mut GameState) -> ResolvedMoveMemento<'a> {
     let is_first_player_turn = game_state.is_first_player_turn;
     let memento = perform_move_for(requested_move, game_state, is_first_player_turn);
     if memento.captured_piece != Tile::EMPTY {
@@ -66,6 +66,7 @@ pub fn resolve_move(requested_move: &Move, game_state: &mut GameState) {
         }
     }
     game_state.next_turn();
+    memento
 }
 
 pub fn perform_move_for<'a>(
@@ -337,7 +338,7 @@ mod tests {
     #[test]
     fn undo_en_passant() {
         let mut state = GameState::from_fen("3k4/2p5/8/1P6/8/8/8/3K4 b - - 0 1");
-        state = state.make_move_san("c5").unwrap();
+        let mut state = state.make_move_san("c5").unwrap();
         assert_eq!("3k4/8/8/1Pp5/8/8/8/3K4 w - - 0 1", state.generate_fen());
         let requested_move = EnPassant(Coordinate::B5, Coordinate::C6);
 
