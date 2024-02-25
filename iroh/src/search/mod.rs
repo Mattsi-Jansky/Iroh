@@ -11,23 +11,25 @@ mod possible_move;
 
 const MAX_DEPTH: u8 = 2;
 
-pub fn search(game: &mut GameState) -> Evaluation {
+pub fn search(game_state: &mut GameState) -> Evaluation {
     let heuristics = Heuristics::new();
     let mut results: BinaryHeap<PossibleMove> = BinaryHeap::new();
-    let is_first_player = game.is_first_player_turn;
+    let is_first_player = game_state.is_first_player_turn;
 
-    for possible_move in game.possible_moves.iter() {
-        let mut move_result = game.make_move(possible_move).unwrap();
+    let possible_moves = game_state.pop_possible_moves();
+    for possible_move in possible_moves.iter() {
         #[cfg(debug_assertions)]
         println!("Possible move START: {possible_move}");
+        let memento = game_state.make_legal_move_mut_no_check(possible_move).unwrap();
         let value = minmax(
-            &mut move_result,
+            game_state,
             0,
             !is_first_player,
             &heuristics,
             i32::MIN,
             i32::MAX,
         );
+        undo_turn_including_turn_number(memento, game_state);
         #[cfg(debug_assertions)]
         println!("Possible move OUTCOME: {possible_move}, {value}");
 
@@ -59,6 +61,7 @@ fn minmax(
         let mut best_value = if is_maximising { i32::MIN } else { i32::MAX };
         let possible_moves = game_state.pop_possible_moves();
         for possible_move in possible_moves {
+
             let memento = game_state.make_legal_move_mut_no_check(&possible_move).unwrap();
             let value = minmax(
                 game_state,

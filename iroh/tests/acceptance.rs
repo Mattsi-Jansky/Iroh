@@ -279,6 +279,17 @@ fn en_passant() {
     let game = game.make_move_san("c5");
     let game = game.make_move_san("bxc6");
 
-    assert_eq!(game.generate_fen().unwrap(), "3k4/8/2P5/8/8/8/8/3K4 b - - 0 1");
-    assert_eq!(game.generate_pgn().unwrap(), "1. c5 bxc6 *");
+    assert_eq!("3k4/8/2P5/8/8/8/8/3K4 b - - 0 1", game.generate_fen().unwrap(), );
+    assert_eq!("1. c5 bxc6 *", game.generate_pgn().unwrap());
+}
+
+#[test]
+fn en_passant_second_player() {
+    let mut game = Game::from_fen("3k4/8/8/8/2p5/8/1P6/3K4 w - - 0 1");
+
+    let game = game.make_move_san("b4");
+    let game = game.make_move_san("cxb3");
+
+    assert_eq!("3k4/8/8/8/8/1p6/8/3K4 w - - 0 1", game.generate_fen().unwrap());
+    assert_eq!("1. b4 cxb3 *", game.generate_pgn().unwrap());
 }

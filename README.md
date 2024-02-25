@@ -28,7 +28,9 @@ Run tests with `cargo test`
 Start the CLI interface in your terminal with `cargo run`.
 
 ## TODO
-
+* Pawn capture promotions
+  * Missed this when implementing promotions, causes a crash right now
+  * Notation is to add `=Q` on the end, eg `cxd1=Q`
 * Draws and draw offers
   * Mutual agreement
   * Three-fold and fifty-move rules (non-automatic variants of five and seventyfive-move rules)
@@ -68,3 +70,4 @@ Start the CLI interface in your terminal with `cargo run`.
 * Optimisations
   * When in check only search king moves, and moves that would place a piece between the attacker and king or capture the attacker.  
   * When in double check only search king moves
+  * Do not update castling state when moving pieces from undo function (`resolve_move.rs`)
