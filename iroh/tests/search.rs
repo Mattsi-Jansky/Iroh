@@ -1,11 +1,11 @@
-use iroh::game::Game;
+use iroh::state::GameState;
 use iroh::search::search;
 
 macro_rules! search_test_inner {
     ($name:ident,$fen:expr,$expected_san:expr) => {
         #[test]
         fn $name() {
-            let mut state = Game::from_fen($fen);
+            let mut state = GameState::from_fen($fen);
 
             let result = search(&mut state);
 

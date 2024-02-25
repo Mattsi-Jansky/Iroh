@@ -1,23 +1,17 @@
-use crate::game::Game;
 use crate::state::GameState;
 
-pub fn determine_status_or_illegal_move(game: &Game, state: Option<GameState>) -> Game {
-    if let Some(state) = state {
-        determine_status(state)
-    } else {
-        Game::IllegalMove { state: game.unwrap().clone() }
-    }
+pub enum GameStatus {
+    Ongoing,
+    Win,
+    Draw
 }
 
-pub fn determine_status(state: GameState) -> Game {
+pub fn determine_status_inner(state: &GameState) -> GameStatus {
     if state.possible_moves.is_empty() {
         if state.is_check(state.is_first_player_turn) {
-            Game::Win {
-                is_first_player_win: !state.is_first_player_turn(),
-                state,
-            }
+            GameStatus::Win
         } else {
-            Game::Draw { state }
+            GameStatus::Draw
         }
     } else {
         let mut is_first_player_turn = !state.is_first_player_turn;
@@ -36,9 +30,9 @@ pub fn determine_status(state: GameState) -> Game {
             || state.is_fivefold_repetition(&second_player_sans)
             || state.turn_number - state.captured_pieces.last_capture_turn >= 75
         {
-            Game::Draw { state }
+            GameStatus::Draw
         } else {
-            Game::Ongoing { state }
+            GameStatus::Ongoing
         }
     }
 }

@@ -1,8 +1,8 @@
 use crate::moves::Move;
 use crate::serialisers::pgn::generate_pgn;
 use crate::state::captured_pieces::CapturedPieces;
-use crate::state::GameState;
-use crate::state::status::{determine_status, determine_status_or_illegal_move};
+use crate::state::{GameState, status};
+use crate::state::status::GameStatus;
 
 #[derive(Clone)]
 pub enum Game {
@@ -30,7 +30,7 @@ impl Game {
 
     pub fn from_fen(fen: &str) -> Game {
         let game_state = GameState::from_fen(fen);
-        determine_status(game_state)
+        into_game(game_state)
     }
 
     pub fn unwrap_if_ongoing(self) -> GameState {
@@ -59,7 +59,7 @@ impl Game {
     }
 
     pub fn make_move_san(&self, san: &str) -> Game {
-        determine_status_or_illegal_move(self, match self {
+        into_game_or_illegal_move(self, match self {
             Game::Ongoing { state } => state.make_move_san(san),
             Game::IllegalMove { state } => state.make_move_san(san),
             Game::Draw { .. } | Game::Win { .. } => {
@@ -69,7 +69,7 @@ impl Game {
     }
 
     pub fn make_move(&self, requested_move: &Move) -> Game {
-        determine_status_or_illegal_move(self, match self {
+        into_game_or_illegal_move(self, match self {
             Game::Ongoing { state } => state.make_move(requested_move),
             Game::IllegalMove { state } => state.make_move(requested_move),
             Game::Draw { .. } | Game::Win { .. } => {
@@ -196,5 +196,25 @@ mod tests {
         let result = game.make_move(&illegal_move);
 
         assert_that!(matches!(result, Game::IllegalMove {..}))
+    }
+}
+
+pub fn into_game(state: GameState) -> Game {
+    let status = status::determine_status_inner(&state);
+    match status {
+        GameStatus::Ongoing => { Game::Ongoing { state } }
+        GameStatus::Win => { Game::Win {
+            is_first_player_win: !state.is_first_player_turn(),
+            state,
+        } }
+        GameStatus::Draw => { Game::Draw {state} }
+    }
+}
+
+pub fn into_game_or_illegal_move(game: &Game, state: Option<GameState>) -> Game {
+    if let Some(state) = state {
+        into_game(state)
+    } else {
+        Game::IllegalMove { state: game.unwrap().clone() }
     }
 }

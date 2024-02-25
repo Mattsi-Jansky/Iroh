@@ -1,21 +1,22 @@
-use crate::game::Game;
 use crate::heuristics::Heuristics;
 use evaluation::Evaluation;
 use possible_move::PossibleMove;
 use std::collections::BinaryHeap;
+use crate::state::GameState;
+use crate::state::status::{determine_status_inner, GameStatus};
 
 pub mod evaluation;
 mod possible_move;
 
 const MAX_DEPTH: u8 = 2;
 
-pub fn search(game: &mut Game) -> Evaluation {
+pub fn search(game: &mut GameState) -> Evaluation {
     let heuristics = Heuristics::new();
     let mut results: BinaryHeap<PossibleMove> = BinaryHeap::new();
-    let is_first_player = game.unwrap().is_first_player_turn;
+    let is_first_player = game.is_first_player_turn;
 
-    for possible_move in game.unwrap().possible_moves.iter() {
-        let mut move_result = game.make_move(possible_move);
+    for possible_move in game.possible_moves.iter() {
+        let mut move_result = game.make_move(possible_move).unwrap();
         #[cfg(debug_assertions)]
         println!("Possible move START: {possible_move}");
         let value = minmax(
@@ -42,20 +43,21 @@ pub fn search(game: &mut Game) -> Evaluation {
 }
 
 fn minmax(
-    game: &mut Game,
+    game_state: &mut GameState,
     depth: u8,
     is_maximising: bool,
     heuristics: &Heuristics,
     mut alpha: i32,
     mut beta: i32,
 ) -> i32 {
-    let is_ongoing = !matches!(game, Game::Ongoing { .. });
+    let status = determine_status_inner(game_state);
+    let is_ongoing = !matches!(status, GameStatus::Ongoing);
     if depth == MAX_DEPTH || is_ongoing {
-        heuristics.evaluate(game.unwrap_mut())
+        heuristics.evaluate(game_state)
     } else {
         let mut best_value = if is_maximising { i32::MIN } else { i32::MAX };
-        for possible_move in game.unwrap().possible_moves.iter() {
-            let mut move_result = game.make_move(possible_move);
+        for possible_move in game_state.possible_moves.iter() {
+            let mut move_result = game_state.make_move(possible_move).unwrap();
             let value = minmax(
                 &mut move_result,
                 depth + 1,
